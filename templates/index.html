@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Data Analytics Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+
+            <div class="logo">
+                <div class="logo-icon">AI</div>
+
+                <div>
+                    <h2>Data Analytics</h2>
+                    <span>Intelligent Dashboard</span>
+                </div>
+            </div>
+
+            <nav class="menu">
+
+                <a href="#" class="menu-item active">
+                    <span>⌂</span>
+                    Dashboard
+                </a>
+
+                <a href="#" class="menu-item">
+                    <span>↑</span>
+                    Upload Data
+                </a>
+
+                <a href="#" class="menu-item">
+                    <span>◫</span>
+                    Data Quality
+                </a>
+
+                <a href="#" class="menu-item">
+                    <span>⚙</span>
+                    Data Cleaning
+                </a>
+
+                <a href="#" class="menu-item">
+                    <span>◈</span>
+                    EDA & Visualization
+                </a>
+
+                <a href="#" class="menu-item">
+                    <span>✦</span>
+                    AI Insights
+                </a>
+
+                <a href="#" class="menu-item">
+                    <span>?</span>
+                    Ask AI
+                </a>
+
+                <a href="#" class="menu-item">
+                    <span>◎</span>
+                    ML Prediction
+                </a>
+
+                <a href="#" class="menu-item">
+                    <span>▣</span>
+                    Reports
+                </a>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="#" class="menu-item">
+                    <span>⚙</span>
+                    Settings
+                </a>
+            </div>
+
+        </aside>
+
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Top Header -->
+            <header class="topbar">
+
+                <div>
+                    <h1>Dashboard</h1>
+                    <p>Analyze your data and discover meaningful insights.</p>
+                </div>
+
+                <div class="profile">
+                    <div class="avatar">V</div>
+
+                    <div>
+                        <strong>Vivek</strong>
+                        <small>Data Analyst</small>
+                    </div>
+                </div>
+
+            </header>
+
+
+            <!-- Welcome Section -->
+            <section class="welcome">
+
+                <div>
+                    <h2>Welcome back, Vivek 👋</h2>
+
+                    <p>
+                        Upload your dataset and start exploring your data.
+                    </p>
+                </div>
+
+                <button class="primary-btn">
+                    + Upload Dataset
+                </button>
+
+            </section>
+
+
+            <!-- Statistics Cards -->
+            <section class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="stat-icon">▣</div>
+
+                    <div>
+                        <span>Datasets</span>
+                        <h3>0</h3>
+                    </div>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-icon">▤</div>
+
+                    <div>
+                        <span>Total Rows</span>
+                        <h3>0</h3>
+                    </div>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-icon">▥</div>
+
+                    <div>
+                        <span>Total Columns</span>
+                        <h3>0</h3>
+                    </div>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-icon">✓</div>
+
+                    <div>
+                        <span>Data Quality</span>
+                        <h3>--</h3>
+                    </div>
+                </div>
+
+            </section>
+
+
+            <!-- Main Dashboard Cards -->
+            <section class="content-grid">
+
+                <div class="panel upload-panel">
+
+                    <h3>Start Your Analysis</h3>
+
+                    <p>
+                        Upload a CSV or Excel file to begin analyzing
+                        your dataset.
+                    </p>
+
+                    <div class="upload-box">
+
+                        <div class="upload-icon">↑</div>
+
+                        <h4>Upload Dataset</h4>
+
+                        <p>
+                            Supported formats: CSV, XLSX, XLS
+                        </p>
+
+                        <button class="secondary-btn">
+                            Choose File
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <h3>AI Insights</h3>
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">✦</div>
+
+                        <p>
+                            Upload a dataset to generate
+                            AI-powered insights.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Recent Activity -->
+            <section class="panel recent-panel">
+
+                <div class="panel-header">
+
+                    <h3>Recent Activity</h3>
+
+                    <span>No activity yet</span>
+
+                </div>
+
+                <div class="empty-state">
+
+                    <p>
+                        Your analysis history will appear here.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>
