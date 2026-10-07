@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>AI Data Analytics Dashboard</title>
+    <title>InsightForge AI</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/style.css') }}">
@@ -13,241 +13,379 @@
 
 <body>
 
-    <div class="dashboard">
+<div class="dashboard">
 
-        <!-- Sidebar -->
-        <aside class="sidebar">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
 
-            <div class="logo">
-                <div class="logo-icon">AI</div>
+        <div class="brand">
+            <div class="brand-icon">IF</div>
 
-                <div>
-                    <h2>Data Analytics</h2>
-                    <span>Intelligent Dashboard</span>
-                </div>
+            <div>
+                <h2>InsightForge</h2>
+                <span>AI Analytics</span>
+            </div>
+        </div>
+
+        <nav class="navigation">
+
+            <a href="#" class="nav-item active">
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>↑</span>
+                Upload Data
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>◫</span>
+                Data Quality
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>⚙</span>
+                Data Cleaning
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>◈</span>
+                EDA & Visualization
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>✦</span>
+                AI Insights
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>?</span>
+                Ask AI
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>◎</span>
+                ML Prediction
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>▣</span>
+                Reports
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <a href="#" class="nav-item">
+                <span>⚙</span>
+                Settings
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+        <header class="topbar">
+
+            <div>
+                <h1>Dashboard</h1>
+
+                <p>
+                    Analyze your data and discover meaningful insights.
+                </p>
             </div>
 
-            <nav class="menu">
+            <div class="profile">
 
-                <a href="#" class="menu-item active">
-                    <span>⌂</span>
-                    Dashboard
-                </a>
-
-                <a href="#" class="menu-item">
-                    <span>↑</span>
-                    Upload Data
-                </a>
-
-                <a href="#" class="menu-item">
-                    <span>◫</span>
-                    Data Quality
-                </a>
-
-                <a href="#" class="menu-item">
-                    <span>⚙</span>
-                    Data Cleaning
-                </a>
-
-                <a href="#" class="menu-item">
-                    <span>◈</span>
-                    EDA & Visualization
-                </a>
-
-                <a href="#" class="menu-item">
-                    <span>✦</span>
-                    AI Insights
-                </a>
-
-                <a href="#" class="menu-item">
-                    <span>?</span>
-                    Ask AI
-                </a>
-
-                <a href="#" class="menu-item">
-                    <span>◎</span>
-                    ML Prediction
-                </a>
-
-                <a href="#" class="menu-item">
-                    <span>▣</span>
-                    Reports
-                </a>
-
-            </nav>
-
-            <div class="sidebar-bottom">
-                <a href="#" class="menu-item">
-                    <span>⚙</span>
-                    Settings
-                </a>
-            </div>
-
-        </aside>
-
-
-        <!-- Main Content -->
-        <main class="main-content">
-
-            <!-- Top Header -->
-            <header class="topbar">
-
-                <div>
-                    <h1>Dashboard</h1>
-                    <p>Analyze your data and discover meaningful insights.</p>
+                <div class="avatar">
+                    V
                 </div>
 
-                <div class="profile">
-                    <div class="avatar">V</div>
+                <div>
+                    <strong>Vivek</strong>
+                    <small>Data Analyst</small>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- WELCOME -->
+        <section class="welcome-card">
+
+            <div>
+
+                <span class="welcome-label">
+                    AI-POWERED DATA ANALYSIS
+                </span>
+
+                <h2>
+                    Turn your data into insights.
+                </h2>
+
+                <p>
+                    Upload your dataset and let InsightForge AI
+                    analyze, visualize and explain your data.
+                </p>
+
+            </div>
+
+            <button class="primary-btn">
+                + Upload Dataset
+            </button>
+
+        </section>
+
+
+        <!-- STATISTICS -->
+        <section class="stats-grid">
+
+            <div class="stat-card">
+
+                <div class="stat-icon blue">
+                    ▣
+                </div>
+
+                <div>
+                    <span>Total Datasets</span>
+                    <h3>0</h3>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon green">
+                    ▤
+                </div>
+
+                <div>
+                    <span>Total Rows</span>
+                    <h3>0</h3>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon purple">
+                    ▥
+                </div>
+
+                <div>
+                    <span>Total Columns</span>
+                    <h3>0</h3>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon orange">
+                    ✓
+                </div>
+
+                <div>
+                    <span>Data Quality</span>
+                    <h3>--</h3>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MAIN CARDS -->
+        <section class="content-grid">
+
+
+            <!-- UPLOAD -->
+            <div class="panel">
+
+                <div class="panel-title">
 
                     <div>
-                        <strong>Vivek</strong>
-                        <small>Data Analyst</small>
+                        <h3>Start Your Analysis</h3>
+
+                        <p>
+                            Upload a CSV or Excel file to begin.
+                        </p>
                     </div>
+
+                    <span class="panel-icon">
+                        ↑
+                    </span>
+
                 </div>
 
-            </header>
 
+                <div class="upload-box">
 
-            <!-- Welcome Section -->
-            <section class="welcome">
+                    <div class="upload-cloud">
+                        ↑
+                    </div>
 
-                <div>
-                    <h2>Welcome back, Vivek 👋</h2>
+                    <h4>
+                        Upload your dataset
+                    </h4>
 
                     <p>
-                        Upload your dataset and start exploring your data.
+                        Drag & drop your file here
+                    </p>
+
+                    <span>
+                        or
+                    </span>
+
+                    <br><br>
+
+                    <button class="secondary-btn">
+                        Browse Files
+                    </button>
+
+                    <small>
+                        Supported: CSV, XLSX, XLS
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- AI INSIGHTS -->
+            <div class="panel">
+
+                <div class="panel-title">
+
+                    <div>
+                        <h3>AI Insights</h3>
+
+                        <p>
+                            Intelligent analysis of your data.
+                        </p>
+                    </div>
+
+                    <span class="panel-icon">
+                        ✦
+                    </span>
+
+                </div>
+
+
+                <div class="ai-empty">
+
+                    <div class="ai-icon">
+                        ✦
+                    </div>
+
+                    <h4>
+                        No insights yet
+                    </h4>
+
+                    <p>
+                        Upload a dataset to generate
+                        AI-powered insights.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- QUICK ACTIONS -->
+        <section class="panel quick-panel">
+
+            <div class="panel-title">
+
+                <div>
+                    <h3>Quick Actions</h3>
+
+                    <p>
+                        Start working with your data.
                     </p>
                 </div>
 
-                <button class="primary-btn">
-                    + Upload Dataset
-                </button>
-
-            </section>
+            </div>
 
 
-            <!-- Statistics Cards -->
-            <section class="stats-grid">
+            <div class="quick-actions">
 
-                <div class="stat-card">
-                    <div class="stat-icon">▣</div>
-
-                    <div>
-                        <span>Datasets</span>
-                        <h3>0</h3>
-                    </div>
+                <div class="quick-card">
+                    <span>📁</span>
+                    <strong>Upload Dataset</strong>
+                    <small>CSV or Excel</small>
                 </div>
 
-
-                <div class="stat-card">
-                    <div class="stat-icon">▤</div>
-
-                    <div>
-                        <span>Total Rows</span>
-                        <h3>0</h3>
-                    </div>
+                <div class="quick-card">
+                    <span>📊</span>
+                    <strong>Explore Data</strong>
+                    <small>View statistics</small>
                 </div>
 
-
-                <div class="stat-card">
-                    <div class="stat-icon">▥</div>
-
-                    <div>
-                        <span>Total Columns</span>
-                        <h3>0</h3>
-                    </div>
+                <div class="quick-card">
+                    <span>🤖</span>
+                    <strong>Ask AI</strong>
+                    <small>Ask questions</small>
                 </div>
 
-
-                <div class="stat-card">
-                    <div class="stat-icon">✓</div>
-
-                    <div>
-                        <span>Data Quality</span>
-                        <h3>--</h3>
-                    </div>
+                <div class="quick-card">
+                    <span>📄</span>
+                    <strong>Generate Report</strong>
+                    <small>Create analysis report</small>
                 </div>
 
-            </section>
+            </div>
+
+        </section>
 
 
-            <!-- Main Dashboard Cards -->
-            <section class="content-grid">
+        <!-- RECENT ACTIVITY -->
+        <section class="panel recent-panel">
 
-                <div class="panel upload-panel">
+            <div class="panel-title">
 
-                    <h3>Start Your Analysis</h3>
-
-                    <p>
-                        Upload a CSV or Excel file to begin analyzing
-                        your dataset.
-                    </p>
-
-                    <div class="upload-box">
-
-                        <div class="upload-icon">↑</div>
-
-                        <h4>Upload Dataset</h4>
-
-                        <p>
-                            Supported formats: CSV, XLSX, XLS
-                        </p>
-
-                        <button class="secondary-btn">
-                            Choose File
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <div class="panel">
-
-                    <h3>AI Insights</h3>
-
-                    <div class="empty-state">
-
-                        <div class="empty-icon">✦</div>
-
-                        <p>
-                            Upload a dataset to generate
-                            AI-powered insights.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- Recent Activity -->
-            <section class="panel recent-panel">
-
-                <div class="panel-header">
-
+                <div>
                     <h3>Recent Activity</h3>
 
-                    <span>No activity yet</span>
-
-                </div>
-
-                <div class="empty-state">
-
                     <p>
-                        Your analysis history will appear here.
+                        Your latest analysis activity.
                     </p>
-
                 </div>
 
-            </section>
+            </div>
 
-        </main>
+            <div class="empty-activity">
 
-    </div>
+                <span>◷</span>
 
+                <p>
+                    No activity yet.
+                </p>
+
+                <small>
+                    Upload a dataset to get started.
+                </small>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
-
 </html>
