@@ -210,7 +210,7 @@
         <section class="content-grid">
 
 
-            <!-- UPLOAD -->
+            <!-- UPLOAD PANEL -->
             <div class="panel">
 
                 <div class="panel-title">
@@ -230,6 +230,7 @@
                 </div>
 
 
+                <!-- UPLOAD BOX -->
                 <div class="upload-box">
 
                     <div class="upload-cloud">
@@ -250,9 +251,37 @@
 
                     <br><br>
 
-                    <button class="secondary-btn">
-                        Browse Files
-                    </button>
+
+                    <!-- UPLOAD FORM -->
+                    <form action="/upload"
+                          method="POST"
+                          enctype="multipart/form-data">
+
+                        <input
+                            type="file"
+                            name="file"
+                            id="fileInput"
+                            accept=".csv,.xlsx,.xls"
+                            hidden
+                        >
+
+                        <button
+                            type="button"
+                            class="secondary-btn"
+                            onclick="document.getElementById('fileInput').click()">
+                            Browse Files
+                        </button>
+
+                        <br><br>
+
+                        <button
+                            type="submit"
+                            class="primary-btn">
+                            Upload File
+                        </button>
+
+                    </form>
+
 
                     <small>
                         Supported: CSV, XLSX, XLS
@@ -367,6 +396,7 @@
 
             </div>
 
+
             <div class="empty-activity">
 
                 <span>◷</span>
@@ -386,6 +416,10 @@
     </main>
 
 </div>
+
+
+<!-- JAVASCRIPT -->
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
 </body>
 </html>
