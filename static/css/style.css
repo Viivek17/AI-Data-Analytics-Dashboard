@@ -537,3 +537,99 @@ body {
         grid-template-columns: 1fr;
     }
 }
+/* Day 4: Dataset preview and data quality */
+
+.notice {
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    background: #e8f5e9;
+    color: #216e39;
+}
+
+.notice.error {
+    background: #ffebee;
+    color: #b42318;
+}
+
+.quality-panel,
+.preview-panel {
+    margin-top: 24px;
+}
+
+.quality-details {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.quality-item {
+    padding: 18px;
+    border: 1px solid #e7eaf0;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-wrap: anywhere;
+}
+
+.quality-item span {
+    color: #697386;
+    font-size: 13px;
+}
+
+.quality-item strong {
+    color: #202b3c;
+    font-size: 18px;
+}
+
+.quality-note {
+    margin-top: 16px;
+    color: #697386;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+.data-preview {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    text-align: left;
+}
+
+.data-preview th,
+.data-preview td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e7eaf0;
+    white-space: nowrap;
+}
+
+.data-preview th {
+    background: #f3f6fb;
+    color: #26364b;
+    font-weight: 600;
+}
+
+.data-preview tbody tr:hover {
+    background: #f8faff;
+}
+
+.selected-file {
+    margin: 12px 0;
+    font-size: 13px;
+    color: #697386;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 650px) {
+    .quality-details {
+        grid-template-columns: 1fr;
+    }
+}
