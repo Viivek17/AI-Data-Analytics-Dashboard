@@ -1,0 +1,49 @@
+```html
+{% extends "base.html" %}
+
+{% block title %}Upload Dataset | InsightForge AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Upload Dataset</h1>
+    <p>Upload a CSV or Excel file to start analysing your data.</p>
+</div>
+
+<div class="upload-container">
+    <form action="{{ url_for('upload_dataset') }}"
+          method="POST"
+          enctype="multipart/form-data">
+
+        <div class="upload-box">
+            <h2>Select Your Dataset</h2>
+            <p>Supported formats: CSV, XLSX, XLS</p>
+
+            <input
+                type="file"
+                name="dataset"
+                id="dataset"
+                accept=".csv,.xlsx,.xls"
+                required
+            >
+
+            <p id="file-name">No file selected</p>
+
+            <button type="submit" class="btn-primary">
+                Upload Dataset
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+const datasetInput = document.getElementById("dataset");
+const fileName = document.getElementById("file-name");
+
+datasetInput.addEventListener("change", function () {
+    fileName.textContent = this.files.length
+        ? this.files[0].name
+        : "No file selected";
+});
+</script>
+{% endblock %}
+```

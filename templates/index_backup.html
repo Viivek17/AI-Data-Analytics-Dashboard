@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>InsightForge AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+<aside class="sidebar">
+
+    <!-- BRAND -->
+    <div class="brand">
+        <div class="brand-icon">IF</div>
+
+        <div>
+            <h2>InsightForge</h2>
+            <span>AI Analytics</span>
+        </div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <nav class="navigation">
+
+        <!-- Dashboard -->
+        <a href="/" class="nav-item active">
+            <span>⌂</span>
+            Dashboard
+        </a>
+
+        <!-- Upload Data -->
+        <a href="#upload-section" class="nav-item">
+            <span>↑</span>
+            Upload Data
+        </a>
+
+        <!-- Data Quality -->
+        <a href="#quality-section" class="nav-item">
+            <span>◫</span>
+            Data Quality
+        </a>
+
+        <!-- Data Cleaning -->
+        <a href="#cleaning-section" class="nav-item">
+            <span>⚙</span>
+            Data Cleaning
+        </a>
+
+        <!-- EDA & Visualization -->
+        <a href="#eda-section" class="nav-item">
+            <span>◈</span>
+            EDA &amp; Visualization
+        </a>
+
+        <!-- AI Insights -->
+        <a href="#insights-section" class="nav-item">
+            <span>✦</span>
+            AI Insights
+        </a>
+
+        <!-- Ask AI -->
+        <a href="#ask-ai-section" class="nav-item">
+            <span>?</span>
+            Ask AI
+        </a>
+
+        <!-- Machine Learning -->
+        <a href="#ml-section" class="nav-item">
+            <span>◎</span>
+            ML Prediction
+        </a>
+
+        <!-- Reports -->
+        <a href="#reports-section" class="nav-item">
+            <span>▣</span>
+            Reports
+        </a>
+
+    </nav>
+
+    <!-- SIDEBAR BOTTOM -->
+    <div class="sidebar-bottom">
+
+        <a href="#settings-section" class="nav-item">
+            <span>⚙</span>
+            Settings
+        </a>
+
+    </div>
+
+</aside>
+<!-- END SIDEBAR -->
+ 
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+        <header class="topbar">
+
+            <div>
+                <h1>Dashboard</h1>
+                <p>Analyze your data and discover meaningful insights.</p>
+            </div>
+
+            <div class="profile">
+                <div class="avatar">V</div>
+                <div>
+                    <strong>Vivek</strong>
+                    <small>Data Analyst</small>
+                </div>
+            </div>
+
+        </header>
+
+
+        <!-- FLASH MESSAGES -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="notice {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+
+        <!-- WELCOME -->
+        <section class="welcome-card">
+
+            <div>
+                <span class="welcome-label">
+                    AI-POWERED DATA ANALYSIS
+                </span>
+
+                <h2>Turn your data into insights.</h2>
+
+                <p>
+                    Upload your dataset and let InsightForge AI
+                    analyze, visualize and explain your data.
+                </p>
+            </div>
+
+            <button class="primary-btn"
+                    type="button"
+                    onclick="document.getElementById('fileInput').click()">
+                + Upload Dataset
+            </button>
+
+        </section>
+
+
+        <!-- STATISTICS -->
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-icon blue">▣</div>
+                <div>
+                    <span>Total Datasets</span>
+                    <h3>{{ 1 if dataset_name else 0 }}</h3>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon green">▤</div>
+                <div>
+                    <span>Total Rows</span>
+                    <h3>{{ total_rows if total_rows is defined else 0 }}</h3>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon purple">▥</div>
+                <div>
+                    <span>Total Columns</span>
+                    <h3>{{ total_columns if total_columns is defined else 0 }}</h3>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon orange">✓</div>
+                <div>
+                    <span>Data Quality</span>
+                    <h3>
+                        {{ quality_score ~ '%' if quality_score is defined else '--' }}
+                    </h3>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- UPLOAD AND INSIGHTS -->
+        <section class="content-grid">
+
+            <!-- UPLOAD PANEL -->
+            <div class="panel" id="upload-section">
+
+                <div class="panel-title">
+                    <div>
+                        <h3>Start Your Analysis</h3>
+                        <p>Upload a CSV or Excel file to begin.</p>
+                    </div>
+
+                    <span class="panel-icon">↑</span>
+                </div>
+
+                <div class="upload-box">
+
+                    <div class="upload-cloud">↑</div>
+
+                    <h4>Upload your dataset</h4>
+                    <p>Choose a file from your computer.</p>
+
+                    <form action="{{ url_for('upload_file') }}"
+                          method="POST"
+                          enctype="multipart/form-data">
+
+                        <input
+                            type="file"
+                            name="file"
+                            id="fileInput"
+                            accept=".csv,.xlsx,.xls"
+                            required
+                            hidden
+                        >
+
+                        <button
+                            type="button"
+                            class="secondary-btn"
+                            onclick="document.getElementById('fileInput').click()">
+                            Browse Files
+                        </button>
+
+                        <p id="selectedFile" class="selected-file">
+                            No file selected
+                        </p>
+
+                        <button type="submit" class="primary-btn">
+                            Upload & Analyze
+                        </button>
+
+                    </form>
+
+                    <small>Supported formats: CSV, XLSX, XLS</small>
+
+                </div>
+
+            </div>
+
+
+            <!-- AI INSIGHTS -->
+            <div class="panel">
+
+                <div class="panel-title">
+                    <div>
+                        <h3>AI Insights</h3>
+                        <p>Intelligent analysis of your data.</p>
+                    </div>
+
+                    <span class="panel-icon">✦</span>
+                </div>
+
+                <div class="ai-empty">
+
+                    <div class="ai-icon">✦</div>
+
+                    {% if dataset_name is defined %}
+
+                        <h4>Dataset loaded!</h4>
+
+                        <p>
+                            Your dataset is ready for further analysis.
+                            More insights will be added in upcoming steps.
+                        </p>
+
+                    {% else %}
+
+                        <h4>No insights yet</h4>
+
+                        <p>
+                            Upload a dataset to get started with analysis.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- DATA QUALITY -->
+        <section class="panel quality-panel" id="quality-section">
+
+            <div class="panel-title">
+                <div>
+                    <h3>Data Quality Overview</h3>
+                    <p>Check missing values in your dataset.</p>
+                </div>
+            </div>
+
+            {% if dataset_name is defined %}
+
+                <div class="quality-details">
+
+                    <div class="quality-item">
+                        <span>Dataset</span>
+                        <strong>{{ dataset_name }}</strong>
+                    </div>
+
+                    <div class="quality-item">
+                        <span>Missing Values</span>
+                        <strong>{{ missing_values }}</strong>
+                    </div>
+
+                    <div class="quality-item">
+                        <span>Quality Score</span>
+                        <strong>{{ quality_score }}%</strong>
+                    </div>
+
+                    <div class="quality-item">
+                        <span>Duplicate Rows</span>
+                        <strong>{{ duplicate_rows }}</strong>
+                    </div>
+
+                </div>
+
+                <p class="quality-note">
+                    Quality score represents the percentage of non-missing
+                    cells. It does not measure every type of data error.
+                </p>
+
+            {% else %}
+
+                <div class="empty-activity">
+                    <span>◫</span>
+                    <p>No dataset analyzed yet.</p>
+                    <small>Upload a CSV or Excel file to check its quality.</small>
+                </div>
+
+            {% endif %}
+
+        </section>
+
+         <!-- COLUMN INFORMATION -->
+<section class="panel preview-panel" id="column-info-section">
+    <div class="panel-title">
+        <div>
+            <h3>Column Information</h3>
+            <p>Explore column names, data types, and missing values.</p>
+        </div>
+    </div>
+
+    {% if column_info is defined and column_info %}
+    <div class="table-container">
+        <table class="data-preview">
+            <thead>
+                <tr>
+                    <th>Column Name</th>
+                    <th>Data Type</th>
+                    <th>Missing Values</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for column in column_info %}
+                <tr>
+                    <td>{{ column.name }}</td>
+                    <td>{{ column.data_type }}</td>
+                    <td>{{ column.missing }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-activity">
+        <p>No column information available.</p>
+        <small>Upload a CSV or Excel dataset to view column details.</small>
+    </div>
+    {% endif %}
+</section>   
+    
+<!-- DATA CLEANING SECTION -->
+<section class="panel" id="cleaning-section">
+    <div class="panel-title">
+        <div>
+            <h3>Data Cleaning</h3>
+            <p>Clean missing values and duplicate rows in your dataset.</p>
+        </div>
+    </div>
+
+    {% if dataset_name is defined %}
+    <form action="{{ url_for('clean_data') }}" method="POST">
+
+        <input
+            type="hidden"
+            name="dataset_name"
+            value="{{ dataset_name }}"
+        >
+
+        <div class="form-group">
+            <label for="missing_strategy">Handle Missing Values</label>
+
+            <select id="missing_strategy" name="missing_strategy">
+                <option value="none">Keep Missing Values</option>
+                <option value="drop">Remove Rows with Missing Values</option>
+                <option value="zero">Fill with Zero</option>
+                <option value="mean">Fill Numeric Values with Mean</option>
+                <option value="median">Fill Numeric Values with Median</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>
+                <input
+                    type="checkbox"
+                    name="remove_duplicates"
+                    value="yes"
+                >
+                Remove Duplicate Rows
+            </label>
+        </div>
+
+        <button type="submit" class="btn-primary">
+            Clean Dataset
+        </button>
+
+        {% if cleaned_filename is defined and cleaned_filename %}
+<a
+    href="{{ url_for('download_cleaned_file', filename=cleaned_filename) }}"
+    class="btn-primary"
+>
+    Download Cleaned Dataset
+</a>
+{% endif %}
+
+        {% if cleaned_filename is defined and cleaned_filename %}
+        <a
+    href="{{ url_for('download_cleaned_file', filename=cleaned_filename) }}"
+    class="btn-primary"
+>
+    Download Cleaned Dataset
+       </a>
+    {% endif %}
+
+    </form>
+    {% else %}
+    <div class="empty-activity">
+        <p>No dataset available for cleaning.</p>
+        <small>Upload a CSV or Excel dataset first.</small>
+    </div>
+    {% endif %}
+    </section>
+
+        <!-- DATASET PREVIEW -->
+        <section class="panel preview-panel">
+
+            <div class="panel-title">
+                <div>
+                    <h3>Dataset Preview</h3>
+
+                    <p>
+                        {% if dataset_name is defined %}
+                            Preview of {{ dataset_name }}
+                        {% else %}
+                            Your dataset's first five rows will appear here.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            {% if preview_table is defined %}
+
+                <div class="table-container">
+                    {{ preview_table | safe }}
+                </div>
+
+            {% else %}
+
+                <div class="empty-activity">
+                    <span>▤</span>
+                    <p>No dataset available.</p>
+                    <small>Upload your dataset to see its preview.</small>
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- QUICK ACTIONS -->
+        <section class="panel quick-panel">
+
+            <div class="panel-title">
+                <div>
+                    <h3>Quick Actions</h3>
+                    <p>Start working with your data.</p>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+
+                <div class="quick-card">
+                    <span>📁</span>
+                    <strong>Upload Dataset</strong>
+                    <small>CSV or Excel</small>
+                </div>
+
+                <div class="quick-card">
+                    <span>📊</span>
+                    <strong>Explore Data</strong>
+                    <small>View statistics</small>
+                </div>
+
+                <div class="quick-card">
+                    <span>🤖</span>
+                    <strong>Ask AI</strong>
+                    <small>Ask questions</small>
+                </div>
+
+                <div class="quick-card">
+                    <span>📄</span>
+                    <strong>Generate Report</strong>
+                    <small>Create analysis report</small>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RECENT ACTIVITY -->
+        <section class="panel recent-panel">
+
+            <div class="panel-title">
+                <div>
+                    <h3>Recent Activity</h3>
+                    <p>Your latest analysis activity.</p>
+                </div>
+            </div>
+
+            <div class="empty-activity">
+                <span>◷</span>
+                <p>No activity history yet.</p>
+                <small>Upload a dataset to get started.</small>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+<script>
+    const fileInput = document.getElementById("fileInput");
+    const selectedFile = document.getElementById("selectedFile");
+
+    fileInput.addEventListener("change", function () {
+        if (this.files.length > 0) {
+            selectedFile.textContent = this.files[0].name;
+        } else {
+            selectedFile.textContent = "No file selected";
+        }
+    });
+</script>
+
+</body>
+</html>

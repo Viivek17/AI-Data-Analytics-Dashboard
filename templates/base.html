@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}InsightForge AI{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+```
+<style>
+    .dashboard {
+        display: flex;
+        min-height: 100vh;
+        background: #f3f6fc;
+    }
+
+    .sidebar {
+        width: 245px;
+        min-width: 245px;
+        background: #101d35;
+        color: white;
+        padding: 25px 15px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 0 0 32px 8px;
+    }
+
+    .brand-logo {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: #2563eb;
+        display: grid;
+        place-items: center;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .brand-name {
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .brand-subtitle {
+        color: #aab8d0;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .navigation {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 13px;
+        border-radius: 9px;
+        color: #d5deed;
+        text-decoration: none;
+        font-size: 14px;
+        transition: background 0.2s ease;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+        background: #2563eb;
+        color: white;
+    }
+
+    .nav-icon {
+        width: 18px;
+        text-align: center;
+    }
+
+    .sidebar-bottom {
+        margin-top: auto;
+        padding-top: 25px;
+    }
+
+    .main-content {
+        flex: 1;
+        min-width: 0;
+        padding: 28px;
+        box-sizing: border-box;
+    }
+
+    .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 28px;
+    }
+
+    .topbar h2 {
+        margin: 0;
+        color: #17243d;
+        font-size: 22px;
+    }
+
+    .topbar p {
+        margin: 6px 0 0;
+        color: #71809a;
+        font-size: 13px;
+    }
+
+    .page-content {
+        width: 100%;
+    }
+
+    .page-heading {
+        color: #17243d;
+        margin: 0 0 8px;
+        font-size: 24px;
+    }
+
+    .page-description {
+        color: #71809a;
+        margin: 0 0 24px;
+        font-size: 14px;
+    }
+
+    .page-card {
+        background: white;
+        border: 1px solid #e7edf6;
+        border-radius: 14px;
+        padding: 24px;
+        margin-bottom: 22px;
+        box-shadow: 0 3px 12px rgba(30, 50, 90, 0.04);
+    }
+
+    .page-card h3 {
+        color: #17243d;
+        margin-top: 0;
+    }
+
+    .flash-message {
+        padding: 12px 15px;
+        margin-bottom: 18px;
+        border-radius: 8px;
+        background: #e8f7ee;
+        color: #187442;
+    }
+
+    .flash-message.error {
+        background: #fff0f0;
+        color: #b42318;
+    }
+
+    @media (max-width: 800px) {
+        .sidebar {
+            width: 190px;
+            min-width: 190px;
+            padding: 18px 10px;
+        }
+
+        .main-content {
+            padding: 18px;
+        }
+    }
+
+    @media (max-width: 560px) {
+        .dashboard {
+            display: block;
+        }
+
+        .sidebar {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .navigation {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .main-content {
+            padding: 15px;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+<div class="dashboard">
+
+```
+<aside class="sidebar">
+    <div class="brand">
+        <div class="brand-logo">IF</div>
+        <div>
+            <div class="brand-name">InsightForge</div>
+            <div class="brand-subtitle">AI Analytics</div>
+        </div>
+    </div>
+
+    <nav class="navigation">
+        <a href="{{ url_for('home') }}"
+           class="nav-item {% if active_page == 'dashboard' %}active{% endif %}">
+            <span class="nav-icon">⌂</span> Dashboard
+        </a>
+
+        <a href="{{ url_for('upload_page') }}"
+           class="nav-item {% if active_page == 'upload' %}active{% endif %}">
+            <span class="nav-icon">↑</span> Upload Data
+        </a>
+
+        <a href="{{ url_for('data_quality_page') }}"
+           class="nav-item {% if active_page == 'quality' %}active{% endif %}">
+            <span class="nav-icon">◫</span> Data Quality
+        </a>
+
+        <a href="{{ url_for('data_cleaning_page') }}"
+           class="nav-item {% if active_page == 'cleaning' %}active{% endif %}">
+            <span class="nav-icon">⚙</span> Data Cleaning
+        </a>
+
+        <a href="{{ url_for('eda_page') }}"
+           class="nav-item {% if active_page == 'eda' %}active{% endif %}">
+            <span class="nav-icon">◈</span> EDA &amp; Visualization
+        </a>
+
+        <a href="{{ url_for('ai_insights_page') }}"
+           class="nav-item {% if active_page == 'insights' %}active{% endif %}">
+            <span class="nav-icon">✦</span> AI Insights
+        </a>
+
+        <a href="{{ url_for('ask_ai_page') }}"
+           class="nav-item {% if active_page == 'ask_ai' %}active{% endif %}">
+            <span class="nav-icon">?</span> Ask AI
+        </a>
+
+        <a href="{{ url_for('prediction_page') }}"
+           class="nav-item {% if active_page == 'prediction' %}active{% endif %}">
+            <span class="nav-icon">◎</span> ML Prediction
+        </a>
+
+        <a href="{{ url_for('reports_page') }}"
+           class="nav-item {% if active_page == 'reports' %}active{% endif %}">
+            <span class="nav-icon">▣</span> Reports
+        </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <a href="{{ url_for('settings_page') }}"
+           class="nav-item {% if active_page == 'settings' %}active{% endif %}">
+            <span class="nav-icon">⚙</span> Settings
+        </a>
+    </div>
+</aside>
+
+<main class="main-content">
+    <header class="topbar">
+        <div>
+            <h2>{% block header_title %}AI Data Analytics{% endblock %}</h2>
+            <p>Transform your data into meaningful insights.</p>
+        </div>
+        <div>👤 User</div>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <section class="page-content">
+        {% block content %}{% endblock %}
+    </section>
+</main>
+```
+
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

@@ -16,65 +16,90 @@
 <div class="dashboard">
 
     <!-- SIDEBAR -->
-    <aside class="sidebar">
+<aside class="sidebar">
 
-        <div class="brand">
-            <div class="brand-icon">IF</div>
-            <div>
-                <h2>InsightForge</h2>
-                <span>AI Analytics</span>
-            </div>
+    <!-- BRAND -->
+    <div class="brand">
+        <div class="brand-icon">IF</div>
+
+        <div>
+            <h2>InsightForge</h2>
+            <span>AI Analytics</span>
         </div>
+    </div>
 
-        <nav class="navigation">
+    <!-- NAVIGATION -->
+    <nav class="navigation">
 
-            <a href="/" class="nav-item active">
-                <span>⌂</span> Dashboard
-            </a>
+        <!-- Dashboard -->
+        <a href="/" class="nav-item active">
+            <span>⌂</span>
+            Dashboard
+        </a>
 
-            <a href="#upload-section" class="nav-item">
-                <span>↑</span> Upload Data
-            </a>
+        <!-- Upload Data -->
+        <a href="#upload-section" class="nav-item">
+            <span>↑</span>
+            Upload Data
+        </a>
 
-            <a href="#quality-section" class="nav-item">
-                <span>◫</span> Data Quality
-            </a>
+        <!-- Data Quality -->
+        <a href="#quality-section" class="nav-item">
+            <span>◫</span>
+            Data Quality
+        </a>
 
-            <a href="#" class="nav-item">
-                <span>⚙</span> Data Cleaning
-            </a>
+        <!-- Data Cleaning -->
+        <a href="#cleaning-section" class="nav-item">
+            <span>⚙</span>
+            Data Cleaning
+        </a>
 
-            <a href="#" class="nav-item">
-                <span>◈</span> EDA & Visualization
-            </a>
+        <!-- EDA & Visualization -->
+        <a href="#eda-section" class="nav-item">
+            <span>◈</span>
+            EDA &amp; Visualization
+        </a>
 
-            <a href="#" class="nav-item">
-                <span>✦</span> AI Insights
-            </a>
+        <!-- AI Insights -->
+        <a href="#insights-section" class="nav-item">
+            <span>✦</span>
+            AI Insights
+        </a>
 
-            <a href="#" class="nav-item">
-                <span>?</span> Ask AI
-            </a>
+        <!-- Ask AI -->
+        <a href="#ask-ai-section" class="nav-item">
+            <span>?</span>
+            Ask AI
+        </a>
 
-            <a href="#" class="nav-item">
-                <span>◎</span> ML Prediction
-            </a>
+        <!-- Machine Learning -->
+        <a href="#ml-section" class="nav-item">
+            <span>◎</span>
+            ML Prediction
+        </a>
 
-            <a href="#" class="nav-item">
-                <span>▣</span> Reports
-            </a>
+        <!-- Reports -->
+        <a href="#reports-section" class="nav-item">
+            <span>▣</span>
+            Reports
+        </a>
 
-        </nav>
+    </nav>
 
-        <div class="sidebar-bottom">
-            <a href="#" class="nav-item">
-                <span>⚙</span> Settings
-            </a>
-        </div>
+    <!-- SIDEBAR BOTTOM -->
+    <div class="sidebar-bottom">
 
-    </aside>
+        <a href="#settings-section" class="nav-item">
+            <span>⚙</span>
+            Settings
+        </a>
 
+    </div>
 
+</aside>
+<!-- END SIDEBAR -->
+ 
     <!-- MAIN CONTENT -->
     <main class="main-content">
 
@@ -304,6 +329,11 @@
                         <strong>{{ quality_score }}%</strong>
                     </div>
 
+                    <div class="quality-item">
+                        <span>Duplicate Rows</span>
+                        <strong>{{ duplicate_rows }}</strong>
+                    </div>
+
                 </div>
 
                 <p class="quality-note">
@@ -323,6 +353,115 @@
 
         </section>
 
+         <!-- COLUMN INFORMATION -->
+<section class="panel preview-panel" id="column-info-section">
+    <div class="panel-title">
+        <div>
+            <h3>Column Information</h3>
+            <p>Explore column names, data types, and missing values.</p>
+        </div>
+    </div>
+
+    {% if column_info is defined and column_info %}
+    <div class="table-container">
+        <table class="data-preview">
+            <thead>
+                <tr>
+                    <th>Column Name</th>
+                    <th>Data Type</th>
+                    <th>Missing Values</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for column in column_info %}
+                <tr>
+                    <td>{{ column.name }}</td>
+                    <td>{{ column.data_type }}</td>
+                    <td>{{ column.missing }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-activity">
+        <p>No column information available.</p>
+        <small>Upload a CSV or Excel dataset to view column details.</small>
+    </div>
+    {% endif %}
+</section>   
+    
+<!-- DATA CLEANING SECTION -->
+<section class="panel" id="cleaning-section">
+    <div class="panel-title">
+        <div>
+            <h3>Data Cleaning</h3>
+            <p>Clean missing values and duplicate rows in your dataset.</p>
+        </div>
+    </div>
+
+    {% if dataset_name is defined %}
+    <form action="{{ url_for('clean_data') }}" method="POST">
+
+        <input
+            type="hidden"
+            name="dataset_name"
+            value="{{ dataset_name }}"
+        >
+
+        <div class="form-group">
+            <label for="missing_strategy">Handle Missing Values</label>
+
+            <select id="missing_strategy" name="missing_strategy">
+                <option value="none">Keep Missing Values</option>
+                <option value="drop">Remove Rows with Missing Values</option>
+                <option value="zero">Fill with Zero</option>
+                <option value="mean">Fill Numeric Values with Mean</option>
+                <option value="median">Fill Numeric Values with Median</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>
+                <input
+                    type="checkbox"
+                    name="remove_duplicates"
+                    value="yes"
+                >
+                Remove Duplicate Rows
+            </label>
+        </div>
+
+        <button type="submit" class="btn-primary">
+            Clean Dataset
+        </button>
+
+        {% if cleaned_filename is defined and cleaned_filename %}
+<a
+    href="{{ url_for('download_cleaned_file', filename=cleaned_filename) }}"
+    class="btn-primary"
+>
+    Download Cleaned Dataset
+</a>
+{% endif %}
+
+        {% if cleaned_filename is defined and cleaned_filename %}
+        <a
+    href="{{ url_for('download_cleaned_file', filename=cleaned_filename) }}"
+    class="btn-primary"
+>
+    Download Cleaned Dataset
+       </a>
+    {% endif %}
+
+    </form>
+    {% else %}
+    <div class="empty-activity">
+        <p>No dataset available for cleaning.</p>
+        <small>Upload a CSV or Excel dataset first.</small>
+    </div>
+    {% endif %}
+    </section>
 
         <!-- DATASET PREVIEW -->
         <section class="panel preview-panel">
