@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}
+Ask AI
+{% endblock %}
+
+{% block crumb %}
+Ask AI
+{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">CONVERSE WITH YOUR DATA</div>
+        <h1>Ask AI</h1>
+        <p class="muted">
+            Ask questions in plain English and get a quick dataset-based answer.
+        </p>
+    </div>
+
+    <span class="ai-badge">✦ Data assistant</span>
+</div>
+
+<div class="chat-layout">
+
+    <section class="panel chat-panel">
+
+        <div class="chat-header">
+            <div class="assistant-avatar">✦</div>
+
+            <div>
+                <b>InsightForge assistant</b>
+                <small>
+                    <i class="online-dot"></i> Ready to help with your dataset
+                </small>
+            </div>
+        </div>
+
+        <div class="chat-body">
+
+            {% if answer %}
+
+            <div class="user-message">
+                {{ question }}
+            </div>
+
+            <div class="assistant-message">
+                <span class="assistant-avatar small">✦</span>
+
+                <div>
+                    <b>Analysis response</b>
+                    <p>{{ answer }}</p>
+                </div>
+            </div>
+
+            {% else %}
+
+            <div class="chat-welcome">
+                <div class="chat-orb">✦</div>
+                <h2>What would you like to know?</h2>
+                <p>Ask a question about the data you uploaded.</p>
+            </div>
+
+            {% endif %}
+
+            <div class="suggestions">
+                <span>Try asking</span>
+
+                <button
+                    type="button"
+                    data-question="How many rows are in my dataset?">
+                    How many rows?
+                </button>
+
+                <button
+                    type="button"
+                    data-question="Are there any missing values?">
+                    Missing values?
+                </button>
+
+                <button
+                    type="button"
+                    data-question="Show me the average of numeric columns">
+                    Column averages?
+                </button>
+            </div>
+
+        </div>
+
+        <form method="post" class="chat-input">
+
+            <input
+                name="question"
+                id="questionInput"
+                placeholder="Ask anything about your data…"
+                value="{{ question }}"
+                required
+            >
+
+            <button
+                class="btn primary"
+                type="submit"
+                aria-label="Send question">
+                ➤
+            </button>
+
+        </form>
+
+    </section>
+
+    <aside class="panel">
+
+        <h2>What I can help with</h2>
+
+        <ul class="capability-list">
+
+            <li>
+                <span>▦</span>
+
+                <div>
+                    <b>Dataset structure</b>
+                    <small>Rows, columns, and field names</small>
+                </div>
+            </li>
+
+            <li>
+                <span>◉</span>
+
+                <div>
+                    <b>Data quality</b>
+                    <small>Missing cells and duplicates</small>
+                </div>
+            </li>
+
+            <li>
+                <span>∑</span>
+
+                <div>
+                    <b>Numeric summaries</b>
+                    <small>Means and maximum values</small>
+                </div>
+            </li>
+
+        </ul>
+
+        <div class="note-box">
+            This assistant uses local rules and statistics. A live external LLM is not connected in this starter build.
+        </div>
+
+    </aside>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    document.querySelectorAll('[data-question]').forEach(b =>
+        b.addEventListener('click', () => {
+            document.getElementById('questionInput').value = b.dataset.question;
+            document.getElementById('questionInput').focus();
+        })
+    );
+</script>
+
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}
+Data Cleaning
+{% endblock %}
+
+{% block crumb %}
+Data Cleaning
+{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">PREPARE YOUR DATA</div>
+        <h1>Data cleaning</h1>
+        <p class="muted">Apply practical cleaning steps before analysis.</p>
+    </div>
+</div>
+
+<div class="content-grid cleaning-grid">
+
+    <section class="panel">
+
+        <div class="panel-heading">
+            <div>
+                <h2>Cleaning options</h2>
+                <p>Choose how you want to handle data issues.</p>
+            </div>
+        </div>
+
+        <form method="post" class="clean-form">
+
+            <label class="option-row">
+
+                <span class="option-symbol blue">⌁</span>
+
+                <span class="option-copy">
+                    <b>Handle missing values</b>
+                    <small>Fill empty cells with a selected strategy.</small>
+                </span>
+
+                <select name="missing_method">
+                    <option value="mean">Mean (numeric)</option>
+                    <option value="median">Median (numeric)</option>
+                    <option value="zero">Zero (numeric)</option>
+                </select>
+
+            </label>
+
+            <label class="option-row">
+
+                <span class="option-symbol green">✓</span>
+
+                <span class="option-copy">
+                    <b>Remove duplicate rows</b>
+                    <small>Keep only the first occurrence of each row.</small>
+                </span>
+
+                <input
+                    type="checkbox"
+                    name="remove_duplicates"
+                    checked
+                >
+
+            </label>
+
+            <label class="option-row">
+
+                <span class="option-symbol violet">⇄</span>
+
+                <span class="option-copy">
+                    <b>Convert numeric-like text</b>
+                    <small>Convert text columns when most values are numeric.</small>
+                </span>
+
+                <input
+                    type="checkbox"
+                    name="convert_types"
+                >
+
+            </label>
+
+            <div class="warning-note">
+                ⓘ Cleaning changes the active uploaded file. Keep a backup of important source data.
+            </div>
+
+            <button class="btn primary" type="submit">
+                Run cleaning process →
+            </button>
+
+        </form>
+
+    </section>
+
+    <aside class="panel">
+
+        <div class="panel-heading">
+            <div>
+                <h2>Current data status</h2>
+                <p>Before cleaning</p>
+            </div>
+        </div>
+
+        <div class="quality-summary">
+
+            <div>
+                <span>Rows</span>
+                <b>{{ summary.rows }}</b>
+            </div>
+
+            <div>
+                <span>Columns</span>
+                <b>{{ summary.columns }}</b>
+            </div>
+
+            <div>
+                <span>Missing cells</span>
+                <b>{{ summary.missing }}</b>
+            </div>
+
+            <div>
+                <span>Duplicate rows</span>
+                <b>{{ summary.duplicates }}</b>
+            </div>
+
+        </div>
+
+        <a class="btn secondary wide" href="{{ url_for('quality') }}">
+            Review data quality
+        </a>
+
+    </aside>
+
+</div>
+
+{% endblock %}

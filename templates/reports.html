@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}
+Reports
+{% endblock %}
+
+{% block crumb %}
+Reports
+{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">SHARE YOUR FINDINGS</div>
+        <h1>Generate report</h1>
+        <p class="muted">
+            Export a concise report with dataset overview, quality checks, and insights.
+        </p>
+    </div>
+</div>
+
+<div class="report-layout">
+
+    <section class="panel">
+
+        <div class="panel-heading">
+            <div>
+                <h2>Choose report content</h2>
+                <p>Your report is generated from the currently active dataset.</p>
+            </div>
+        </div>
+
+        <div class="report-option selected">
+            <span class="report-icon">▤</span>
+
+            <div>
+                <b>Full analysis report</b>
+                <small>Overview, quality indicators, and key insights</small>
+            </div>
+
+            <span class="radio-dot"></span>
+        </div>
+
+        <div class="report-option">
+            <span class="report-icon purple">✧</span>
+
+            <div>
+                <b>Quality and cleaning summary</b>
+                <small>Missing values, duplicates, and column types</small>
+            </div>
+
+            <span class="radio-dot muted-dot"></span>
+        </div>
+
+        <div class="report-option">
+            <span class="report-icon green">✳</span>
+
+            <div>
+                <b>Insights summary</b>
+                <small>Quick overview of findings</small>
+            </div>
+
+            <span class="radio-dot muted-dot"></span>
+        </div>
+
+        <form method="post">
+            <button
+                class="btn primary"
+                type="submit"
+                {% if not has_data %}disabled{% endif %}>
+                Generate & download report ↓
+            </button>
+        </form>
+
+        {% if not has_data %}
+        <p class="muted small-text">
+            Upload a dataset first to enable report generation.
+        </p>
+        {% endif %}
+
+    </section>
+
+    <aside class="panel report-preview">
+
+        <div class="preview-paper">
+
+            <div class="preview-logo">✦ INSIGHTFORGE AI</div>
+
+            <div class="preview-chart">▥</div>
+
+            <h3>Data Analysis Report</h3>
+
+            <p>Generated from your active dataset</p>
+
+            <hr>
+
+            <b>Included sections</b>
+
+            <ul>
+                <li>Dataset overview</li>
+                <li>Data quality indicators</li>
+                <li>Key insights</li>
+                <li>Column-level details</li>
+            </ul>
+
+        </div>
+
+    </aside>
+
+</div>
+
+{% endblock %}
