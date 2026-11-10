@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 
 {% block title %}ML Prediction{% endblock %}
@@ -28,7 +29,7 @@
 
             <select name="target" id="target">
                 {% for col in numeric_cols %}
-                <option value="{{ col }}" {% if result and result.target =*=* col %}selected{% endif %}>
+                <option value="{{ col }}" {% if result and result.target == col %}selected{% endif %}>
                     {{ col }}
                 </option>
                 {% endfor %}

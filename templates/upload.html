@@ -1,38 +1,44 @@
-```html
+
 {% extends "base.html" %}
 
 {% block title %}Upload Dataset | InsightForge AI{% endblock %}
+{% block crumb %}Upload Data{% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <h1>Upload Dataset</h1>
-    <p>Upload a CSV or Excel file to start analysing your data.</p>
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">BRING YOUR DATA</div>
+        <h1>Upload dataset</h1>
+        <p class="muted">Upload a CSV or Excel file to start analysing your data.</p>
+    </div>
 </div>
 
 <div class="upload-container">
-    <form action="{{ url_for('upload_dataset') }}"
-          method="POST"
-          enctype="multipart/form-data">
+    <section class="panel">
+        <form action="{{ url_for('upload') }}"
+              method="POST"
+              enctype="multipart/form-data">
 
-        <div class="upload-box">
-            <h2>Select Your Dataset</h2>
-            <p>Supported formats: CSV, XLSX, XLS</p>
+            <div class="upload-box">
+                <h2>Select your dataset</h2>
+                <p>Supported formats: CSV, XLSX, XLS</p>
 
-            <input
-                type="file"
-                name="dataset"
-                id="dataset"
-                accept=".csv,.xlsx,.xls"
-                required
-            >
+                <input
+                    type="file"
+                    name="dataset"
+                    id="dataset"
+                    accept=".csv,.xlsx,.xls"
+                    required
+                >
 
-            <p id="file-name">No file selected</p>
+                <p id="file-name">No file selected</p>
 
-            <button type="submit" class="btn-primary">
-                Upload Dataset
-            </button>
-        </div>
-    </form>
+                <button type="submit" class="btn primary">
+                    Upload dataset →
+                </button>
+            </div>
+        </form>
+    </section>
 </div>
 
 <script>
@@ -46,4 +52,3 @@ datasetInput.addEventListener("change", function () {
 });
 </script>
 {% endblock %}
-```
