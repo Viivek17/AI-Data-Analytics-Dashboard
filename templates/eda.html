@@ -1,19 +1,14 @@
-```html
+
 {% extends "base.html" %}
 
 {% block title %}EDA & Visualization{% endblock %}
-
 {% block crumb %}EDA & Visualization{% endblock %}
 
 {% block content %}
-
 <div class="page-heading">
-
     <div>
         <div class="eyebrow">EXPLORE THE STORY</div>
-
         <h1>EDA & visualizations</h1>
-
         <p class="muted">
             Explore numeric distributions, missing values, and category frequencies.
         </p>
@@ -22,14 +17,10 @@
     <a class="btn secondary" href="{{ url_for('reports') }}">
         Generate report ↗
     </a>
-
 </div>
 
-
 <div class="content-grid two-col">
-
     <section class="panel chart-panel">
-
         <div class="panel-heading">
             <div>
                 <h2>Numeric column averages</h2>
@@ -40,12 +31,9 @@
         <div class="chart-holder tall">
             <canvas id="meansChart"></canvas>
         </div>
-
     </section>
 
-
     <section class="panel chart-panel">
-
         <div class="panel-heading">
             <div>
                 <h2>Missing values</h2>
@@ -56,16 +44,11 @@
         <div class="chart-holder tall">
             <canvas id="missChart"></canvas>
         </div>
-
     </section>
-
 </div>
 
-
 {% if charts.category_labels %}
-
 <section class="panel chart-panel">
-
     <div class="panel-heading">
         <div>
             <h2>Category distribution</h2>
@@ -76,14 +59,10 @@
     <div class="chart-holder">
         <canvas id="categoryChart"></canvas>
     </div>
-
 </section>
-
 {% endif %}
 
-
 <section class="panel table-panel">
-
     <div class="panel-heading">
         <div>
             <h2>Descriptive statistics</h2>
@@ -92,11 +71,8 @@
     </div>
 
     {% if stats %}
-
     <div class="table-wrap">
-
         <table>
-
             <thead>
                 <tr>
                     <th>Column</th>
@@ -109,165 +85,126 @@
             </thead>
 
             <tbody>
-
                 {% for s in stats %}
-
                 <tr>
                     <td><b>{{ s.name }}</b></td>
-
                     <td>{{ s.mean if s.mean is not none else '—' }}</td>
-
                     <td>{{ s.median if s.median is not none else '—' }}</td>
-
                     <td>{{ s.std if s.std is not none else '—' }}</td>
-
                     <td>{{ s.min if s.min is not none else '—' }}</td>
-
                     <td>{{ s.max if s.max is not none else '—' }}</td>
                 </tr>
-
                 {% endfor %}
-
             </tbody>
-
         </table>
-
     </div>
 
     {% else %}
-
     <div class="empty-state">
-
         <b>No numeric columns found</b>
-
         <p>
             Upload data with numeric fields to view descriptive statistics.
         </p>
-
     </div>
-
     {% endif %}
-
 </section>
-
 {% endblock %}
-
 
 {% block scripts %}
 
+<script id="eda-chart-data" type="application/json">
+    {{ charts|tojson }}
+</script>
+
 <script>
+    (() => {
+        const edaChartData = JSON.parse(
+            document.getElementById('eda-chart-data').textContent
+        );
 
-const nl = {{ charts.numeric_labels|tojson }};
+        const numericLabels = edaChartData.numeric_labels;
+        const numericValues = edaChartData.numeric_values;
 
-const nv = {{ charts.numeric_values|tojson }};
+        const missingLabels = edaChartData.missing_labels;
+        const missingValues = edaChartData.missing_values;
 
-const ml = {{ charts.missing_labels|tojson }};
+        const categoryLabels = edaChartData.category_labels;
+        const categoryValues = edaChartData.category_values;
 
-const mv = {{ charts.missing_values|tojson }};
-
-const cl = {{ charts.category_labels|tojson }};
-
-const cv = {{ charts.category_values|tojson }};
-
-
-const opts = {
-    responsive: true,
-    maintainAspectRatio: false,
-
-    plugins: {
-        legend: {
-            display: false
-        }
-    },
-
-    scales: {
-        y: {
-            beginAtZero: true
-        }
-    }
-};
-
-
-new Chart(document.getElementById('meansChart'), {
-
-    type: 'bar',
-
-    data: {
-        labels: nl,
-
-        datasets: [{
-            data: nv,
-            backgroundColor: '#4c83f6',
-            borderRadius: 6
-        }]
-    },
-
-    options: opts
-
-});
-
-
-new Chart(document.getElementById('missChart'), {
-
-    type: 'bar',
-
-    data: {
-        labels: ml,
-
-        datasets: [{
-            data: mv,
-            backgroundColor: '#f5a44d',
-            borderRadius: 6
-        }]
-    },
-
-    options: opts
-
-});
-
-
-const cat = document.getElementById('categoryChart');
-
-if (cat) {
-
-    new Chart(cat, {
-
-        type: 'doughnut',
-
-        data: {
-            labels: cl,
-
-            datasets: [{
-                data: cv,
-
-                backgroundColor: [
-                    '#4c83f6',
-                    '#24b8a5',
-                    '#a78bfa',
-                    '#f5a44d',
-                    '#f0718b',
-                    '#63b3ed',
-                    '#9ca3af'
-                ]
-            }]
-        },
-
-        options: {
+        const edaChartOptions = {
             responsive: true,
             maintainAspectRatio: false,
-
             plugins: {
                 legend: {
-                    position: 'bottom'
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
                 }
             }
+        };
+
+        new Chart(document.getElementById('meansChart'), {
+            type: 'bar',
+            data: {
+                labels: numericLabels,
+                datasets: [{
+                    data: numericValues,
+                    backgroundColor: '#4c83f6',
+                    borderRadius: 6
+                }]
+            },
+            options: edaChartOptions
+        });
+
+        new Chart(document.getElementById('missChart'), {
+            type: 'bar',
+            data: {
+                labels: missingLabels,
+                datasets: [{
+                    data: missingValues,
+                    backgroundColor: '#f5a44d',
+                    borderRadius: 6
+                }]
+            },
+            options: edaChartOptions
+        });
+
+        const categoryCanvas = document.getElementById('categoryChart');
+
+        if (categoryCanvas) {
+            new Chart(categoryCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: categoryLabels,
+                    datasets: [{
+                        data: categoryValues,
+                        backgroundColor: [
+                            '#4c83f6',
+                            '#24b8a5',
+                            '#a78bfa',
+                            '#f5a44d',
+                            '#f0718b',
+                            '#63b3ed',
+                            '#9ca3af'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
         }
-
-    });
-
-}
-
+    })();
 </script>
 
 {% endblock %}
-```
+

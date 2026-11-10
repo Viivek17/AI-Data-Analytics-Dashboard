@@ -1,3 +1,4 @@
+
 :root {
     --navy: #10284b;
     --navy2: #0c1f3a;
@@ -9,7 +10,7 @@
     --surface: #fff;
     --bg: #f5f8fc;
     --green: #20b486;
-    --shadow: 0 5px 24px rgba(22,49,85,.055);
+    --shadow: 0 5px 24px rgba(22, 49, 85, .055);
 }
 
 * {
@@ -28,19 +29,17 @@ body {
     min-height: 100vh;
 }
 
-/* ================= SIDEBAR ================= */
-
 .sidebar {
     position: fixed;
     inset: 0 auto 0 0;
     width: 244px;
-    background: linear-gradient(180deg,#10294c,#0d203b);
+    background: linear-gradient(180deg, #10294c, #0d203b);
     color: #d9e6f8;
     padding: 23px 15px 14px;
     display: flex;
     flex-direction: column;
     z-index: 20;
-    box-shadow: 4px 0 24px rgba(15,35,62,.06);
+    box-shadow: 4px 0 24px rgba(15, 35, 62, .06);
 }
 
 .brand {
@@ -58,7 +57,7 @@ body {
     width: 35px;
     height: 35px;
     border-radius: 11px;
-    background: linear-gradient(145deg,#5bb7ff,#2f6ff1);
+    background: linear-gradient(145deg, #5bb7ff, #2f6ff1);
     font-size: 22px;
     box-shadow: 0 5px 14px #0002;
 }
@@ -119,7 +118,7 @@ body {
 }
 
 .nav a.active {
-    background: linear-gradient(90deg,#347cf5,#2765dd);
+    background: linear-gradient(90deg, #347cf5, #2765dd);
     color: #fff;
     box-shadow: 0 5px 12px #071a3533;
 }
@@ -190,14 +189,10 @@ body {
     margin-top: 5px;
 }
 
-/* ================= MAIN AREA ================= */
-
 .main-area {
     margin-left: 244px;
     min-height: 100vh;
 }
-
-/* ================= TOPBAR ================= */
 
 .topbar {
     height: 67px;
@@ -277,8 +272,6 @@ body {
     font-size: 20px;
 }
 
-/* ================= PAGE CONTENT ================= */
-
 .page-content {
     padding: 30px 35px 16px;
     max-width: 1600px;
@@ -335,8 +328,6 @@ p {
     color: #f5ad42;
 }
 
-/* ================= BUTTONS ================= */
-
 .btn {
     border: 0;
     border-radius: 8px;
@@ -352,7 +343,7 @@ p {
 }
 
 .btn.primary {
-    background: linear-gradient(110deg,#347cf6,#2867e8);
+    background: linear-gradient(110deg, #347cf6, #2867e8);
     color: #fff;
     box-shadow: 0 5px 12px #3478f626;
 }
@@ -373,11 +364,9 @@ p {
     cursor: not-allowed;
 }
 
-/* ================= STATISTICS ================= */
-
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(4,minmax(0,1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 16px;
     margin-bottom: 20px;
 }
@@ -461,17 +450,15 @@ p {
     color: #ef6474;
 }
 
-/* ================= CONTENT GRID ================= */
-
 .content-grid {
     display: grid;
-    grid-template-columns: minmax(0,1.55fr) minmax(280px,1fr);
+    grid-template-columns: minmax(0, 1.55fr) minmax(280px, 1fr);
     gap: 18px;
     margin-bottom: 20px;
 }
 
 .dashboard-grid {
-    grid-template-columns: minmax(0,1.45fr) minmax(270px,.9fr);
+    grid-template-columns: minmax(0, 1.45fr) minmax(270px, .9fr);
 }
 
 .panel {
@@ -491,8 +478,6 @@ p {
 .panel-heading p {
     font-size: 10px;
 }
-
-/* ================= QUICK ACTIONS ================= */
 
 .action-grid {
     display: grid;
@@ -591,8 +576,6 @@ p {
     letter-spacing: .4px;
 }
 
-/* ================= EMPTY STATE ================= */
-
 .empty-state {
     text-align: center;
     padding: 20px 8px 23px;
@@ -628,8 +611,6 @@ p {
     font-size: 10px;
     font-weight: 700;
 }
-
-/* ================= ACTIVITY ================= */
 
 .activity-item {
     display: flex;
@@ -669,8 +650,6 @@ p {
     font-size: 9px;
 }
 
-/* ================= MINI TIP ================= */
-
 .mini-tip {
     display: flex;
     gap: 10px;
@@ -695,15 +674,13 @@ p {
     margin-top: 4px;
 }
 
-/* ================= BOTTOM OVERVIEW ================= */
-
 .bottom-overview {
     padding-bottom: 18px;
 }
 
 .overview-row {
     display: grid;
-    grid-template-columns: repeat(4,1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
 }
 
@@ -743,8 +720,6 @@ p {
     background: #9b6bf4;
 }
 
-/* ================= FOOTER ================= */
-
 .footer {
     display: flex;
     justify-content: space-between;
@@ -756,8 +731,6 @@ p {
 .footer b {
     color: #3d7cf5;
 }
-
-/* ================= FLASH MESSAGES ================= */
 
 .flash-stack {
     display: grid;
@@ -797,12 +770,10 @@ p {
     cursor: pointer;
 }
 
-/* ================= UPLOAD PAGE ================= */
-
 .upload-layout,
 .report-layout {
     display: grid;
-    grid-template-columns: minmax(0,1.4fr) minmax(270px,.8fr);
+    grid-template-columns: minmax(0, 1.4fr) minmax(270px, .8fr);
     gap: 19px;
 }
 
@@ -814,7 +785,7 @@ p {
     min-height: 300px;
     border: 1.5px dashed #b8ccef;
     border-radius: 12px;
-    background: linear-gradient(180deg,#f8fbff,#fff);
+    background: linear-gradient(180deg, #f8fbff, #fff);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -867,8 +838,6 @@ p {
 .wide {
     width: 100%;
 }
-
-/* ================= UPLOAD SIDEBAR ================= */
 
 .upload-side {
     padding: 27px;
@@ -935,8 +904,6 @@ p {
     line-height: 1.5;
 }
 
-/* ================= FILE BANNER ================= */
-
 .file-banner {
     display: flex;
     align-items: center;
@@ -982,8 +949,6 @@ p {
     font-weight: 700;
 }
 
-/* ================= COMPACT STATS ================= */
-
 .compact-stats .stat-card {
     padding: 15px 17px;
 }
@@ -992,8 +957,6 @@ p {
     font-size: 22px;
     margin-top: 8px;
 }
-
-/* ================= TABLE ================= */
 
 .table-panel {
     padding: 20px 0 0;
@@ -1104,10 +1067,8 @@ td b {
     color: #d58a24;
 }
 
-/* ================= CHARTS ================= */
-
 .content-grid.two-col {
-    grid-template-columns: repeat(2,minmax(0,1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .chart-panel {
@@ -1123,10 +1084,8 @@ td b {
     height: 280px;
 }
 
-/* ================= DATA CLEANING ================= */
-
 .cleaning-grid {
-    grid-template-columns: minmax(0,1.4fr) minmax(260px,.8fr);
+    grid-template-columns: minmax(0, 1.4fr) minmax(260px, .8fr);
 }
 
 .clean-form {
@@ -1239,8 +1198,6 @@ td b {
     background: #f2edff;
 }
 
-/* ================= AI INSIGHTS ================= */
-
 .insights-panel {
     max-width: 950px;
 }
@@ -1302,11 +1259,9 @@ td b {
     margin-top: 10px;
 }
 
-/* ================= ASK AI CHAT ================= */
-
 .chat-layout {
     display: grid;
-    grid-template-columns: minmax(0,1.5fr) minmax(260px,.8fr);
+    grid-template-columns: minmax(0, 1.5fr) minmax(260px, .8fr);
     gap: 18px;
 }
 
@@ -1327,7 +1282,7 @@ td b {
     width: 35px;
     height: 35px;
     border-radius: 11px;
-    background: linear-gradient(135deg,#4389ff,#805ef5);
+    background: linear-gradient(135deg, #4389ff, #805ef5);
     color: #fff;
     display: grid;
     place-items: center;
@@ -1470,8 +1425,6 @@ td b {
     width: 43px;
 }
 
-/* ================= CAPABILITIES ================= */
-
 .capability-list {
     list-style: none;
     padding: 0;
@@ -1511,8 +1464,6 @@ td b {
     color: #8b9ab0;
 }
 
-/* ================= FORMS ================= */
-
 .form-stack {
     display: grid;
     gap: 12px;
@@ -1536,8 +1487,6 @@ td b {
     font-size: 10px;
 }
 
-/* ================= RESULTS ================= */
-
 .result-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1552,8 +1501,6 @@ td b {
 .result-grid span {
     display: block;
 }
-
-/* ================= REPORTS ================= */
 
 .report-option {
     display: flex;
@@ -1617,8 +1564,6 @@ td b {
     margin-top: 19px;
 }
 
-/* ================= REPORT PREVIEW ================= */
-
 .report-preview {
     background: #f4f7fb;
     display: grid;
@@ -1630,7 +1575,7 @@ td b {
     border: 1px solid #e3eaf2;
     border-radius: 6px;
     padding: 25px;
-    width: min(100%,300px);
+    width: min(100%, 300px);
     box-shadow: 0 7px 22px #1c3c6510;
 }
 
@@ -1680,8 +1625,6 @@ td b {
     padding-left: 17px;
 }
 
-/* ================= SETTINGS ================= */
-
 .settings-row {
     display: flex;
     justify-content: space-between;
@@ -1730,14 +1673,12 @@ td b {
     margin-bottom: 18px;
 }
 
-/* ================= PORTFOLIO HERO ================= */
-
 .portfolio-hero {
     display: grid;
     grid-template-columns: 1.1fr .9fr;
     gap: 30px;
     align-items: center;
-    background: linear-gradient(120deg,#fff,#f0f6ff);
+    background: linear-gradient(120deg, #fff, #f0f6ff);
     border: 1px solid #e4edf9;
     border-radius: 16px;
     padding: 40px;
@@ -1785,8 +1726,6 @@ td b {
     padding: 7px 9px;
     border-radius: 20px;
 }
-
-/* ================= PORTFOLIO ART ================= */
 
 .portfolio-art {
     padding: 18px;
@@ -1854,11 +1793,11 @@ td b {
 .art-bars i {
     flex: 1;
     border-radius: 5px 5px 0 0;
-    background: linear-gradient(180deg,#5da3ff,#3478f6);
+    background: linear-gradient(180deg, #5da3ff, #3478f6);
 }
 
 .art-bars i:nth-child(2n) {
-    background: linear-gradient(180deg,#66d6c3,#24b8a5);
+    background: linear-gradient(180deg, #66d6c3, #24b8a5);
 }
 
 .art-foot {
@@ -1866,8 +1805,6 @@ td b {
     color: #70839d;
     padding: 15px 0 3px;
 }
-
-/* ================= PORTFOLIO SECTIONS ================= */
 
 .portfolio-section {
     padding: 25px 5px;
@@ -1881,7 +1818,7 @@ td b {
 
 .feature-grid {
     display: grid;
-    grid-template-columns: repeat(4,1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 13px;
 }
 
@@ -1913,8 +1850,6 @@ td b {
     line-height: 1.7;
 }
 
-/* ================= ROADMAP ================= */
-
 .roadmap {
     display: grid;
     grid-template-columns: .8fr 1.2fr;
@@ -1933,8 +1868,6 @@ td b {
     color: #3478f6;
     margin-right: 14px;
 }
-
-/* ================= PORTFOLIO CONTACT ================= */
 
 .portfolio-contact {
     background: #10284b;
@@ -1968,10 +1901,7 @@ td b {
     font-size: 17px;
 }
 
-/* ================= RESPONSIVE: 1100px ================= */
-
 @media (max-width: 1100px) {
-
     .sidebar {
         width: 215px;
     }
@@ -2010,10 +1940,7 @@ td b {
     }
 }
 
-/* ================= RESPONSIVE: 800px ================= */
-
 @media (max-width: 800px) {
-
     .sidebar {
         transform: translateX(-100%);
         transition: transform .25s;
@@ -2050,7 +1977,7 @@ td b {
     }
 
     .stats-grid {
-        grid-template-columns: repeat(2,minmax(0,1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .content-grid,
@@ -2103,10 +2030,7 @@ td b {
     }
 }
 
-/* ================= RESPONSIVE: 460px ================= */
-
 @media (max-width: 460px) {
-
     h1 {
         font-size: 22px;
     }

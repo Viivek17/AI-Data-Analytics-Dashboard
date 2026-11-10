@@ -1,0 +1,163 @@
+
+{% extends "base.html" %}
+
+{% block title %}Portfolio{% endblock %}
+{% block crumb %}Portfolio{% endblock %}
+
+{% block content %}
+
+<div class="portfolio-hero">
+    <div class="portfolio-copy">
+        <div class="eyebrow">DATA SCIENCE PROJECT · 2026</div>
+
+        <h1>
+            InsightForge <span>AI</span>
+        </h1>
+
+        <p class="portfolio-lead">
+            Turning raw data into clear, actionable insights.
+        </p>
+
+        <p class="muted line-height">
+            A modern analytics dashboard designed to make dataset exploration accessible — from uploading files and checking quality to visualizing patterns and generating reports.
+        </p>
+
+        <div class="portfolio-actions">
+            <a class="btn primary" href="{{ url_for('dashboard') }}">
+                Explore live demo →
+            </a>
+
+            <a class="btn secondary" href="{{ url_for('upload') }}">
+                Try with your data
+            </a>
+        </div>
+
+        <div class="tech-pills">
+            <span>Python</span>
+            <span>Flask</span>
+            <span>Pandas</span>
+            <span>NumPy</span>
+            <span>JavaScript</span>
+            <span>Chart.js</span>
+        </div>
+    </div>
+
+    <div class="portfolio-art">
+        <div class="art-card">
+            <div class="art-head">
+                <i></i>
+                <i></i>
+                <i></i>
+                <span>analytics overview</span>
+            </div>
+
+            <div class="art-kpis">
+                <b>
+                    Data
+                    <small>quality</small>
+                </b>
+
+                <b>
+                    Insights
+                    <small>engine</small>
+                </b>
+            </div>
+
+            <div class="art-bars">
+                <i style="height:38%"></i>
+                <i style="height:66%"></i>
+                <i style="height:52%"></i>
+                <i style="height:85%"></i>
+                <i style="height:73%"></i>
+                <i style="height:96%"></i>
+                <i style="height:62%"></i>
+            </div>
+
+            <div class="art-foot">
+                ✦ Clear data. Better decisions.
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="portfolio-section">
+    <div class="eyebrow">WHAT IT CAN DO</div>
+
+    <h2>One workspace. A complete data workflow.</h2>
+
+    <div class="feature-grid">
+
+        <div class="feature-card">
+            <span>⇧</span>
+            <h3>Upload & preview</h3>
+            <p>
+                Bring CSV and Excel datasets into a clean, easy-to-use workspace.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <span>◉</span>
+            <h3>Data quality</h3>
+            <p>
+                Spot missing values, duplicate records, and inconsistent column types.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <span>▥</span>
+            <h3>Explore visually</h3>
+            <p>
+                Use charts and descriptive statistics to investigate patterns.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <span>✳</span>
+            <h3>Insights & reports</h3>
+            <p>
+                Generate rule-based findings and export a readable analysis report.
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<div class="portfolio-section roadmap">
+    <div>
+        <div class="eyebrow">ROADMAP</div>
+        <h2>Future enhancements</h2>
+    </div>
+
+    <div class="roadmap-list">
+        <p>
+            <b>01</b>
+            Secure authentication and per-user workspaces
+        </p>
+
+        <p>
+            <b>02</b>
+            Advanced interactive chart builder
+        </p>
+
+        <p>
+            <b>03</b>
+            Trained ML models with proper evaluation
+        </p>
+
+        <p>
+            <b>04</b>
+            Optional LLM integration with privacy controls
+        </p>
+    </div>
+</div>
+
+<div class="portfolio-contact">
+    <div>
+        <h2>Built with curiosity and data.</h2>
+        <p>Vivek · B.Sc. Data Science</p>
+    </div>
+
+    <span class="contact-mark">IF</span>
+</div>
+
+{% endblock %}

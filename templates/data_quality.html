@@ -8,9 +8,14 @@
     <div>
         <div class="eyebrow">TRUST YOUR DATA</div>
         <h1>Data quality analysis</h1>
-        <p class="muted">Understand completeness, consistency, and column-level health.</p>
+        <p class="muted">
+            Understand completeness, consistency, and column-level health.
+        </p>
     </div>
-    <a class="btn primary" href="{{ url_for('cleaning') }}">Clean dataset →</a>
+
+    <a class="btn primary" href="{{ url_for('cleaning') }}">
+        Clean dataset →
+    </a>
 </div>
 
 <div class="stats-grid">
@@ -52,6 +57,7 @@
 </div>
 
 <div class="content-grid two-col">
+
     <section class="panel chart-panel">
         <div class="panel-heading">
             <div>
@@ -59,6 +65,7 @@
                 <p>Columns with the most missing cells</p>
             </div>
         </div>
+
         <div class="chart-holder">
             <canvas id="missingChart"></canvas>
         </div>
@@ -71,10 +78,12 @@
                 <p>Mean value per numeric field</p>
             </div>
         </div>
+
         <div class="chart-holder">
             <canvas id="numericChart"></canvas>
         </div>
     </section>
+
 </div>
 
 <section class="panel table-panel">
@@ -101,11 +110,18 @@
             <tbody>
                 {% for item in quality %}
                 <tr>
-                    <td><b>{{ item.name }}</b></td>
-                    <td><span class="type-pill">{{ item.dtype }}</span></td>
+                    <td>
+                        <b>{{ item.name }}</b>
+                    </td>
+
+                    <td>
+                        <span class="type-pill">{{ item.dtype }}</span>
+                    </td>
+
                     <td>{{ item.missing }}</td>
                     <td>{{ item.missing_pct }}%</td>
                     <td>{{ item.unique }}</td>
+
                     <td>
                         <span class="quality-tag {{ 'good' if item.missing == 0 else 'warning' }}">
                             {{ 'Healthy' if item.missing == 0 else 'Review' }}
@@ -117,20 +133,28 @@
         </table>
     </div>
 </section>
+
 {% endblock %}
+
 
 {% block scripts %}
 <script>
-    const missLabels = {{ charts.missing_labels|tojson }};
-    const missValues = {{ charts.missing_values|tojson }};
+    const chartData = JSON.parse('{{ charts|tojson|safe }}');
 
-    const numLabels = {{ charts.numeric_labels|tojson }};
-    const numValues = {{ charts.numeric_values|tojson }};
+    const missLabels = chartData.missing_labels;
+    const missValues = chartData.missing_values;
 
+    const numLabels = chartData.numeric_labels;
+    const numValues = chartData.numeric_values;
+
+
+    // Missing Values Chart
     new Chart(document.getElementById('missingChart'), {
         type: 'bar',
+
         data: {
             labels: missLabels,
+
             datasets: [{
                 label: 'Missing cells',
                 data: missValues,
@@ -138,17 +162,21 @@
                 borderRadius: 6
             }]
         },
+
         options: {
             responsive: true,
             maintainAspectRatio: false,
+
             plugins: {
                 legend: {
                     display: false
                 }
             },
+
             scales: {
                 y: {
                     beginAtZero: true,
+
                     ticks: {
                         precision: 0
                     }
@@ -157,10 +185,14 @@
         }
     });
 
+
+    // Numeric Column Averages Chart
     new Chart(document.getElementById('numericChart'), {
         type: 'bar',
+
         data: {
             labels: numLabels,
+
             datasets: [{
                 label: 'Average',
                 data: numValues,
@@ -168,14 +200,17 @@
                 borderRadius: 6
             }]
         },
+
         options: {
             responsive: true,
             maintainAspectRatio: false,
+
             plugins: {
                 legend: {
                     display: false
                 }
             },
+
             scales: {
                 y: {
                     beginAtZero: true
@@ -183,5 +218,6 @@
             }
         }
     });
+
 </script>
 {% endblock %}
