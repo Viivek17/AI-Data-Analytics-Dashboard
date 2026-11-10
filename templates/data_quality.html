@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Data Quality{% endblock %}
+{% block crumb %}Data Quality{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">TRUST YOUR DATA</div>
+        <h1>Data quality analysis</h1>
+        <p class="muted">Understand completeness, consistency, and column-level health.</p>
+    </div>
+    <a class="btn primary" href="{{ url_for('cleaning') }}">Clean dataset →</a>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-top">
+            <span>Missing values</span>
+            <span class="stat-icon orange">!</span>
+        </div>
+        <strong>{{ summary.missing }}</strong>
+        <small class="muted">Across all columns</small>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span>Duplicate rows</span>
+            <span class="stat-icon red">⧉</span>
+        </div>
+        <strong>{{ summary.duplicates }}</strong>
+        <small class="muted">Exact duplicate records</small>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span>Numeric columns</span>
+            <span class="stat-icon blue">#</span>
+        </div>
+        <strong>{{ summary.numeric_columns }}</strong>
+        <small class="muted">Quantitative fields</small>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span>Categorical columns</span>
+            <span class="stat-icon violet">Aa</span>
+        </div>
+        <strong>{{ summary.categorical_columns }}</strong>
+        <small class="muted">Text / category fields</small>
+    </div>
+</div>
+
+<div class="content-grid two-col">
+    <section class="panel chart-panel">
+        <div class="panel-heading">
+            <div>
+                <h2>Missing values by column</h2>
+                <p>Columns with the most missing cells</p>
+            </div>
+        </div>
+        <div class="chart-holder">
+            <canvas id="missingChart"></canvas>
+        </div>
+    </section>
+
+    <section class="panel chart-panel">
+        <div class="panel-heading">
+            <div>
+                <h2>Numeric column averages</h2>
+                <p>Mean value per numeric field</p>
+            </div>
+        </div>
+        <div class="chart-holder">
+            <canvas id="numericChart"></canvas>
+        </div>
+    </section>
+</div>
+
+<section class="panel table-panel">
+    <div class="panel-heading">
+        <div>
+            <h2>Column information</h2>
+            <p>Detailed quality indicators for each field</p>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Column name</th>
+                    <th>Data type</th>
+                    <th>Missing</th>
+                    <th>Missing %</th>
+                    <th>Unique values</th>
+                    <th>Quality</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in quality %}
+                <tr>
+                    <td><b>{{ item.name }}</b></td>
+                    <td><span class="type-pill">{{ item.dtype }}</span></td>
+                    <td>{{ item.missing }}</td>
+                    <td>{{ item.missing_pct }}%</td>
+                    <td>{{ item.unique }}</td>
+                    <td>
+                        <span class="quality-tag {{ 'good' if item.missing == 0 else 'warning' }}">
+                            {{ 'Healthy' if item.missing == 0 else 'Review' }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const missLabels = {{ charts.missing_labels|tojson }};
+    const missValues = {{ charts.missing_values|tojson }};
+
+    const numLabels = {{ charts.numeric_labels|tojson }};
+    const numValues = {{ charts.numeric_values|tojson }};
+
+    new Chart(document.getElementById('missingChart'), {
+        type: 'bar',
+        data: {
+            labels: missLabels,
+            datasets: [{
+                label: 'Missing cells',
+                data: missValues,
+                backgroundColor: '#4c83f6',
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+
+    new Chart(document.getElementById('numericChart'), {
+        type: 'bar',
+        data: {
+            labels: numLabels,
+            datasets: [{
+                label: 'Average',
+                data: numValues,
+                backgroundColor: '#28b8a5',
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

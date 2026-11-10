@@ -1,31 +1,20 @@
 {% extends "base.html" %}
 
-{% block title %}
-ML Prediction
-{% endblock %}
-
-{% block crumb %}
-ML Prediction
-{% endblock %}
+{% block title %}ML Prediction{% endblock %}
+{% block crumb %}ML Prediction{% endblock %}
 
 {% block content %}
-
 <div class="page-heading">
     <div>
         <div class="eyebrow">PREDICTIVE WORKSPACE</div>
         <h1>Machine learning lab</h1>
-        <p class="muted">
-            Inspect a numeric target and establish a transparent baseline.
-        </p>
+        <p class="muted">Inspect a numeric target and establish a transparent baseline.</p>
     </div>
-
     <span class="generated-badge">BASELINE ANALYSIS</span>
 </div>
 
 <div class="content-grid two-col">
-
     <section class="panel">
-
         <div class="panel-heading">
             <div>
                 <h2>Target summary</h2>
@@ -34,17 +23,12 @@ ML Prediction
         </div>
 
         {% if numeric_cols %}
-
         <form method="post" class="form-stack">
-
             <label for="target">Target column</label>
 
             <select name="target" id="target">
                 {% for col in numeric_cols %}
-                <option
-                    value="{{ col }}"
-                    {% if result and result.target == col %}selected{% endif %}
-                >
+                <option value="{{ col }}" {% if result and result.target =*=* col %}selected{% endif %}>
                     {{ col }}
                 </option>
                 {% endfor %}
@@ -54,26 +38,18 @@ ML Prediction
                 This baseline summarizes historical values. It does not train or evaluate a predictive model.
             </p>
 
-            <button class="btn primary" type="submit">
-                Analyze target →
-            </button>
-
+            <button class="btn primary" type="submit">Analyze target →</button>
         </form>
-
         {% else %}
-
         <div class="empty-state">
             <b>No numeric fields available</b>
             <p>Upload a dataset with numeric columns to continue.</p>
             <a href="{{ url_for('upload') }}">Upload dataset →</a>
         </div>
-
         {% endif %}
-
     </section>
 
     <section class="panel">
-
         <div class="panel-heading">
             <div>
                 <h2>Analysis results</h2>
@@ -82,9 +58,7 @@ ML Prediction
         </div>
 
         {% if result %}
-
         <div class="result-grid">
-
             <div>
                 <span>Mean</span>
                 <b>{{ result.mean if result.mean is not none else '—' }}</b>
@@ -104,25 +78,18 @@ ML Prediction
                 <span>Valid values</span>
                 <b>{{ result.count }}</b>
             </div>
-
         </div>
 
         <div class="note-box">
             For a real prediction model, define a target, select features, split train/test data, train a suitable estimator, and evaluate metrics such as MAE or RMSE.
         </div>
-
         {% else %}
-
         <div class="empty-state">
             <div class="empty-illustration">⌁</div>
             <b>Your results will appear here</b>
             <p>Choose a numeric column and run the analysis.</p>
         </div>
-
         {% endif %}
-
     </section>
-
 </div>
-
 {% endblock %}

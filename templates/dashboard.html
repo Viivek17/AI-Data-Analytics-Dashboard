@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+{% block crumb %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="welcome-row">
+    <div>
+        <div class="eyebrow">YOUR ANALYTICS WORKSPACE</div>
+        <h1>Welcome back, Vivek <span class="wave">✦</span></h1>
+        <p class="muted">Your data journey starts here. Turn raw data into meaningful decisions.</p>
+    </div>
+
+    <a class="btn primary" href="{{ url_for('upload') }}">＋ Upload dataset</a>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-top">
+            <span>Datasets</span>
+            <span class="stat-icon blue">▤</span>
+        </div>
+        <strong>{{ 1 if has_data else 0 }}</strong>
+        <small class="muted">Active dataset</small>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span>Total rows</span>
+            <span class="stat-icon teal">▦</span>
+        </div>
+        <strong>{{ "{:,}".format(summary.rows) }}</strong>
+        <small class="muted">Records available</small>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span>Total columns</span>
+            <span class="stat-icon violet">▥</span>
+        </div>
+        <strong>{{ summary.columns }}</strong>
+        <small class="muted">Fields detected</small>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span>Data status</span>
+            <span class="stat-icon green">✓</span>
+        </div>
+        <strong class="status-text">{{ "Loaded" if has_data else "Ready" }}</strong>
+        <small class="muted">{{ summary.memory }}</small>
+    </div>
+</div>
+
+<div class="content-grid dashboard-grid">
+    <section class="panel">
+        <div class="panel-heading">
+            <div>
+                <h2>Quick actions</h2>
+                <p>Jump straight into your workflow</p>
+            </div>
+        </div>
+
+        <div class="action-grid">
+            <a class="action-card action-blue" href="{{ url_for('upload') }}">
+                <span class="action-icon">⇧</span>
+                <span>
+                    <b>Upload dataset</b>
+                    <small>Import CSV or Excel files</small>
+                </span>
+                <span class="arrow">↗</span>
+            </a>
+
+            <a class="action-card action-green" href="{{ url_for('quality') }}">
+                <span class="action-icon">◉</span>
+                <span>
+                    <b>View data quality</b>
+                    <small>Check missing values and duplicates</small>
+                </span>
+                <span class="arrow">↗</span>
+            </a>
+
+            <a class="action-card action-purple" href="{{ url_for('eda') }}">
+                <span class="action-icon">▥</span>
+                <span>
+                    <b>Start analysis</b>
+                    <small>Explore charts and statistics</small>
+                </span>
+                <span class="arrow">↗</span>
+            </a>
+
+            <a class="action-card action-orange" href="{{ url_for('ask_ai') }}">
+                <span class="action-icon">✳</span>
+                <span>
+                    <b>Ask AI</b>
+                    <small>Get answers about your data</small>
+                </span>
+                <span class="arrow">↗</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="panel activity-panel">
+        <div class="panel-heading">
+            <div>
+                <h2>Recent activity</h2>
+                <p>Your latest workspace status</p>
+            </div>
+            <span class="tiny-badge">LIVE</span>
+        </div>
+
+        {% if has_data %}
+        <div class="activity-item">
+            <span class="activity-check">✓</span>
+            <div>
+                <b>Dataset ready for analysis</b>
+                <small>{{ dataset_name }}</small>
+            </div>
+            <time>Now</time>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-illustration">⇧</div>
+            <b>No dataset uploaded yet</b>
+            <p>Upload your first file to unlock analytics.</p>
+            <a href="{{ url_for('upload') }}">Upload your data →</a>
+        </div>
+        {% endif %}
+
+        <div class="mini-tip">
+            <span>✦</span>
+            <div>
+                <b>Pro tip</b>
+                <p>Start with data quality checks before building charts or drawing conclusions.</p>
+            </div>
+        </div>
+    </section>
+</div>
+
+<section class="panel bottom-overview">
+    <div class="panel-heading">
+        <div>
+            <h2>Workspace overview</h2>
+            <p>A quick health check for your current dataset</p>
+        </div>
+        <a class="text-link" href="{{ url_for('quality') }}">View details ↗</a>
+    </div>
+
+    <div class="overview-row">
+        <div>
+            <span class="overview-dot red"></span>
+            <span>Missing values</span>
+            <b>{{ "{:,}".format(summary.missing) }}</b>
+        </div>
+
+        <div>
+            <span class="overview-dot orange"></span>
+            <span>Duplicate rows</span>
+            <b>{{ "{:,}".format(summary.duplicates) }}</b>
+        </div>
+
+        <div>
+            <span class="overview-dot blue"></span>
+            <span>Numeric columns</span>
+            <b>{{ summary.numeric_columns }}</b>
+        </div>
+
+        <div>
+            <span class="overview-dot purple"></span>
+            <span>Categorical columns</span>
+            <b>{{ summary.categorical_columns }}</b>
+        </div>
+    </div>
+</section>
+{% endblock %}

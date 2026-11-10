@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Dataset Preview{% endblock %}
+{% block crumb %}Dataset Preview{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">DATA WORKSPACE</div>
+        <h1>Dataset preview</h1>
+        <p class="muted">Inspect the shape and contents of your uploaded file.</p>
+    </div>
+    <a class="btn secondary" href="{{ url_for('upload') }}">＋ Replace dataset</a>
+</div>
+
+<div class="file-banner">
+    <span class="file-badge">CSV</span>
+    <div>
+        <b>{{ dataset_name }}</b>
+        <small>Dataset uploaded and ready to explore</small>
+    </div>
+    <span class="success-label">● Ready</span>
+</div>
+
+<div class="stats-grid compact-stats">
+    <div class="stat-card">
+        <span class="muted">Rows</span>
+        <strong>{{ "{:,}".format(summary.rows) }}</strong>
+    </div>
+
+    <div class="stat-card">
+        <span class="muted">Columns</span>
+        <strong>{{ summary.columns }}</strong>
+    </div>
+
+    <div class="stat-card">
+        <span class="muted">Missing cells</span>
+        <strong>{{ summary.missing }}</strong>
+    </div>
+
+    <div class="stat-card">
+        <span class="muted">Duplicate rows</span>
+        <strong>{{ summary.duplicates }}</strong>
+    </div>
+</div>
+
+<section class="panel table-panel">
+    <div class="panel-heading">
+        <div>
+            <h2>First rows</h2>
+            <p>Showing {{ rows|length }} of {{ total }} total records on this page</p>
+        </div>
+        <input class="search-input" id="tableSearch" placeholder="Search visible rows…">
+    </div>
+
+    <div class="table-wrap">
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    {% for col in columns %}
+                    <th>{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for row in rows %}
+                <tr>
+                    {% for col in columns %}
+                    <td>{{ row[col] if row[col] is not none else "—" }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        <span>Page {{ page }} of {{ pages }}</span>
+        <div>
+            {% if page > 1 %}
+            <a href="{{ url_for('preview', page=page-1) }}">← Previous</a>
+            {% endif %}
+
+            {% if page *<* pages %}
+            <a href="{{ url_for('preview', page=page+1) }}">Next →</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

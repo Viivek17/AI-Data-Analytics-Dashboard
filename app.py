@@ -1,332 +1,330 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
-import os
-import pandas as pd
+from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file
 from werkzeug.utils import secure_filename
+from pathlib import Path
+import pandas as pd
+import numpy as np
+import os, json, io
+from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = "insightforge-dev-key"
-
-# Upload configuration
-UPLOAD_FOLDER = "uploads"
+app.secret_key = os.environ.get("SECRET_KEY", "change-this-development-secret")
+BASE_DIR = Path(__file__).resolve().parent
+UPLOAD_DIR = BASE_DIR / "uploads"
+REPORT_DIR = BASE_DIR / "reports"
+UPLOAD_DIR.mkdir(exist_ok=True)
+REPORT_DIR.mkdir(exist_ok=True)
+app.config["MAX_CONTENT_LENGTH"] = 25 * 1024 * 1024
 ALLOWED_EXTENSIONS = {"csv", "xlsx", "xls"}
 
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+def allowed_file(name):
+    return "." in name and name.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+def current_path():
+    name = session.get("dataset")
+    if not name:
+        return None
+    path = UPLOAD_DIR / name
+    return path if path.exists() else None
 
+def read_dataset(path=None):
+    path = path or current_path()
+    if not path:
+        return None
+    suffix = Path(path).suffix.lower()
+    try:
+        return pd.read_csv(path) if suffix == ".csv" else pd.read_excel(path)
+    except Exception as exc:
+        flash(f"Could not read dataset: {exc}", "error")
+        return None
 
-# Check allowed file extensions
-def allowed_file(filename):
-    return (
-        "." in filename
-        and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-    )
+def safe_num(value):
+    try:
+        if pd.isna(value) or not np.isfinite(float(value)):
+            return None
+        return round(float(value), 2)
+    except (TypeError, ValueError):
+        return None
 
-
-# Read CSV and Excel files
-def read_dataset(file_path):
-    extension = file_path.rsplit(".", 1)[1].lower()
-
-    if extension == "csv":
-        return pd.read_csv(file_path)
-
-    return pd.read_excel(file_path)
-
-
-# Analyze dataset quality
-def analyze_data_quality(df):
-    # Count missing values
-    missing_values = int(df.isnull().sum().sum())
-
-    # Count duplicate rows
-    duplicate_rows = int(df.duplicated().sum())
-
-    # Dataset dimensions
-    total_rows, total_columns = df.shape
-    total_cells = total_rows * total_columns
-
-    # Calculate data quality score
-    if total_cells > 0:
-        quality_score = round(
-            ((total_cells - missing_values) / total_cells) * 100,
-            2
-        )
-    else:
-        quality_score = 100.0
-
-    # Get column information
-    column_info = []
-
-    for column in df.columns:
-        column_info.append({
-            "name": str(column),
-            "data_type": str(df[column].dtype),
-            "missing": int(df[column].isnull().sum())
-        })
-
+def dataset_summary(df):
+    numeric = df.select_dtypes(include=np.number)
     return {
-        "missing_values": missing_values,
-        "duplicate_rows": duplicate_rows,
-        "quality_score": quality_score,
-        "column_info": column_info
+        "rows": int(len(df)),
+        "columns": int(len(df.columns)),
+        "missing": int(df.isna().sum().sum()),
+        "duplicates": int(df.duplicated().sum()),
+        "numeric_columns": int(len(numeric.columns)),
+        "categorical_columns": int(len(df.columns) - len(numeric.columns)),
+        "memory": f"{df.memory_usage(deep=True).sum() / 1024:.1f} KB",
     }
 
+def column_quality(df):
+    result = []
+    for col in df.columns:
+        result.append({
+            "name": str(col),
+            "dtype": str(df[col].dtype),
+            "missing": int(df[col].isna().sum()),
+            "unique": int(df[col].nunique(dropna=True)),
+            "missing_pct": round(float(df[col].isna().mean() * 100), 1)
+        })
+    return result
 
-# Dashboard homepage
+def chart_data(df):
+    numeric = df.select_dtypes(include=np.number)
+    charts = {"numeric_labels": [], "numeric_values": [], "missing_labels": [], "missing_values": [],
+              "category_labels": [], "category_values": [], "corr_labels": [], "corr_values": []}
+    if not numeric.empty:
+        means = numeric.mean(numeric_only=True).replace([np.inf, -np.inf], np.nan).fillna(0).head(8)
+        charts["numeric_labels"] = [str(x) for x in means.index]
+        charts["numeric_values"] = [safe_num(x) or 0 for x in means.values]
+        corr = numeric.corr(numeric_only=True).fillna(0)
+        cols = list(corr.columns[:6])
+        charts["corr_labels"] = cols
+        charts["corr_values"] = [[safe_num(v) or 0 for v in row] for row in corr.loc[cols, cols].values]
+    miss = df.isna().sum().sort_values(ascending=False).head(8)
+    charts["missing_labels"] = [str(x) for x in miss.index]
+    charts["missing_values"] = [int(x) for x in miss.values]
+    for col in df.select_dtypes(exclude=np.number).columns[:1]:
+        counts = df[col].astype(str).value_counts().head(7)
+        charts["category_labels"] = [str(x) for x in counts.index]
+        charts["category_values"] = [int(x) for x in counts.values]
+    return charts
+
+def insights_for(df):
+    insights = []
+    if df.empty:
+        return ["Your dataset is empty. Upload a dataset with rows to get insights."]
+    missing = int(df.isna().sum().sum())
+    dupes = int(df.duplicated().sum())
+    if missing:
+        insights.append(f"{missing:,} missing cell(s) found across {int((df.isna().sum() > 0).sum())} column(s).")
+    else:
+        insights.append("Great data completeness: no missing cells were found.")
+    if dupes:
+        insights.append(f"{dupes:,} duplicate row(s) may be removed during data cleaning.")
+    else:
+        insights.append("No duplicate rows were detected.")
+    numeric = df.select_dtypes(include=np.number)
+    if not numeric.empty:
+        means = numeric.mean(numeric_only=True).dropna()
+        if not means.empty:
+            col = str(means.idxmax())
+            insights.append(f"'{col}' has the highest average among numeric columns ({means.max():,.2f}).")
+        if len(numeric.columns) >= 2:
+            corr = numeric.corr(numeric_only=True)
+            pairs = []
+            for i, c1 in enumerate(corr.columns):
+                for c2 in corr.columns[i+1:]:
+                    value = corr.loc[c1, c2]
+                    if pd.notna(value):
+                        pairs.append((abs(value), c1, c2, value))
+            if pairs:
+                _, a, b, val = max(pairs)
+                insights.append(f"Strongest numeric relationship in this dataset: '{a}' and '{b}' (correlation {val:.2f}).")
+    insights.append(f"The dataset contains {len(df):,} rows and {len(df.columns)} columns.")
+    return insights
+
+@app.context_processor
+def inject_globals():
+    return {"dataset_name": session.get("dataset"), "year": datetime.now().year}
+
 @app.route("/")
-def home():
-    return render_template("index.html")
+def dashboard():
+    df = read_dataset()
+    summary = dataset_summary(df) if df is not None else {"rows": 0, "columns": 0, "missing": 0, "duplicates": 0, "numeric_columns": 0, "categorical_columns": 0, "memory": "—"}
+    return render_template("dashboard.html", summary=summary, has_data=df is not None,
+                           insights=insights_for(df)[:3] if df is not None else [])
 
-@app.route("/upload-page")
-def upload_page():
+@app.route("/upload", methods=["GET", "POST"])
+def upload():
+    if request.method == "POST":
+        file = request.files.get("dataset")
+        if not file or not file.filename:
+            flash("Choose a CSV or Excel file first.", "error")
+            return redirect(url_for("upload"))
+        if not allowed_file(file.filename):
+            flash("Unsupported format. Please upload CSV, XLSX, or XLS.", "error")
+            return redirect(url_for("upload"))
+        filename = secure_filename(file.filename)
+        stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        stored_name = f"{stamp}_{filename}"
+        file.save(UPLOAD_DIR / stored_name)
+        session["dataset"] = stored_name
+        flash("Dataset uploaded successfully.", "success")
+        return redirect(url_for("preview"))
     return render_template("upload.html")
 
+@app.route("/preview")
+def preview():
+    df = read_dataset()
+    if df is None:
+        flash("Upload a dataset to preview it.", "info")
+        return redirect(url_for("upload"))
+    page = max(1, request.args.get("page", 1, type=int))
+    page_size = 10
+    start = (page - 1) * page_size
+    rows = df.iloc[start:start + page_size].replace({np.nan: None}).to_dict(orient="records")
+    return render_template("preview.html", summary=dataset_summary(df), columns=list(df.columns),
+                           rows=rows, page=page, pages=max(1, (len(df) + page_size - 1)//page_size),
+                           total=len(df))
 
-@app.route("/data-quality")
-def data_quality_page():
-    return render_template("data_quality.html")
+@app.route("/quality")
+def quality():
+    df = read_dataset()
+    if df is None:
+        flash("Upload a dataset to run data quality analysis.", "info")
+        return redirect(url_for("upload"))
+    return render_template("quality.html", summary=dataset_summary(df), quality=column_quality(df),
+                           charts=chart_data(df), insights=insights_for(df))
 
-
-@app.route("/data-cleaning")
-def data_cleaning_page():
-    return render_template("data_cleaning.html")
-
+@app.route("/cleaning", methods=["GET", "POST"])
+def cleaning():
+    df = read_dataset()
+    if df is None:
+        flash("Upload a dataset before cleaning.", "info")
+        return redirect(url_for("upload"))
+    if request.method == "POST":
+        method = request.form.get("missing_method", "mean")
+        remove_duplicates = request.form.get("remove_duplicates") == "on"
+        convert_types = request.form.get("convert_types") == "on"
+        before_missing, before_duplicates = int(df.isna().sum().sum()), int(df.duplicated().sum())
+        for col in df.columns:
+            if df[col].isna().any():
+                if pd.api.types.is_numeric_dtype(df[col]):
+                    if method == "median":
+                        df[col] = df[col].fillna(df[col].median())
+                    elif method == "zero":
+                        df[col] = df[col].fillna(0)
+                    else:
+                        df[col] = df[col].fillna(df[col].mean())
+                else:
+                    fill = df[col].mode(dropna=True)
+                    df[col] = df[col].fillna(fill.iloc[0] if not fill.empty else "Unknown")
+        if remove_duplicates:
+            df = df.drop_duplicates()
+        if convert_types:
+            for col in df.columns:
+                if df[col].dtype == object:
+                    converted = pd.to_numeric(df[col], errors="coerce")
+                    if converted.notna().mean() > 0.85:
+                        df[col] = converted
+        path = current_path()
+        if path.suffix.lower() == ".csv":
+            df.to_csv(path, index=False)
+        else:
+            df.to_excel(path, index=False)
+        flash(f"Cleaning complete: handled {before_missing} missing cell(s); " +
+              (f"removed {before_duplicates} duplicate row(s)." if remove_duplicates else "duplicate rows were kept."), "success")
+        return redirect(url_for("cleaning"))
+    return render_template("cleaning.html", summary=dataset_summary(df))
 
 @app.route("/eda")
-def eda_page():
-    return render_template("eda.html")
+def eda():
+    df = read_dataset()
+    if df is None:
+        flash("Upload a dataset to explore it.", "info")
+        return redirect(url_for("upload"))
+    numeric = df.select_dtypes(include=np.number)
+    stats = []
+    for col in numeric.columns:
+        stats.append({"name": str(col), "mean": safe_num(numeric[col].mean()),
+                      "median": safe_num(numeric[col].median()), "std": safe_num(numeric[col].std()),
+                      "min": safe_num(numeric[col].min()), "max": safe_num(numeric[col].max())})
+    return render_template("eda.html", summary=dataset_summary(df), charts=chart_data(df), stats=stats)
 
+@app.route("/insights")
+def insights():
+    df = read_dataset()
+    if df is None:
+        flash("Upload a dataset to generate insights.", "info")
+        return redirect(url_for("upload"))
+    return render_template("insights.html", insights=insights_for(df), summary=dataset_summary(df))
 
-@app.route("/ai-insights")
-def ai_insights_page():
-    return render_template("ai_insights.html")
+@app.route("/ask-ai", methods=["GET", "POST"])
+def ask_ai():
+    answer = None
+    question = ""
+    df = read_dataset()
+    if request.method == "POST":
+        question = request.form.get("question", "").strip()
+        if df is None:
+            answer = "Please upload a dataset first so I can answer questions about it."
+        elif not question:
+            answer = "Type a question about your dataset."
+        else:
+            q = question.lower()
+            numeric = df.select_dtypes(include=np.number)
+            if any(word in q for word in ["row", "record", "how many data"]):
+                answer = f"Your dataset contains {len(df):,} rows and {len(df.columns)} columns."
+            elif "missing" in q or "null" in q:
+                answer = f"There are {int(df.isna().sum().sum()):,} missing cells in the dataset."
+            elif "duplicate" in q:
+                answer = f"I found {int(df.duplicated().sum()):,} duplicate rows."
+            elif ("average" in q or "mean" in q) and not numeric.empty:
+                means = numeric.mean().dropna()
+                answer = "Column averages: " + "; ".join(f"{c}: {v:.2f}" for c, v in means.items())
+            elif ("maximum" in q or "highest" in q or "max" in q) and not numeric.empty:
+                answer = "Maximum values: " + "; ".join(f"{c}: {numeric[c].max()}" for c in numeric.columns)
+            elif "column" in q:
+                answer = "Columns: " + ", ".join(map(str, df.columns))
+            else:
+                answer = "Here is a quick dataset overview: " + f"{len(df)} rows, {len(df.columns)} columns, {int(df.isna().sum().sum())} missing cells, and {int(df.duplicated().sum())} duplicate rows. Try asking about missing values, duplicates, averages, maximums, rows, or columns."
+    return render_template("ask_ai.html", answer=answer, question=question, has_data=df is not None)
 
+@app.route("/prediction", methods=["GET", "POST"])
+def prediction():
+    df = read_dataset()
+    result = None
+    numeric_cols = list(df.select_dtypes(include=np.number).columns) if df is not None else []
+    if request.method == "POST":
+        target = request.form.get("target")
+        if df is None or target not in numeric_cols:
+            flash("Choose a valid numeric target column.", "error")
+        else:
+            # Transparent baseline: predicts the target's mean, avoiding a misleading ML claim.
+            values = df[target].dropna()
+            result = {"target": target, "mean": safe_num(values.mean()), "median": safe_num(values.median()),
+                      "std": safe_num(values.std()), "count": int(values.count())}
+    return render_template("prediction.html", numeric_cols=numeric_cols, result=result, has_data=df is not None)
 
-@app.route("/ask-ai")
-def ask_ai_page():
-    return render_template("ask_ai.html")
+@app.route("/reports", methods=["GET", "POST"])
+def reports():
+    df = read_dataset()
+    if request.method == "POST":
+        if df is None:
+            flash("Upload a dataset before generating a report.", "error")
+            return redirect(url_for("reports"))
+        lines = ["INSIGHTFORGE AI — DATA ANALYSIS REPORT", f"Generated: {datetime.now():%Y-%m-%d %H:%M}",
+                 f"Dataset: {session.get('dataset')}", "", "OVERVIEW",
+                 json.dumps(dataset_summary(df), indent=2), "", "KEY INSIGHTS"]
+        lines += [f"- {item}" for item in insights_for(df)]
+        lines += ["", "COLUMN QUALITY", "Column | Type | Missing | Unique"]
+        lines += [f"{x['name']} | {x['dtype']} | {x['missing']} | {x['unique']}" for x in column_quality(df)]
+        output = REPORT_DIR / "insightforge_report.txt"
+        output.write_text("\\n".join(lines), encoding="utf-8")
+        return send_file(output, as_attachment=True, download_name="InsightForge_Analysis_Report.txt")
+    return render_template("reports.html", has_data=df is not None,
+                           summary=dataset_summary(df) if df is not None else None,
+                           insights=insights_for(df) if df is not None else [])
 
-
-@app.route("/prediction")
-def prediction_page():
-    return render_template("prediction.html")
-
-
-@app.route("/reports")
-def reports_page():
-    return render_template("reports.html")
-
+@app.route("/portfolio")
+def portfolio():
+    return render_template("portfolio.html")
 
 @app.route("/settings")
-def settings_page():
+def settings():
     return render_template("settings.html")
 
-# Clean dataset
-def clean_dataset(df, missing_strategy="none", remove_duplicates=False):
-    cleaned_df = df.copy()
+@app.route("/logout")
+def logout():
+    session.clear()
+    flash("You have been signed out.", "info")
+    return redirect(url_for("dashboard"))
 
-    # Handle missing values
-    if missing_strategy == "drop":
-        cleaned_df = cleaned_df.dropna()
+@app.errorhandler(413)
+def too_large(_error):
+    flash("File is too large. Maximum upload size is 25 MB.", "error")
+    return redirect(url_for("upload"))
 
-    elif missing_strategy == "zero":
-        cleaned_df = cleaned_df.fillna(0)
-
-    elif missing_strategy == "mean":
-        numeric_columns = cleaned_df.select_dtypes(include="number").columns
-        cleaned_df[numeric_columns] = cleaned_df[numeric_columns].fillna(
-            cleaned_df[numeric_columns].mean()
-        )
-
-    elif missing_strategy == "median":
-        numeric_columns = cleaned_df.select_dtypes(include="number").columns
-        cleaned_df[numeric_columns] = cleaned_df[numeric_columns].fillna(
-            cleaned_df[numeric_columns].median()
-        )
-
-    # Remove duplicate rows
-    if remove_duplicates:
-        cleaned_df = cleaned_df.drop_duplicates()
-
-    return cleaned_df
-
-# Dataset upload and analysis
-@app.route("/upload", methods=["POST"])
-def upload_file():
-    file = request.files.get("file")
-
-    # Check whether a file was selected
-    if file is None or file.filename == "":
-        flash("Please select a dataset first.", "error")
-        return redirect(url_for("home"))
-
-    # Validate extension
-    if not allowed_file(file.filename):
-        flash("Please upload a CSV or Excel file.", "error")
-        return redirect(url_for("home"))
-
-    # Secure filename
-    filename = secure_filename(file.filename)
-
-    if not filename:
-        flash("Invalid filename.", "error")
-        return redirect(url_for("home"))
-
-    file_path = os.path.join(
-        app.config["UPLOAD_FOLDER"],
-        filename
-    )
-
-    try:
-        # Save uploaded dataset
-        file.save(file_path)
-
-        # Read dataset
-        df = read_dataset(file_path)
-
-        # Calculate dataset dimensions
-        rows, columns = df.shape
-
-        # Perform data quality analysis
-        quality_report = analyze_data_quality(df)
-
-        missing_values = quality_report["missing_values"]
-        duplicate_rows = quality_report["duplicate_rows"]
-        quality_score = quality_report["quality_score"]
-        column_info = quality_report["column_info"]
-
-        # Generate dataset preview
-        preview_html = df.head(5).to_html(
-            index=False,
-            classes="data-preview",
-            border=0,
-            na_rep="Missing"
-        )
-
-        # Display results on dashboard
-        return render_template(
-            "index.html",
-            dataset_name=filename,
-            total_rows=rows,
-            total_columns=columns,
-            missing_values=missing_values,
-            duplicate_rows=duplicate_rows,
-            quality_score=quality_score,
-            column_info=column_info,
-            preview_table=preview_html
-        )
-
-    except Exception:
-        app.logger.exception("Dataset processing failed")
-
-        flash(
-            "Could not read this dataset. Please check the file format.",
-            "error"
-        )
-
-        return redirect(url_for("home"))
-    # Data cleaning route
-@app.route("/clean", methods=["POST"])
-def clean_data():
-    filename = request.form.get("dataset_name", "")
-
-    if not filename or secure_filename(filename) != filename:
-        flash("Please upload a valid dataset first.", "error")
-        return redirect(url_for("home"))
-
-    file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-
-    if not os.path.isfile(file_path):
-        flash("Dataset not found. Please upload it again.", "error")
-        return redirect(url_for("home"))
-
-    missing_strategy = request.form.get("missing_strategy", "none")
-    remove_duplicates = request.form.get("remove_duplicates") == "yes"
-
-    allowed_strategies = {"none", "drop", "zero", "mean", "median"}
-
-    if missing_strategy not in allowed_strategies:
-        flash("Invalid missing-value strategy.", "error")
-        return redirect(url_for("home"))
-
-    try:
-        df = read_dataset(file_path)
-
-        original_rows = len(df)
-
-        cleaned_df = clean_dataset(
-            df,
-            missing_strategy=missing_strategy,
-            remove_duplicates=remove_duplicates
-        )
-
-        cleaned_filename = f"cleaned_{filename.rsplit('.', 1)[0]}.csv"
-        cleaned_path = os.path.join(
-            app.config["UPLOAD_FOLDER"],
-            cleaned_filename
-        )
-
-        cleaned_df.to_csv(cleaned_path, index=False)
-
-        removed_rows = original_rows - len(cleaned_df)
-
-        flash(
-            f"Cleaning complete! {removed_rows} rows removed. "
-            f"Cleaned dataset saved as {cleaned_filename}.",
-            "success"
-        )
-
-        return render_template(
-    "index.html",
-    dataset_name=filename,
-    total_rows=len(cleaned_df),
-    total_columns=len(cleaned_df.columns),
-    missing_values=int(cleaned_df.isnull().sum().sum()),
-    duplicate_rows=int(cleaned_df.duplicated().sum()),
-    quality_score=analyze_data_quality(cleaned_df)["quality_score"],
-    column_info=analyze_data_quality(cleaned_df)["column_info"],
-    preview_table=cleaned_df.head(5).to_html(
-        index=False,
-        classes="data-preview",
-        border=0,
-        na_rep="Missing"
-    ),
-    cleaned_filename=cleaned_filename
-)
-    except Exception:
-        app.logger.exception("Dataset cleaning failed")
-        flash("Could not clean the dataset. Please try again.", "error")
-        return redirect(url_for("home"))
-    
-# Download cleaned dataset
-@app.route("/download/<filename>")
-def download_cleaned_file(filename):
-    from flask import send_from_directory
-
-    if not filename.startswith("cleaned_"):
-        flash("Invalid download request.", "error")
-        return redirect(url_for("home"))
-
-    safe_filename = secure_filename(filename)
-
-    if safe_filename != filename:
-        flash("Invalid filename.", "error")
-        return redirect(url_for("home"))
-
-    file_path = os.path.join(
-        app.config["UPLOAD_FOLDER"],
-        safe_filename
-    )
-
-    if not os.path.isfile(file_path):
-        flash("Cleaned dataset not found. Please clean it again.", "error")
-        return redirect(url_for("home"))
-
-    return send_from_directory(
-        app.config["UPLOAD_FOLDER"],
-        safe_filename,
-        as_attachment=True
-    )
-# Run Flask application
 if __name__ == "__main__":
     app.run(debug=True)
