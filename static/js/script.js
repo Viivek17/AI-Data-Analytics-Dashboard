@@ -1,55 +1,89 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const navItems = document.querySelectorAll(".nav-item");
+document.addEventListener('DOMContentLoaded', () => {
 
-    // Sidebar navigation
-    navItems.forEach(function (item) {
-        item.addEventListener("click", function (event) {
-            const href = this.getAttribute("href");
+    const toggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
 
-            // Allow normal navigation for the Dashboard link
-            if (href === "/" || href === null) {
-                return;
-            }
-
-            // Ignore placeholder links
-            if (href === "#") {
-                event.preventDefault();
-                return;
-            }
-
-            // Handle links pointing to page sections
-            if (href.startsWith("#")) {
-                const target = document.querySelector(href);
-
-                if (target) {
-                    event.preventDefault();
-
-                    navItems.forEach(function (nav) {
-                        nav.classList.remove("active");
-                    });
-
-                    this.classList.add("active");
-
-                    target.scrollIntoView({
-                        behavior: "smooth",
-                        block: "start"
-                    });
-                }
-            }
-        });
-    });
-
-    // File upload: display the selected filename
-    const fileInput = document.getElementById("fileInput");
-    const selectedFile = document.getElementById("selectedFile");
-
-    if (fileInput && selectedFile) {
-        fileInput.addEventListener("change", function () {
-            if (this.files.length > 0) {
-                selectedFile.textContent = this.files[0].name;
-            } else {
-                selectedFile.textContent = "";
-            }
-        });
+    if (toggle && sidebar) {
+        toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
     }
+
+
+    const input = document.getElementById('datasetFile');
+    const selected = document.getElementById('selectedFile');
+    const zone = document.getElementById('dropzone');
+
+    if (input && selected) {
+
+        input.addEventListener('change', () => {
+
+            selected.textContent = input.files.length
+                ? `${input.files[0].name} · ${(input.files[0].size / 1024).toFixed(1)} KB`
+                : 'No file selected';
+
+        });
+
+    }
+
+
+    if (zone && input) {
+
+        ['dragenter', 'dragover'].forEach(evt => {
+
+            zone.addEventListener(evt, e => {
+
+                e.preventDefault();
+                zone.classList.add('dragging');
+
+            });
+
+        });
+
+
+        ['dragleave', 'drop'].forEach(evt => {
+
+            zone.addEventListener(evt, e => {
+
+                e.preventDefault();
+                zone.classList.remove('dragging');
+
+            });
+
+        });
+
+
+        zone.addEventListener('drop', e => {
+
+            if (e.dataTransfer.files.length) {
+
+                input.files = e.dataTransfer.files;
+                input.dispatchEvent(new Event('change'));
+
+            }
+
+        });
+
+    }
+
+
+    const search = document.getElementById('tableSearch');
+    const table = document.getElementById('dataTable');
+
+    if (search && table) {
+
+        search.addEventListener('input', () => {
+
+            const term = search.value.toLowerCase();
+
+            table.querySelectorAll('tbody tr').forEach(row => {
+
+                row.style.display = row.textContent.toLowerCase().includes(term)
+                    ? ''
+                    : 'none';
+
+            });
+
+        });
+
+    }
+
 });
