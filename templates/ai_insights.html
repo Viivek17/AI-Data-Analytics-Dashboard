@@ -1,84 +1,39 @@
-{% extends "base.html" %}
 
-{% block title %}
-AI Insights
-{% endblock %}
-
-{% block crumb %}
-AI Insights
-{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
 
-<div class="page-heading">
-    <div>
-        <div class="eyebrow">FROM DATA TO DECISIONS</div>
-        <h1>AI insights</h1>
-        <p class="muted">
-            Automatically generated observations based on your current dataset.
-        </p>
+    <div class="intro">
+        <h1>Dataset insights</h1>
+        <p>Statistical observations calculated from your uploaded data.</p>
     </div>
 
-    <span class="generated-badge">✦ GENERATED FROM DATA</span>
-</div>
+    {% if insights %}
 
-<div class="stats-grid compact-stats">
+        <div class="grid two">
 
-    <div class="stat-card">
-        <span class="muted">Rows analyzed</span>
-        <strong>{{ "{:,}".format(summary.rows) }}</strong>
-    </div>
+            {% for item in insights %}
 
-    <div class="stat-card">
-        <span class="muted">Fields analyzed</span>
-        <strong>{{ summary.columns }}</strong>
-    </div>
+                <div class="insight">
+                    <b>✦</b>
+                    <p>{{ item }}</p>
+                </div>
 
-    <div class="stat-card">
-        <span class="muted">Data gaps</span>
-        <strong>{{ summary.missing }}</strong>
-    </div>
+            {% endfor %}
 
-    <div class="stat-card">
-        <span class="muted">Duplicate rows</span>
-        <strong>{{ summary.duplicates }}</strong>
-    </div>
-
-</div>
-
-<section class="panel insights-panel">
-
-    <div class="panel-heading">
-        <div>
-            <h2>Key findings</h2>
-            <p>Use these as starting points for deeper investigation.</p>
         </div>
 
-        <span class="ai-badge">✦ Insight engine</span>
-    </div>
+        <div class="notice">
+            This version generates transparent statistical observations; it does not call an external LLM or invent business advice.
+        </div>
 
-    {% for insight in insights %}
+    {% else %}
 
-    <div class="insight-row">
+        <div class="panel empty">
+            <h2>Upload a dataset to generate insights</h2>
+            <a class="btn" href="{{ url_for('upload_page') }}">Upload dataset</a>
+        </div>
 
-        <span class="insight-bullet">{{ loop.index }}</span>
-
-        <p>{{ insight }}</p>
-
-        <span class="finding-tag">Finding</span>
-
-    </div>
-
-    {% endfor %}
-
-    <div class="note-box">
-        These insights are generated using descriptive statistics and data-quality rules. They are not causal claims and should be validated with domain context.
-    </div>
-
-    <a class="btn primary" href="{{ url_for('eda') }}">
-        Explore visualizations →
-    </a>
-
-</section>
+    {% endif %}
 
 {% endblock %}
