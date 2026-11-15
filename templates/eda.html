@@ -1,210 +1,242 @@
 
-{% extends "base.html" %}
-
-{% block title %}EDA & Visualization{% endblock %}
-{% block crumb %}EDA & Visualization{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="page-heading">
-    <div>
-        <div class="eyebrow">EXPLORE THE STORY</div>
-        <h1>EDA & visualizations</h1>
-        <p class="muted">
-            Explore numeric distributions, missing values, and category frequencies.
-        </p>
-    </div>
 
-    <a class="btn secondary" href="{{ url_for('reports') }}">
-        Generate report ↗
-    </a>
-</div>
+\<div class="intro">
 
-<div class="content-grid two-col">
-    <section class="panel chart-panel">
-        <div class="panel-heading">
-            <div>
-                <h2>Numeric column averages</h2>
-                <p>Mean value across numeric columns</p>
-            </div>
-        </div>
+    \<span class="eyebrow">VISUAL ANALYTICS\</span>
 
-        <div class="chart-holder tall">
-            <canvas id="meansChart"></canvas>
-        </div>
-    </section>
+    \<h1>EDA & Visualization\</h1>
 
-    <section class="panel chart-panel">
-        <div class="panel-heading">
-            <div>
-                <h2>Missing values</h2>
-                <p>Missing cell count by column</p>
-            </div>
-        </div>
+    \<p>Explore your uploaded data through interactive charts, just like a BI dashboard. Hover, zoom, compare and inspect the actual dataset.\</p>
 
-        <div class="chart-holder tall">
-            <canvas id="missChart"></canvas>
-        </div>
-    </section>
-</div>
+\</div>
 
-{% if charts.category_labels %}
-<section class="panel chart-panel">
-    <div class="panel-heading">
-        <div>
-            <h2>Category distribution</h2>
-            <p>Most common values in the first categorical column</p>
-        </div>
-    </div>
+{% if df is not none %}
 
-    <div class="chart-holder">
-        <canvas id="categoryChart"></canvas>
-    </div>
-</section>
-{% endif %}
+\<div class="grid four">
 
-<section class="panel table-panel">
-    <div class="panel-heading">
-        <div>
-            <h2>Descriptive statistics</h2>
-            <p>Summary for numeric fields</p>
-        </div>
-    </div>
+    \<div class="metric">
 
-    {% if stats %}
-    <div class="table-wrap">
-        <table>
-            <thead>
-                <tr>
-                    <th>Column</th>
-                    <th>Mean</th>
-                    <th>Median</th>
-                    <th>Std. deviation</th>
-                    <th>Minimum</th>
-                    <th>Maximum</th>
-                </tr>
-            </thead>
+        \<small>TOTAL RECORDS\</small>
 
-            <tbody>
-                {% for s in stats %}
-                <tr>
-                    <td><b>{{ s.name }}</b></td>
-                    <td>{{ s.mean if s.mean is not none else '—' }}</td>
-                    <td>{{ s.median if s.median is not none else '—' }}</td>
-                    <td>{{ s.std if s.std is not none else '—' }}</td>
-                    <td>{{ s.min if s.min is not none else '—' }}</td>
-                    <td>{{ s.max if s.max is not none else '—' }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+        \<strong>{{ '{:,}'.format(summary.rows) }}\</strong>
+
+        \<span>Rows in current dataset\</span>
+
+    \</div>
+
+    \<div class="metric">
+
+        \<small>DATA FIELDS\</small>
+
+        \<strong>{{ summary.columns }}\</strong>
+
+        \<span>Columns available\</span>
+
+    \</div>
+
+    \<div class="metric">
+
+        \<small>NUMERIC FIELDS\</small>
+
+        \<strong>{{ summary.numeric }}\</strong>
+
+        \<span>Suitable for measures\</span>
+
+    \</div>
+
+    \<div class="metric">
+
+        \<small>MISSING CELLS\</small>
+
+        \<strong>{{ '{:,}'.format(summary.missing) }}\</strong>
+
+        \<span>Values requiring attention\</span>
+
+    \</div>
+
+\</div>
+
+\<div class="panel">
+
+    \<div class="chart-heading">
+
+        \<div>
+
+            \<h3>Automatic visual analysis\</h3>
+
+            \<p class="muted tiny">Charts are generated dynamically from your uploaded dataset.\</p>
+
+        \</div>
+
+        \<span class="chip">{{ charts|length }} visuals\</span>
+
+    \</div>
+
+    {% if charts %}
+
+    \<div class="powerbi-grid">
+
+        {% for chart in charts %}
+
+        \<section class="chart-card">
+
+            \<div class="chart-title">
+
+                \<h3>{{ chart.title }}\</h3>
+
+                \<p>{{ chart.subtitle }}\</p>
+
+            \</div>
+
+            \<div id="eda-chart-{{ loop.index0 }}" class="plot-area">\</div>
+
+            \<script>
+
+                document.addEventListener('DOMContentLoaded', function() {
+
+                    const data = {{ chart.data|tojson }};
+
+                    const layout = Object.assign({
+
+                        autosize: true,
+
+                        margin: {
+                            l: 48,
+                            r: 18,
+                            t: 12,
+                            b: 55
+                        },
+
+                        paper_bgcolor: '#ffffff',
+
+                        plot_bgcolor: '#ffffff',
+
+                        font: {
+                            family: 'DM Sans, Arial',
+                            color: '#52617a',
+                            size: 11
+                        },
+
+                        showlegend: false
+
+                    }, {{ chart.layout|tojson }});
+
+                    Plotly.newPlot(
+                        'eda-chart-{{ loop.index0 }}',
+                        data,
+                        layout,
+                        {
+                            responsive: true,
+                            displaylogo: false,
+                            modeBarButtonsToRemove: ['lasso2d', 'select2d']
+                        }
+                    );
+
+                });
+
+            \</script>
+
+        \</section>
+
+        {% endfor %}
+
+    \</div>
 
     {% else %}
-    <div class="empty-state">
-        <b>No numeric columns found</b>
-        <p>
-            Upload data with numeric fields to view descriptive statistics.
-        </p>
-    </div>
+
+    \<p class="notice">No suitable chart could be generated. Upload a dataset with numeric or categorical columns.\</p>
+
     {% endif %}
-</section>
-{% endblock %}
 
-{% block scripts %}
+\</div>
 
-<script id="eda-chart-data" type="application/json">
-    {{ charts|tojson }}
-</script>
+{% if numeric %}
 
-<script>
-    (() => {
-        const edaChartData = JSON.parse(
-            document.getElementById('eda-chart-data').textContent
-        );
+\<div class="panel">
 
-        const numericLabels = edaChartData.numeric_labels;
-        const numericValues = edaChartData.numeric_values;
+    \<h3>Build a custom comparison\</h3>
 
-        const missingLabels = edaChartData.missing_labels;
-        const missingValues = edaChartData.missing_values;
+    \<p class="muted tiny">Choose a category and a numeric measure to create your own interactive chart.\</p>
 
-        const categoryLabels = edaChartData.category_labels;
-        const categoryValues = edaChartData.category_values;
+    \<form method="post" class="chart-form">
 
-        const edaChartOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        };
+        \<label>
 
-        new Chart(document.getElementById('meansChart'), {
-            type: 'bar',
-            data: {
-                labels: numericLabels,
-                datasets: [{
-                    data: numericValues,
-                    backgroundColor: '#4c83f6',
-                    borderRadius: 6
-                }]
-            },
-            options: edaChartOptions
-        });
+            Category / X-axis
 
-        new Chart(document.getElementById('missChart'), {
-            type: 'bar',
-            data: {
-                labels: missingLabels,
-                datasets: [{
-                    data: missingValues,
-                    backgroundColor: '#f5a44d',
-                    borderRadius: 6
-                }]
-            },
-            options: edaChartOptions
-        });
+            \<select name="x">
 
-        const categoryCanvas = document.getElementById('categoryChart');
+                {% for c in df.columns %}
 
-        if (categoryCanvas) {
-            new Chart(categoryCanvas, {
-                type: 'doughnut',
-                data: {
-                    labels: categoryLabels,
-                    datasets: [{
-                        data: categoryValues,
-                        backgroundColor: [
-                            '#4c83f6',
-                            '#24b8a5',
-                            '#a78bfa',
-                            '#f5a44d',
-                            '#f0718b',
-                            '#63b3ed',
-                            '#9ca3af'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }
-            });
-        }
-    })();
-</script>
+                \<option value="{{ c }}" {% if xcol=*=*&#x63; %}selected{% endif %}>{{ c }}\</option>
+
+                {% endfor %}
+
+            \</select>
+
+        \</label>
+
+        \<label>
+
+            Measure / Y-axis
+
+            \<select name="y">
+
+                {% for c in numeric %}
+
+                \<option value="{{ c }}" {% if ycol=*=*&#x63; %}selected{% endif %}>{{ c }}\</option>
+
+                {% endfor %}
+
+            \</select>
+
+        \</label>
+
+        \<button class="btn">Generate comparison\</button>
+
+    \</form>
+
+\</div>
+
+{% endif %}
+
+{% if correlation %}
+
+\<div class="panel">
+
+    \<h3>Correlation matrix\</h3>
+
+    \<p class="muted tiny">Shows how numeric fields move in relation to one another.\</p>
+
+    \<div class="table-wrap">{{ correlation|safe }}\</div>
+
+\</div>
+
+{% endif %}
+
+\<div class="panel">
+
+    \<h3>Descriptive statistics\</h3>
+
+    \<div class="table-wrap">{{ df.describe(include='all').to_html(classes='data-table')|safe }}\</div>
+
+\</div>
+
+{% else %}
+
+\<div class="panel empty">
+
+    \<h2>No dataset loaded\</h2>
+
+    \<p>Upload a CSV or Excel file to generate Power BI-style visual analytics.\</p>
+
+    \<a class="btn" href="{{ url_for('upload_page') }}">Upload dataset\</a>
+
+\</div>
+
+{% endif %}
 
 {% endblock %}
-

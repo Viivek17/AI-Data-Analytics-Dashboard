@@ -1,54 +1,36 @@
 
-{% extends "base.html" %}
-
-{% block title %}Upload Dataset | InsightForge AI{% endblock %}
-{% block crumb %}Upload Data{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="page-heading">
-    <div>
-        <div class="eyebrow">BRING YOUR DATA</div>
-        <h1>Upload dataset</h1>
-        <p class="muted">Upload a CSV or Excel file to start analysing your data.</p>
+
+<div class="intro">
+
+    <small class="eyebrow">DATA INGESTION</small>
+
+    <h1>Upload your dataset</h1>
+
+    <p>Bring a CSV or Excel file into your analysis workspace.</p>
+
+</div>
+
+<form class="panel upload" action="{{ url_for('upload_dataset') }}" method="post" enctype="multipart/form-data">
+
+    <div class="drop">
+
+        <div class="bigicon">↑</div>
+
+        <h2>Choose a file to analyse</h2>
+
+        <p>CSV, XLSX or XLS · Maximum 25 MB</p>
+
+        <input type="file" name="dataset" id="dataset" accept=".csv,.xlsx,.xls" required>
+
+        <div id="file-name" class="muted">No file selected</div>
+
     </div>
-</div>
 
-<div class="upload-container">
-    <section class="panel">
-        <form action="{{ url_for('upload') }}"
-              method="POST"
-              enctype="multipart/form-data">
+    <button class="btn">Upload and analyse →</button>
 
-            <div class="upload-box">
-                <h2>Select your dataset</h2>
-                <p>Supported formats: CSV, XLSX, XLS</p>
+</form>
 
-                <input
-                    type="file"
-                    name="dataset"
-                    id="dataset"
-                    accept=".csv,.xlsx,.xls"
-                    required
-                >
-
-                <p id="file-name">No file selected</p>
-
-                <button type="submit" class="btn primary">
-                    Upload dataset →
-                </button>
-            </div>
-        </form>
-    </section>
-</div>
-
-<script>
-const datasetInput = document.getElementById("dataset");
-const fileName = document.getElementById("file-name");
-
-datasetInput.addEventListener("change", function () {
-    fileName.textContent = this.files.length
-        ? this.files[0].name
-        : "No file selected";
-});
-</script>
 {% endblock %}

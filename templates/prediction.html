@@ -1,96 +1,350 @@
 
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block title %}ML Prediction{% endblock %}
-{% block crumb %}ML Prediction{% endblock %}
+{% block title %}ML Prediction · InsightForge AI{% endblock %}
 
 {% block content %}
-<div class="page-heading">
-    <div>
-        <div class="eyebrow">PREDICTIVE WORKSPACE</div>
-        <h1>Machine learning lab</h1>
-        <p class="muted">Inspect a numeric target and establish a transparent baseline.</p>
-    </div>
-    <span class="generated-badge">BASELINE ANALYSIS</span>
-</div>
 
-<div class="content-grid two-col">
-    <section class="panel">
-        <div class="panel-heading">
-            <div>
-                <h2>Target summary</h2>
-                <p>Select a numeric column to summarize</p>
-            </div>
-        </div>
+\<style>
 
-        {% if numeric_cols %}
-        <form method="post" class="form-stack">
-            <label for="target">Target column</label>
+.ml-intro {
+    margin: 8px 0 22px
+}
 
-            <select name="target" id="target">
-                {% for col in numeric_cols %}
-                <option value="{{ col }}" {% if result and result.target == col %}selected{% endif %}>
-                    {{ col }}
-                </option>
+.ml-intro p, .hint {
+    color: #718096;
+    font-size: 13px
+}
+
+.ml-panel {
+    background: #fff;
+    border: 1px solid #e8edf5;
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 18px rgba(20,40,80,.04)
+}
+
+.ml-form {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(170px,1fr));
+    gap: 16px;
+    align-items: end
+}
+
+.ml-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #344054
+}
+
+.ml-form select {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #dce3ee;
+    border-radius: 9px;
+    background: #fff;
+    color: #263348
+}
+
+.ml-form .btn {
+    border: 0;
+    cursor: pointer;
+    min-height: 42px
+}
+
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(145px,1fr));
+    gap: 13px;
+    margin: 16px 0
+}
+
+.metric-card {
+    padding: 17px;
+    border-radius: 12px;
+    background: #f5f8ff;
+    border: 1px solid #e6edff
+}
+
+.metric-card small {
+    display: block;
+    color: #64748b;
+    margin-bottom: 8px
+}
+
+.metric-card strong {
+    font-size: 23px;
+    color: #172b4d
+}
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 16px
+}
+
+.chart-box {
+    min-width: 0;
+    border: 1px solid #e8edf5;
+    border-radius: 13px;
+    padding: 12px;
+    background: #fff
+}
+
+.chart-box h3 {
+    font-size: 14px;
+    margin: 3px 8px
+}
+
+.chart {
+    width: 100%;
+    min-height: 330px
+}
+
+.result-note {
+    padding: 13px 15px;
+    background: #f2f7ff;
+    border-left: 3px solid #4f7cff;
+    border-radius: 8px;
+    color: #52627a;
+    font-size: 13px;
+    line-height: 1.6
+}
+
+.error-box {
+    padding: 13px;
+    background: #fff2f0;
+    color: #b42318;
+    border-radius: 9px
+}
+
+.empty-state {
+    text-align: center;
+    padding: 35px
+}
+
+.empty-state p {
+    color: #718096
+}
+
+@media(max-width:800px) {
+    .ml-form, .chart-grid {
+        grid-template-columns: 1fr
+    }
+}
+
+\</style>
+
+\<div class="intro ml-intro">
+
+    \<h1>Machine Learning Prediction\</h1>
+
+    \<p>Train a model on your uploaded dataset, evaluate it on unseen rows, and explore the predictions with interactive charts.\</p>
+
+\</div>
+
+{% if columns %}
+
+\<div class="ml-panel">
+
+    \<h3 style="margin:0 0 6px">Configure your model\</h3>
+
+    \<p class="hint" style="margin:0 0 18px">Choose the column you want to predict. All other usable columns are considered as model features.\</p>
+
+    \<form method="post" class="ml-form">
+
+        \<label>
+
+            Target column
+
+            \<select name="target" required>
+
+                {% for c in columns %}
+
+                \<option value="{{ c }}" {% if result and result.target=*=*&#x63; %}selected{% endif %}>{{ c }}\</option>
+
                 {% endfor %}
-            </select>
 
-            <p class="muted small-text">
-                This baseline summarizes historical values. It does not train or evaluate a predictive model.
-            </p>
+            \</select>
 
-            <button class="btn primary" type="submit">Analyze target →</button>
-        </form>
-        {% else %}
-        <div class="empty-state">
-            <b>No numeric fields available</b>
-            <p>Upload a dataset with numeric columns to continue.</p>
-            <a href="{{ url_for('upload') }}">Upload dataset →</a>
-        </div>
-        {% endif %}
-    </section>
+        \</label>
 
-    <section class="panel">
-        <div class="panel-heading">
-            <div>
-                <h2>Analysis results</h2>
-                <p>Descriptive baseline for the selected field</p>
-            </div>
-        </div>
+        \<label>
 
-        {% if result %}
-        <div class="result-grid">
-            <div>
-                <span>Mean</span>
-                <b>{{ result.mean if result.mean is not none else '—' }}</b>
-            </div>
+            Prediction type
 
-            <div>
-                <span>Median</span>
-                <b>{{ result.median if result.median is not none else '—' }}</b>
-            </div>
+            \<select name="task" id="taskSelect">
 
-            <div>
-                <span>Std. deviation</span>
-                <b>{{ result.std if result.std is not none else '—' }}</b>
-            </div>
+                \<option value="regression" {% if not result or result.task=*=*'regression' %}selected{% endif %}>Regression — predict a number\</option>
 
-            <div>
-                <span>Valid values</span>
-                <b>{{ result.count }}</b>
-            </div>
-        </div>
+                \<option value="classification" {% if result and result.task=*=*'classification' %}selected{% endif %}>Classification — predict a category\</option>
 
-        <div class="note-box">
-            For a real prediction model, define a target, select features, split train/test data, train a suitable estimator, and evaluate metrics such as MAE or RMSE.
-        </div>
-        {% else %}
-        <div class="empty-state">
-            <div class="empty-illustration">⌁</div>
-            <b>Your results will appear here</b>
-            <p>Choose a numeric column and run the analysis.</p>
-        </div>
-        {% endif %}
-    </section>
-</div>
+            \</select>
+
+        \</label>
+
+        \<label>
+
+            Algorithm
+
+            \<select name="algorithm">
+
+                \<option value="random_forest">Random Forest\</option>
+
+                \<option value="extra_trees">Extra Trees\</option>
+
+                \<option value="decision_tree">Decision Tree\</option>
+
+                \<option value="linear">Linear / Logistic Regression\</option>
+
+            \</select>
+
+        \</label>
+
+        \<button class="btn" type="submit">Train &amp; evaluate model\</button>
+
+    \</form>
+
+    \<p class="hint" style="margin:14px 0 0">Tip: use Regression for continuous numeric targets (such as sales or profit), and Classification for labels (such as customer type or outcome).\</p>
+
+\</div>
+
+{% else %}
+
+\<div class="ml-panel empty-state">
+
+    \<h2>Upload a dataset first\</h2>
+
+    \<p>Machine learning needs a dataset with enough usable rows and a target column.\</p>
+
+    \<a class="btn" href="{{ url_for('upload_page') }}">Upload dataset\</a>
+
+\</div>
+
+{% endif %}
+
+{% if result %}
+
+\<div class="ml-panel">
+
+    {% if result.error %}
+
+    \<div class="error-box">
+
+        \<strong>Model could not be trained\</strong>
+
+        \<br>
+
+        {{ result.error }}
+
+    \</div>
+
+    {% else %}
+
+    \<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+
+        \<div>
+
+            \<h2 style="margin:0 0 5px;font-size:19px">Model evaluation\</h2>
+
+            \<p class="hint" style="margin:0">{{ result.algorithm }} · Target: {{ result.target }}\</p>
+
+        \</div>
+
+        \<span class="chip">{{ result.task|capitalize }}\</span>
+
+    \</div>
+
+    \<div class="metric-grid">
+
+        {% for k,v in result.metrics.items() %}
+
+        \<div class="metric-card">
+
+            \<small>{{ k }}\</small>
+
+            \<strong>{{ v }}\</strong>
+
+        \</div>
+
+        {% endfor %}
+
+    \</div>
+
+    \<div class="result-note">{{ result.note }}\</div>
+
+    {% endif %}
+
+\</div>
+
+{% if not result.error and result.charts %}
+
+\<div class="ml-panel">
+
+    \<h2 style="font-size:18px;margin:0 0 16px">Prediction visualizations\</h2>
+
+    \<div class="chart-grid">
+
+        {% for chart in result.charts %}
+
+        \<section class="chart-box">
+
+            \<h3>{{ chart.title }}\</h3>
+
+            \<div id="prediction-chart-{{ loop.index0 }}" class="chart">\</div>
+
+        \</section>
+
+        {% endfor %}
+
+    \</div>
+
+\</div>
+
+\<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const charts = [
+
+        {% for chart in result.charts %}
+
+        {{ chart.json|safe }}
+
+        {% if not loop.last %},{% endif %}
+
+        {% endfor %}
+
+    ];
+
+    charts.forEach((figure, index) => {
+
+        const element = document.getElementById('prediction-chart-' + index);
+
+        if (element && window\.Plotly)
+
+            Plotly.newPlot(
+                element,
+                figure.data,
+                figure.layout,
+                {
+                    responsive: true,
+                    displaylogo: false
+                }
+            );
+
+    });
+
+});
+
+\</script>
+
+{% endif %}
+
+{% endif %}
+
 {% endblock %}

@@ -1,101 +1,35 @@
 
-{% extends "base.html" %}
-
-{% block title %}Settings{% endblock %}
-{% block crumb %}Settings{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
 
-<div class="page-heading">
-    <div>
-        <div class="eyebrow">PREFERENCES</div>
+<div class="intro">
 
-        <h1>Settings</h1>
+    <h1>Settings</h1>
 
-        <p class="muted">
-            Workspace details and application information.
-        </p>
-    </div>
+    <p>Manage your current analysis session.</p>
+
 </div>
 
-<div class="content-grid two-col">
+<div class="panel">
 
-    <!-- Profile Section -->
+    <h3>Workspace data</h3>
 
-    <section class="panel">
-        <div class="panel-heading">
-            <div>
-                <h2>Profile</h2>
+    <p>Clear the active dataset from this browser session. Uploaded files remain in the local uploads folder.</p>
 
-                <p>
-                    Personalize the demo workspace
-                </p>
-            </div>
-        </div>
+    <form method="post" onsubmit="return confirm('Clear active dataset session?')">
 
-        <div class="profile-card">
-            <div class="profile-avatar">
-                V
-            </div>
+        <button class="btn danger">Clear current session</button>
 
-            <div>
-                <h3>Vivek</h3>
+    </form>
 
-                <p class="muted">
-                    Data Science Student · Portfolio demo
-                </p>
-            </div>
-        </div>
+</div>
 
-        <div class="settings-row">
-            <span>Application</span>
-            <b>InsightForge AI</b>
-        </div>
+<div class="panel">
 
-        <div class="settings-row">
-            <span>Theme</span>
-            <b>Light</b>
-        </div>
+    <h3>Security</h3>
 
-        <div class="settings-row">
-            <span>Framework</span>
-            <b>Flask + Pandas</b>
-        </div>
-    </section>
-
-    <!-- About Project Section -->
-
-    <section class="panel">
-        <div class="panel-heading">
-            <div>
-                <h2>About this project</h2>
-
-                <p>
-                    Project information
-                </p>
-            </div>
-        </div>
-
-        <p class="muted line-height">
-            InsightForge AI is a portfolio-ready data analytics
-            dashboard built to demonstrate data upload, data
-            quality checks, cleaning, exploratory analysis,
-            rule-based insights, and reporting.
-        </p>
-
-        <a
-            class="btn secondary"
-            href="{{ url_for('portfolio') }}"
-        >
-            View portfolio page →
-        </a>
-
-        <div class="note-box">
-            Demo note: the login screen in the reference is a
-            visual concept. Secure user authentication is not
-            enabled in this local starter version.
-        </div>
-    </section>
+    <p>Uploads are limited to 25 MB. Do not expose the development server publicly or upload confidential data.</p>
 
 </div>
 

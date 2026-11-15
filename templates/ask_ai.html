@@ -1,118 +1,335 @@
-{% extends "base.html" %}
 
-{% block title %}Ask AI{% endblock %}
-{% block crumb %}Ask AI{% endblock %}
+{% extends 'base.html' %}
+
+{% block title %}Ask AI · InsightForge{% endblock %}
 
 {% block content %}
-<div class="page-heading">
+
+<div class="intro chat-intro">
+
     <div>
-        <div class="eyebrow">CONVERSE WITH YOUR DATA</div>
-        <h1>Ask AI</h1>
-        <p class="muted">Ask questions in plain English and get a quick dataset-based answer.</p>
+        <span class="eyebrow">YOUR DATA ASSISTANT</span>
+
+        <h1>Chat with your data</h1>
+
+        <p>Ask questions in natural language and explore your uploaded dataset through a conversational assistant.</p>
     </div>
-    <span class="ai-badge">✦ Data assistant</span>
+
+    <form id="clearChatForm">
+        <button type="submit" class="btn secondary">＋ New chat</button>
+    </form>
+
 </div>
+
+{% if df is none %}
+
+<div class="panel empty">
+
+    <div class="bigicon">✦</div>
+
+    <h2>Upload a dataset to get started</h2>
+
+    <p>Once your CSV or Excel file is uploaded, you can ask questions about its columns, statistics, categories, missing values and relationships.</p>
+
+    <a class="btn" href="{{ url_for('upload_page') }}">Upload dataset →</a>
+
+</div>
+
+{% else %}
 
 <div class="chat-layout">
-    <section class="panel chat-panel">
-        <div class="chat-header">
-            <div class="assistant-avatar">✦</div>
+
+    <section class="chat-panel">
+
+        <div class="chat-top">
+
+            <div class="assistant-avatar">IF</div>
+
             <div>
-                <b>InsightForge assistant</b>
-                <small><i class="online-dot"></i> Ready to help with your dataset</small>
+                <strong>InsightForge Assistant</strong>
+
+                <small>
+                    <span class="online-dot"></span> Connected to {{ dataset_name }}
+                </small>
             </div>
+
+            <span class="chat-mode">{{ 'AI POWERED' if ai_enabled else 'DATA MODE' }}</span>
+
         </div>
 
-        <div class="chat-body">
-            {% if answer %}
-            <div class="user-message">{{ question }}</div>
+        <div id="chatMessages" class="chat-messages" aria-live="polite">
 
-            <div class="assistant-message">
-                <span class="assistant-avatar small">✦</span>
-                <div>
-                    <b>Analysis response</b>
-                    <p>{{ answer }}</p>
+            <div class="chat-message assistant">
+
+                <div class="message-avatar">IF</div>
+
+                <div class="message-bubble">
+
+                    <b>Hello! I'm your data assistant.</b>
+
+                    <p>I've got your dataset context. Ask me about trends, averages, categories, data quality or correlations.</p>
+
+                    <small>InsightForge Assistant</small>
+
                 </div>
-            </div>
-            {% else %}
-            <div class="chat-welcome">
-                <div class="chat-orb">✦</div>
-                <h2>What would you like to know?</h2>
-                <p>Ask a question about the data you uploaded.</p>
-            </div>
-            {% endif %}
 
-            <div class="suggestions">
-                <span>Try asking</span>
-                <button type="button" data-question="How many rows are in my dataset?">
-                    How many rows?
-                </button>
-                <button type="button" data-question="Are there any missing values?">
-                    Missing values?
-                </button>
-                <button type="button" data-question="Show me the average of numeric columns">
-                    Column averages?
-                </button>
             </div>
+
+            {% for item in chat_history %}
+
+            <div class="chat-message {{ 'user' if item.role=='user' else 'assistant' }}">
+
+                {% if item.role=='assistant' %}
+
+                <div class="message-avatar">IF</div>
+
+                {% endif %}
+
+                <div class="message-bubble">
+
+                    {{ item.content }}
+
+                    {% if item.source %}
+
+                    <small>{{ item.source }}</small>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
         </div>
 
-        <form method="post" class="chat-input">
-            <input
-                name="question"
-                id="questionInput"
-                placeholder="Ask anything about your data…"
-                value="{{ question }}"
-                required
-            >
-            <button class="btn primary" type="submit" aria-label="Send question">
-                ➤
-            </button>
+        <div class="typing-indicator" id="typingIndicator" hidden>
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+            Assistant is thinking…
+
+        </div>
+
+        <form id="chatForm" class="chat-composer">
+
+            <textarea id="chatInput" rows="1" maxlength="2000" placeholder="Ask anything about your dataset…" required></textarea>
+
+            <button id="sendButton" class="send-button" type="submit" aria-label="Send message">➤</button>
+
+            <div class="composer-hint">Enter to send · Shift + Enter for a new line</div>
+
         </form>
+
     </section>
 
-    <aside class="panel">
-        <h2>What I can help with</h2>
+    <aside class="chat-side">
 
-        <ul class="capability-list">
-            <li>
-                <span>▦</span>
-                <div>
-                    <b>Dataset structure</b>
-                    <small>Rows, columns, and field names</small>
-                </div>
-            </li>
+        <div class="panel">
 
-            <li>
-                <span>◉</span>
-                <div>
-                    <b>Data quality</b>
-                    <small>Missing cells and duplicates</small>
-                </div>
-            </li>
+            <h3>Suggested questions</h3>
 
-            <li>
-                <span>∑</span>
-                <div>
-                    <b>Numeric summaries</b>
-                    <small>Means and maximum values</small>
-                </div>
-            </li>
-        </ul>
+            <p class="muted tiny">Click a question to start exploring.</p>
 
-        <div class="note-box">
-            This assistant uses local rules and statistics. A live external LLM is not connected in this starter build.
+            <div class="suggestion-list">
+
+                <button class="suggestion">Give me an overview of this dataset</button>
+
+                <button class="suggestion">Which columns have missing values?</button>
+
+                <button class="suggestion">Show the strongest correlations</button>
+
+                <button class="suggestion">Which category has the most records?</button>
+
+                <button class="suggestion">What is the average of each numeric column?</button>
+
+                <button class="suggestion">Are there any duplicate rows?</button>
+
+            </div>
+
         </div>
-    </aside>
-</div>
-{% endblock %}
 
-{% block scripts %}
+        <div class="notice">
+
+            {% if ai_enabled %}
+
+            AI responses are grounded in a compact summary and calculated results from your dataset. The full dataset is not sent to the AI provider.
+
+            {% else %}
+
+            Data calculations are available now. Add an OpenAI API key in your local .env file to enable full conversational AI responses.
+
+            {% endif %}
+
+        </div>
+
+    </aside>
+
+</div>
+
+{% endif %}
+
 <script>
-    document.querySelectorAll('[data-question]').forEach(b =>
-        b.addEventListener('click', () => {
-            document.getElementById('questionInput').value = b.dataset.question;
-            document.getElementById('questionInput').focus();
-        })
+
+(() => {
+
+    const form = document.getElementById('chatForm');
+
+    if (!form) return;
+
+    const input = document.getElementById('chatInput'),
+        messages = document.getElementById('chatMessages'),
+        typing = document.getElementById('typingIndicator'),
+        send = document.getElementById('sendButton');
+
+    const scroll = () => {
+        messages.scrollTop = messages.scrollHeight
+    };
+
+    scroll();
+
+    function addMessage(role, text, source = '') {
+
+        const row = document.createElement('div');
+
+        row.className = 'chat-message ' + role;
+
+        if (role === 'assistant') {
+
+            const avatar = document.createElement('div');
+
+            avatar.className = 'message-avatar';
+
+            avatar.textContent = 'IF';
+
+            row.appendChild(avatar)
+
+        }
+
+        const bubble = document.createElement('div');
+
+        bubble.className = 'message-bubble';
+
+        const body = document.createElement('div');
+
+        body.textContent = text;
+
+        bubble.appendChild(body);
+
+        if (source) {
+
+            const meta = document.createElement('small');
+
+            meta.textContent = source;
+
+            bubble.appendChild(meta)
+
+        }
+
+        row.appendChild(bubble);
+
+        messages.appendChild(row);
+
+        scroll();
+
+    }
+
+    async function sendMessage(text) {
+
+        if (!text.trim()) return;
+
+        addMessage('user', text);
+
+        input.value = '';
+
+        typing.hidden = false;
+
+        send.disabled = true;
+
+        scroll();
+
+        try {
+
+            const response = await fetch('{{ url_for("ask_ai_chat") }}', {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+                    message: text
+                })
+
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) throw new Error(data.error || 'Something went wrong.');
+
+            addMessage('assistant', data.answer, data.source)
+
+        } catch (err) {
+
+            addMessage('assistant', err.message, 'Connection error')
+
+        } finally {
+
+            typing.hidden = true;
+
+            send.disabled = false;
+
+            input.focus()
+
+        }
+
+    }
+
+    form.addEventListener('submit', e => {
+
+        e.preventDefault();
+
+        sendMessage(input.value)
+
+    });
+
+    input.addEventListener('keydown', e => {
+
+        if (e.key === 'Enter' && !e.shiftKey) {
+
+            e.preventDefault();
+
+            form.requestSubmit()
+
+        }
+
+    });
+
+    document.querySelectorAll('.suggestion').forEach(btn =>
+
+        btn.addEventListener('click', () => sendMessage(btn.textContent))
+
     );
+
+    document.getElementById('clearChatForm').addEventListener('submit', async e => {
+
+        e.preventDefault();
+
+        await fetch('{{ url_for("clear_chat") }}', {
+            method: 'POST'
+        });
+
+        messages.innerHTML = '';
+
+        addMessage('assistant', 'New chat started. What would you like to discover in your dataset?', 'InsightForge Assistant')
+
+    });
+
+})();
+
 </script>
+
 {% endblock %}

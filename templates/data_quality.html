@@ -1,223 +1,76 @@
-{% extends "base.html" %}
 
-{% block title %}Data Quality{% endblock %}
-{% block crumb %}Data Quality{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="page-heading">
-    <div>
-        <div class="eyebrow">TRUST YOUR DATA</div>
-        <h1>Data quality analysis</h1>
-        <p class="muted">
-            Understand completeness, consistency, and column-level health.
-        </p>
-    </div>
 
-    <a class="btn primary" href="{{ url_for('cleaning') }}">
-        Clean dataset →
-    </a>
-</div>
+<div class="intro">
 
-<div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-top">
-            <span>Missing values</span>
-            <span class="stat-icon orange">!</span>
-        </div>
-        <strong>{{ summary.missing }}</strong>
-        <small class="muted">Across all columns</small>
-    </div>
+    <h1>Data quality</h1>
 
-    <div class="stat-card">
-        <div class="stat-top">
-            <span>Duplicate rows</span>
-            <span class="stat-icon red">⧉</span>
-        </div>
-        <strong>{{ summary.duplicates }}</strong>
-        <small class="muted">Exact duplicate records</small>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-top">
-            <span>Numeric columns</span>
-            <span class="stat-icon blue">#</span>
-        </div>
-        <strong>{{ summary.numeric_columns }}</strong>
-        <small class="muted">Quantitative fields</small>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-top">
-            <span>Categorical columns</span>
-            <span class="stat-icon violet">Aa</span>
-        </div>
-        <strong>{{ summary.categorical_columns }}</strong>
-        <small class="muted">Text / category fields</small>
-    </div>
-</div>
-
-<div class="content-grid two-col">
-
-    <section class="panel chart-panel">
-        <div class="panel-heading">
-            <div>
-                <h2>Missing values by column</h2>
-                <p>Columns with the most missing cells</p>
-            </div>
-        </div>
-
-        <div class="chart-holder">
-            <canvas id="missingChart"></canvas>
-        </div>
-    </section>
-
-    <section class="panel chart-panel">
-        <div class="panel-heading">
-            <div>
-                <h2>Numeric column averages</h2>
-                <p>Mean value per numeric field</p>
-            </div>
-        </div>
-
-        <div class="chart-holder">
-            <canvas id="numericChart"></canvas>
-        </div>
-    </section>
+    <p>Review missing values, duplicates and column types.</p>
 
 </div>
 
-<section class="panel table-panel">
-    <div class="panel-heading">
-        <div>
-            <h2>Column information</h2>
-            <p>Detailed quality indicators for each field</p>
-        </div>
+{% if stats %}
+
+<div class="grid four">
+
+    {% for label,value in [('QUALITY INDICATOR',stats.score|string+'%'),('MISSING CELLS',stats.missing),('DUPLICATE ROWS',stats.duplicates),('NUMERIC COLUMNS',stats.numeric)] %}
+
+    <div class="metric">
+
+        <small>{{ label }}</small>
+
+        <strong>{{ value }}</strong>
+
     </div>
 
-    <div class="table-wrap">
-        <table>
-            <thead>
-                <tr>
-                    <th>Column name</th>
-                    <th>Data type</th>
-                    <th>Missing</th>
-                    <th>Missing %</th>
-                    <th>Unique values</th>
-                    <th>Quality</th>
-                </tr>
-            </thead>
+    {% endfor %}
 
-            <tbody>
-                {% for item in quality %}
-                <tr>
-                    <td>
-                        <b>{{ item.name }}</b>
-                    </td>
+</div>
 
-                    <td>
-                        <span class="type-pill">{{ item.dtype }}</span>
-                    </td>
+<div class="panel">
 
-                    <td>{{ item.missing }}</td>
-                    <td>{{ item.missing_pct }}%</td>
-                    <td>{{ item.unique }}</td>
+    <h3>Missing values by column</h3>
 
-                    <td>
-                        <span class="quality-tag {{ 'good' if item.missing == 0 else 'warning' }}">
-                            {{ 'Healthy' if item.missing == 0 else 'Review' }}
-                        </span>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</section>
+    <table class="data-table">
 
-{% endblock %}
+        <tr>
+            <th>Column</th>
+            <th>Missing</th>
+            <th>Present</th>
+        </tr>
 
+        {% for col,count in missing.items() %}
 
-{% block scripts %}
-<script>
-    const chartData = JSON.parse('{{ charts|tojson|safe }}');
+        <tr>
 
-    const missLabels = chartData.missing_labels;
-    const missValues = chartData.missing_values;
+            <td>{{ col }}</td>
 
-    const numLabels = chartData.numeric_labels;
-    const numValues = chartData.numeric_values;
+            <td>{{ count }}</td>
 
+            <td>{{ stats.rows-count }}</td>
 
-    // Missing Values Chart
-    new Chart(document.getElementById('missingChart'), {
-        type: 'bar',
+        </tr>
 
-        data: {
-            labels: missLabels,
+        {% endfor %}
 
-            datasets: [{
-                label: 'Missing cells',
-                data: missValues,
-                backgroundColor: '#4c83f6',
-                borderRadius: 6
-            }]
-        },
+    </table>
 
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
+</div>
 
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
+<p class="muted tiny">The quality indicator is heuristic; inspect individual checks before relying on the data.</p>
 
-            scales: {
-                y: {
-                    beginAtZero: true,
+{% else %}
 
-                    ticks: {
-                        precision: 0
-                    }
-                }
-            }
-        }
-    });
+<div class="panel empty">
 
+    <h2>No dataset loaded</h2>
 
-    // Numeric Column Averages Chart
-    new Chart(document.getElementById('numericChart'), {
-        type: 'bar',
+    <a class="btn" href="{{ url_for('upload_page') }}">Upload dataset</a>
 
-        data: {
-            labels: numLabels,
+</div>
 
-            datasets: [{
-                label: 'Average',
-                data: numValues,
-                backgroundColor: '#28b8a5',
-                borderRadius: 6
-            }]
-        },
+{% endif %}
 
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-
-</script>
 {% endblock %}

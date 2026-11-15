@@ -1,234 +1,105 @@
+
 <!doctype html>
+
 <html lang="en">
 
 <head>
+
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
 
     <title>
-        {% block title %}Dashboard{% endblock %} · InsightForge AI
+        {% block title %}InsightForge AI{% endblock %}
     </title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/style.css') }}"
-    >
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-    <div class="app-shell">
+    <div class="shell">
 
-        <aside class="sidebar" id="sidebar">
+        <aside class="sidebar">
 
-            <a class="brand" href="{{ url_for('dashboard') }}">
-                <span class="brand-mark">✦</span>
+            <a class="brand" href="{{ url_for('home') }}">
+
+                <b class="logo">IF</b>
 
                 <span>
-                    <b>InsightForge</b>
-                    <small>AI ANALYTICS</small>
+                    <strong>InsightForge</strong>
+                    <small>AI Analytics</small>
                 </span>
+
             </a>
 
-            <div class="workspace-label">
-                WORKSPACE
-            </div>
+            <nav>
 
-            <nav class="nav">
+                {% for ep,label,icon,key in [('home','Dashboard','⌂','dashboard'),('upload_page','Upload Data','↑','upload'),('data_quality_page','Data Quality','◫','quality'),('data_cleaning_page','Data Cleaning','⚙','cleaning'),('eda_page','EDA & Visualization','◈','eda'),('ai_insights_page','AI Insights','✦','insights'),('ask_ai_page','Ask AI','?','ask_ai'),('prediction_page','ML Prediction','◎','prediction'),('reports_page','Reports','▣','reports'),('settings_page','Settings','⚙','settings')] %}
 
-                <a
-                    class="{% if request.endpoint == 'dashboard' %}active{% endif %}"
-                    href="{{ url_for('dashboard') }}"
-                >
-                    <span>▦</span> Dashboard
+                <a class="nav-item {% if active_page==key %}active{% endif %}" href="{{ url_for(ep) }}">
+
+                    <span>{{ icon }}</span>
+
+                    {{ label }}
+
                 </a>
 
-                <a
-                    class="{% if request.endpoint in ['upload','preview'] %}active{% endif %}"
-                    href="{{ url_for('upload') }}"
-                >
-                    <span>⇧</span> Upload Dataset
-                </a>
-
-                <a
-                    class="{% if request.endpoint == 'quality' %}active{% endif %}"
-                    href="{{ url_for('quality') }}"
-                >
-                    <span>◉</span> Data Quality
-                </a>
-
-                <a
-                    class="{% if request.endpoint == 'cleaning' %}active{% endif %}"
-                    href="{{ url_for('cleaning') }}"
-                >
-                    <span>✧</span> Data Cleaning
-                </a>
-
-                <a
-                    class="{% if request.endpoint == 'eda' %}active{% endif %}"
-                    href="{{ url_for('eda') }}"
-                >
-                    <span>▥</span> EDA & Visualization
-                </a>
-
-                <a
-                    class="{% if request.endpoint == 'insights' %}active{% endif %}"
-                    href="{{ url_for('insights') }}"
-                >
-                    <span>✳</span> AI Insights
-                </a>
-
-                <a
-                    class="{% if request.endpoint == 'prediction' %}active{% endif %}"
-                    href="{{ url_for('prediction') }}"
-                >
-                    <span>⌁</span> ML Prediction
-                </a>
-
-                <a
-                    class="{% if request.endpoint == 'ask_ai' %}active{% endif %}"
-                    href="{{ url_for('ask_ai') }}"
-                >
-                    <span>◌</span> Ask AI
-                </a>
-
-                <a
-                    class="{% if request.endpoint == 'reports' %}active{% endif %}"
-                    href="{{ url_for('reports') }}"
-                >
-                    <span>▤</span> Reports
-                </a>
+                {% endfor %}
 
             </nav>
 
-            <div class="sidebar-bottom">
+            <div class="sidefoot">
 
-                <a href="{{ url_for('settings') }}">
-                    <span>⚙</span> Settings
-                </a>
+                InsightForge AI
 
-                <a href="{{ url_for('logout') }}">
-                    <span>↪</span> Reset Session
-                </a>
-
-                <a href="{{ url_for('portfolio') }}">
-                    <span>◇</span> Portfolio
-                </a>
-
-            </div>
-
-            <div class="sidebar-user">
-
-                <div class="avatar">V</div>
-
-                <div>
-                    <b>Vivek</b>
-                    <small>Data Science Student</small>
-                </div>
-
-                <span class="online-dot"></span>
+                <small>Data to decisions</small>
 
             </div>
 
         </aside>
 
-        <main class="main-area">
+        <main class="main">
 
             <header class="topbar">
 
-                <button
-                    class="menu-toggle"
-                    id="menuToggle"
-                    aria-label="Toggle menu"
-                >
-                    ☰
-                </button>
+                <div>
 
-                <div class="breadcrumb">
-                    Workspace
-                    <span>/</span>
-                    <b>{% block crumb %}Dashboard{% endblock %}</b>
-                </div>
+                    <h2>{{ header_title }}</h2>
 
-                <div class="top-actions">
-
-                    <span class="status-pill">
-                        <i></i> System ready
-                    </span>
-
-                    <button
-                        class="icon-btn"
-                        aria-label="Notifications"
-                    >
-                        ♧
-                    </button>
-
-                    <div class="top-avatar">V</div>
-
-                    <span class="top-name">Vivek</span>
+                    <p>Transform your data into meaningful insights.</p>
 
                 </div>
+
+                <span class="chip">● Workspace</span>
 
             </header>
 
-            <section class="page-content">
+            {% with messages=get_flashed_messages(with_categories=true) %}
 
-                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for cat,msg in messages %}
 
-                    {% if messages %}
+                    <div class="flash {{ cat }}">{{ msg }}</div>
 
-                        <div class="flash-stack">
+                {% endfor %}
 
-                            {% for category, message in messages %}
+            {% endwith %}
 
-                                <div class="flash {{ category }}">
+            {% block content %}{% endblock %}
 
-                                    {{ message }}
-
-                                    <button onclick="this.parentElement.remove()">
-                                        ×
-                                    </button>
-
-                                </div>
-
-                            {% endfor %}
-
-                        </div>
-
-                    {% endif %}
-
-                {% endwith %}
-
-                {% block content %}{% endblock %}
-
-                <footer class="footer">
-
-                    <span>© {{ year }} InsightForge AI</span>
-
-                    <span>
-                        Built for better data decisions <b>✦</b>
-                    </span>
-
-                </footer>
-
-            </section>
+            <footer>
+                InsightForge AI · Python · Flask · Data Science
+            </footer>
 
         </main>
 
     </div>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-
-    {% block scripts %}{% endblock %}
+    <script src="{{ url_for('static',filename='js/script.js') }}"></script>
 
 </body>
+
 </html>

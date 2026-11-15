@@ -1,101 +1,83 @@
-{% extends "base.html" %}
 
-{% block title %}Data Cleaning{% endblock %}
-{% block crumb %}Data Cleaning{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="page-heading">
-    <div>
-        <div class="eyebrow">PREPARE YOUR DATA</div>
-        <h1>Data cleaning</h1>
-        <p class="muted">Apply practical cleaning steps before analysis.</p>
-    </div>
+
+<div class="intro">
+
+    <h1>Data cleaning</h1>
+
+    <p>Apply transparent cleaning operations. Your original upload remains unchanged.</p>
+
 </div>
 
-<div class="content-grid cleaning-grid">
-    <section class="panel">
-        <div class="panel-heading">
-            <div>
-                <h2>Cleaning options</h2>
-                <p>Choose how you want to handle data issues.</p>
-            </div>
-        </div>
+{% if df is not none %}
 
-        <form method="post" class="clean-form">
-            <label class="option-row">
-                <span class="option-symbol blue">⌁</span>
-                <span class="option-copy">
-                    <b>Handle missing values</b>
-                    <small>Fill empty cells with a selected strategy.</small>
-                </span>
-                <select name="missing_method">
-                    <option value="mean">Mean (numeric)</option>
-                    <option value="median">Median (numeric)</option>
-                    <option value="zero">Zero (numeric)</option>
-                </select>
-            </label>
+<div class="panel">
 
-            <label class="option-row">
-                <span class="option-symbol green">✓</span>
-                <span class="option-copy">
-                    <b>Remove duplicate rows</b>
-                    <small>Keep only the first occurrence of each row.</small>
-                </span>
-                <input type="checkbox" name="remove_duplicates" checked>
-            </label>
+    <h3>Cleaning options</h3>
 
-            <label class="option-row">
-                <span class="option-symbol violet">⇄</span>
-                <span class="option-copy">
-                    <b>Convert numeric-like text</b>
-                    <small>Convert text columns when most values are numeric.</small>
-                </span>
-                <input type="checkbox" name="convert_types">
-            </label>
+    <form method="post">
 
-            <div class="warning-note">
-                ⓘ Cleaning changes the active uploaded file. Keep a backup of important source data.
-            </div>
+        <label>
+            Missing-value strategy
 
-            <button class="btn primary" type="submit">
-                Run cleaning process →
-            </button>
-        </form>
-    </section>
+            <select name="missing_strategy">
 
-    <aside class="panel">
-        <div class="panel-heading">
-            <div>
-                <h2>Current data status</h2>
-                <p>Before cleaning</p>
-            </div>
-        </div>
+                <option value="keep">Keep missing values</option>
 
-        <div class="quality-summary">
-            <div>
-                <span>Rows</span>
-                <b>{{ summary.rows }}</b>
-            </div>
+                <option value="drop_rows">Drop rows containing missing values</option>
 
-            <div>
-                <span>Columns</span>
-                <b>{{ summary.columns }}</b>
-            </div>
+                <option value="mean">Fill numeric values with mean</option>
 
-            <div>
-                <span>Missing cells</span>
-                <b>{{ summary.missing }}</b>
-            </div>
+                <option value="median">Fill numeric values with median</option>
 
-            <div>
-                <span>Duplicate rows</span>
-                <b>{{ summary.duplicates }}</b>
-            </div>
-        </div>
+                <option value="mode">Fill with mode</option>
 
-        <a class="btn secondary wide" href="{{ url_for('quality') }}">
-            Review data quality
-        </a>
-    </aside>
+                <option value="zero">Fill numeric values with zero</option>
+
+            </select>
+
+        </label>
+
+        <label class="check">
+
+            <input type="checkbox" name="remove_duplicates" value="yes">
+
+            Remove duplicate rows
+
+        </label>
+
+        <button class="btn">Apply cleaning</button>
+
+    </form>
+
 </div>
+
+{% if cleaned_df is not none %}
+
+<div class="panel">
+
+    <h3>Cleaned dataset ready</h3>
+
+    <p>{{ cleaned_df.shape[0] }} rows × {{ cleaned_df.shape[1] }} columns</p>
+
+    <a class="btn" href="{{ url_for('download_cleaned_file',filename=session.get('cleaned_file')) }}">Download cleaned CSV</a>
+
+</div>
+
+{% endif %}
+
+{% else %}
+
+<div class="panel empty">
+
+    <h2>Upload a dataset first</h2>
+
+    <a class="btn" href="{{ url_for('upload_page') }}">Upload dataset</a>
+
+</div>
+
+{% endif %}
+
 {% endblock %}
