@@ -5,15 +5,15 @@
 
 {% block content %}
 
-\<style>
-
+<style>
 .ml-intro {
-    margin: 8px 0 22px
+    margin: 8px 0 22px;
 }
 
-.ml-intro p, .hint {
+.ml-intro p,
+.hint {
     color: #718096;
-    font-size: 13px
+    font-size: 13px;
 }
 
 .ml-panel {
@@ -22,14 +22,14 @@
     border-radius: 16px;
     padding: 22px;
     margin-bottom: 20px;
-    box-shadow: 0 5px 18px rgba(20,40,80,.04)
+    box-shadow: 0 5px 18px rgba(20, 40, 80, .04);
 }
 
 .ml-form {
     display: grid;
-    grid-template-columns: repeat(3,minmax(170px,1fr));
+    grid-template-columns: repeat(3, minmax(170px, 1fr));
     gap: 16px;
-    align-items: end
+    align-items: end;
 }
 
 .ml-form label {
@@ -38,7 +38,7 @@
     gap: 8px;
     font-size: 13px;
     font-weight: 600;
-    color: #344054
+    color: #344054;
 }
 
 .ml-form select {
@@ -47,44 +47,44 @@
     border: 1px solid #dce3ee;
     border-radius: 9px;
     background: #fff;
-    color: #263348
+    color: #263348;
 }
 
 .ml-form .btn {
     border: 0;
     cursor: pointer;
-    min-height: 42px
+    min-height: 42px;
 }
 
 .metric-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(145px,1fr));
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
     gap: 13px;
-    margin: 16px 0
+    margin: 16px 0;
 }
 
 .metric-card {
     padding: 17px;
     border-radius: 12px;
     background: #f5f8ff;
-    border: 1px solid #e6edff
+    border: 1px solid #e6edff;
 }
 
 .metric-card small {
     display: block;
     color: #64748b;
-    margin-bottom: 8px
+    margin-bottom: 8px;
 }
 
 .metric-card strong {
     font-size: 23px;
-    color: #172b4d
+    color: #172b4d;
 }
 
 .chart-grid {
     display: grid;
-    grid-template-columns: repeat(2,minmax(0,1fr));
-    gap: 16px
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
 }
 
 .chart-box {
@@ -92,17 +92,17 @@
     border: 1px solid #e8edf5;
     border-radius: 13px;
     padding: 12px;
-    background: #fff
+    background: #fff;
 }
 
 .chart-box h3 {
     font-size: 14px;
-    margin: 3px 8px
+    margin: 3px 8px;
 }
 
 .chart {
     width: 100%;
-    min-height: 330px
+    min-height: 330px;
 }
 
 .result-note {
@@ -112,236 +112,216 @@
     border-radius: 8px;
     color: #52627a;
     font-size: 13px;
-    line-height: 1.6
+    line-height: 1.6;
 }
 
 .error-box {
     padding: 13px;
     background: #fff2f0;
     color: #b42318;
-    border-radius: 9px
+    border-radius: 9px;
 }
 
 .empty-state {
     text-align: center;
-    padding: 35px
+    padding: 35px;
 }
 
 .empty-state p {
-    color: #718096
+    color: #718096;
 }
 
-@media(max-width:800px) {
-    .ml-form, .chart-grid {
-        grid-template-columns: 1fr
+@media (max-width: 800px) {
+    .ml-form,
+    .chart-grid {
+        grid-template-columns: 1fr;
     }
 }
+</style>
 
-\</style>
+<div class="intro ml-intro">
 
-\<div class="intro ml-intro">
+    <h1>Machine Learning Prediction</h1>
 
-    \<h1>Machine Learning Prediction\</h1>
+    <p>
+        Train a model on your uploaded dataset, evaluate it on unseen rows,
+        and explore the predictions with interactive charts.
+    </p>
 
-    \<p>Train a model on your uploaded dataset, evaluate it on unseen rows, and explore the predictions with interactive charts.\</p>
-
-\</div>
+</div>
 
 {% if columns %}
 
-\<div class="ml-panel">
+<div class="ml-panel">
 
-    \<h3 style="margin:0 0 6px">Configure your model\</h3>
+    <h3 style="margin: 0 0 6px;">Configure your model</h3>
 
-    \<p class="hint" style="margin:0 0 18px">Choose the column you want to predict. All other usable columns are considered as model features.\</p>
+    <p class="hint" style="margin: 0 0 18px;">
+        Choose the column you want to predict.
+        All other usable columns are considered as model features.
+    </p>
 
-    \<form method="post" class="ml-form">
+    <form method="post" class="ml-form">
 
-        \<label>
-
+        <label>
             Target column
 
-            \<select name="target" required>
+            <select name="target" required>
 
                 {% for c in columns %}
 
-                \<option value="{{ c }}" {% if result and result.target=*=*&#x63; %}selected{% endif %}>{{ c }}\</option>
+                <option value="{{ c }}"
+                    {% if result and result.target == c %}selected{% endif %}>
+                    {{ c }}
+                </option>
 
                 {% endfor %}
 
-            \</select>
+            </select>
+        </label>
 
-        \</label>
-
-        \<label>
-
+        <label>
             Prediction type
 
-            \<select name="task" id="taskSelect">
+            <select name="task" id="taskSelect">
 
-                \<option value="regression" {% if not result or result.task=*=*'regression' %}selected{% endif %}>Regression — predict a number\</option>
+                <option value="regression"
+                    {% if not result or result.task == 'regression' %}selected{% endif %}>
+                    Regression — predict a number
+                </option>
 
-                \<option value="classification" {% if result and result.task=*=*'classification' %}selected{% endif %}>Classification — predict a category\</option>
+                <option value="classification"
+                    {% if result and result.task == 'classification' %}selected{% endif %}>
+                    Classification — predict a category
+                </option>
 
-            \</select>
+            </select>
+        </label>
 
-        \</label>
-
-        \<label>
-
+        <label>
             Algorithm
 
-            \<select name="algorithm">
+            <select name="algorithm">
 
-                \<option value="random_forest">Random Forest\</option>
+                <option value="random_forest">Random Forest</option>
+                <option value="extra_trees">Extra Trees</option>
+                <option value="decision_tree">Decision Tree</option>
+                <option value="linear">Linear / Logistic Regression</option>
 
-                \<option value="extra_trees">Extra Trees\</option>
+            </select>
+        </label>
 
-                \<option value="decision_tree">Decision Tree\</option>
+        <button class="btn" type="submit">
+            Train &amp; evaluate model
+        </button>
 
-                \<option value="linear">Linear / Logistic Regression\</option>
+    </form>
 
-            \</select>
+    <p class="hint" style="margin: 14px 0 0;">
+        Tip: use Regression for continuous numeric targets (such as sales or profit),
+        and Classification for labels (such as customer type or outcome).
+    </p>
 
-        \</label>
-
-        \<button class="btn" type="submit">Train &amp; evaluate model\</button>
-
-    \</form>
-
-    \<p class="hint" style="margin:14px 0 0">Tip: use Regression for continuous numeric targets (such as sales or profit), and Classification for labels (such as customer type or outcome).\</p>
-
-\</div>
+</div>
 
 {% else %}
 
-\<div class="ml-panel empty-state">
+<div class="ml-panel empty-state">
 
-    \<h2>Upload a dataset first\</h2>
+    <h2>Upload a dataset first</h2>
 
-    \<p>Machine learning needs a dataset with enough usable rows and a target column.\</p>
+    <p>
+        Machine learning needs a dataset with enough usable rows and a target column.
+    </p>
 
-    \<a class="btn" href="{{ url_for('upload_page') }}">Upload dataset\</a>
+    <a class="btn" href="{{ url_for('upload_page') }}">
+        Upload dataset
+    </a>
 
-\</div>
+</div>
 
 {% endif %}
 
 {% if result %}
 
-\<div class="ml-panel">
+<div class="ml-panel">
 
     {% if result.error %}
 
-    \<div class="error-box">
-
-        \<strong>Model could not be trained\</strong>
-
-        \<br>
-
+    <div class="error-box">
+        <strong>Model could not be trained</strong>
+        <br>
         {{ result.error }}
-
-    \</div>
+    </div>
 
     {% else %}
 
-    \<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+    <div style="display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap;">
 
-        \<div>
+        <div>
+            <h2 style="margin: 0 0 5px; font-size: 19px;">
+                Model evaluation
+            </h2>
 
-            \<h2 style="margin:0 0 5px;font-size:19px">Model evaluation\</h2>
+            <p class="hint" style="margin: 0;">
+                {{ result.algorithm }} · Target: {{ result.target }}
+            </p>
+        </div>
 
-            \<p class="hint" style="margin:0">{{ result.algorithm }} · Target: {{ result.target }}\</p>
+        <span class="chip">{{ result.task|capitalize }}</span>
 
-        \</div>
+    </div>
 
-        \<span class="chip">{{ result.task|capitalize }}\</span>
+    <div class="metric-grid">
 
-    \</div>
+        {% for k, v in result.metrics.items() %}
 
-    \<div class="metric-grid">
-
-        {% for k,v in result.metrics.items() %}
-
-        \<div class="metric-card">
-
-            \<small>{{ k }}\</small>
-
-            \<strong>{{ v }}\</strong>
-
-        \</div>
+        <div class="metric-card">
+            <small>{{ k }}</small>
+            <strong>{{ v }}</strong>
+        </div>
 
         {% endfor %}
 
-    \</div>
+    </div>
 
-    \<div class="result-note">{{ result.note }}\</div>
+    <div class="result-note">
+        {{ result.note }}
+    </div>
 
     {% endif %}
 
-\</div>
+</div>
 
 {% if not result.error and result.charts %}
 
-\<div class="ml-panel">
+<div class="ml-panel">
 
-    \<h2 style="font-size:18px;margin:0 0 16px">Prediction visualizations\</h2>
+    <h2 style="font-size: 18px; margin: 0 0 16px;">
+        Prediction visualizations
+    </h2>
 
-    \<div class="chart-grid">
-
-        {% for chart in result.charts %}
-
-        \<section class="chart-box">
-
-            \<h3>{{ chart.title }}\</h3>
-
-            \<div id="prediction-chart-{{ loop.index0 }}" class="chart">\</div>
-
-        \</section>
-
-        {% endfor %}
-
-    \</div>
-
-\</div>
-
-\<script>
-
-document.addEventListener('DOMContentLoaded', function () {
-
-    const charts = [
+    <div class="chart-grid">
 
         {% for chart in result.charts %}
 
-        {{ chart.json|safe }}
+        <section class="chart-box">
 
-        {% if not loop.last %},{% endif %}
+            <h3>{{ chart.title }}</h3>
+
+            <div
+                id="prediction-chart-{{ loop.index0 }}"
+                class="chart"
+                data-chart='{{ chart.json|forceescape }}'>
+            </div>
+
+        </section>
 
         {% endfor %}
 
-    ];
+    </div>
 
-    charts.forEach((figure, index) => {
-
-        const element = document.getElementById('prediction-chart-' + index);
-
-        if (element && window\.Plotly)
-
-            Plotly.newPlot(
-                element,
-                figure.data,
-                figure.layout,
-                {
-                    responsive: true,
-                    displaylogo: false
-                }
-            );
-
-    });
-
-});
-
-\</script>
+</div>
 
 {% endif %}
 

@@ -3,239 +3,181 @@
 
 {% block content %}
 
-\<div class="intro">
-
-    \<span class="eyebrow">VISUAL ANALYTICS\</span>
-
-    \<h1>EDA & Visualization\</h1>
-
-    \<p>Explore your uploaded data through interactive charts, just like a BI dashboard. Hover, zoom, compare and inspect the actual dataset.\</p>
-
-\</div>
+<div class="intro">
+    <span class="eyebrow">VISUAL ANALYTICS</span>
+    <h1>EDA & Visualization</h1>
+    <p>Explore your uploaded data through interactive charts, just like a BI dashboard. Hover, zoom, compare and inspect the actual dataset.</p>
+</div>
 
 {% if df is not none %}
 
-\<div class="grid four">
+<div class="grid four">
 
-    \<div class="metric">
+    <div class="metric">
+        <small>TOTAL RECORDS</small>
+        <strong>{{ '{:,}'.format(summary.rows) }}</strong>
+        <span>Rows in current dataset</span>
+    </div>
 
-        \<small>TOTAL RECORDS\</small>
+    <div class="metric">
+        <small>DATA FIELDS</small>
+        <strong>{{ summary.columns }}</strong>
+        <span>Columns available</span>
+    </div>
 
-        \<strong>{{ '{:,}'.format(summary.rows) }}\</strong>
+    <div class="metric">
+        <small>NUMERIC FIELDS</small>
+        <strong>{{ summary.numeric }}</strong>
+        <span>Suitable for measures</span>
+    </div>
 
-        \<span>Rows in current dataset\</span>
+    <div class="metric">
+        <small>MISSING CELLS</small>
+        <strong>{{ '{:,}'.format(summary.missing) }}</strong>
+        <span>Values requiring attention</span>
+    </div>
 
-    \</div>
+</div>
 
-    \<div class="metric">
+<div class="panel">
 
-        \<small>DATA FIELDS\</small>
+    <div class="chart-heading">
+        <div>
+            <h3>Automatic visual analysis</h3>
+            <p class="muted tiny">Charts are generated dynamically from your uploaded dataset.</p>
+        </div>
 
-        \<strong>{{ summary.columns }}\</strong>
-
-        \<span>Columns available\</span>
-
-    \</div>
-
-    \<div class="metric">
-
-        \<small>NUMERIC FIELDS\</small>
-
-        \<strong>{{ summary.numeric }}\</strong>
-
-        \<span>Suitable for measures\</span>
-
-    \</div>
-
-    \<div class="metric">
-
-        \<small>MISSING CELLS\</small>
-
-        \<strong>{{ '{:,}'.format(summary.missing) }}\</strong>
-
-        \<span>Values requiring attention\</span>
-
-    \</div>
-
-\</div>
-
-\<div class="panel">
-
-    \<div class="chart-heading">
-
-        \<div>
-
-            \<h3>Automatic visual analysis\</h3>
-
-            \<p class="muted tiny">Charts are generated dynamically from your uploaded dataset.\</p>
-
-        \</div>
-
-        \<span class="chip">{{ charts|length }} visuals\</span>
-
-    \</div>
+        <span class="chip">{{ charts|length }} visuals</span>
+    </div>
 
     {% if charts %}
 
-    \<div class="powerbi-grid">
+    <div class="powerbi-grid">
 
         {% for chart in charts %}
 
-        \<section class="chart-card">
+        <section class="chart-card">
 
-            \<div class="chart-title">
+            <div class="chart-title">
+                <h3>{{ chart.title }}</h3>
+                <p>{{ chart.subtitle }}</p>
+            </div>
 
-                \<h3>{{ chart.title }}\</h3>
+            <div
+                id="eda-chart-{{ loop.index0 }}"
+                class="plot-area"
+                data-chart='{{ {"data": chart.data, "layout": chart.layout}|tojson|forceescape }}'>
+            </div>
 
-                \<p>{{ chart.subtitle }}\</p>
-
-            \</div>
-
-            \<div id="eda-chart-{{ loop.index0 }}" class="plot-area">\</div>
-
-            \<script>
-
-                document.addEventListener('DOMContentLoaded', function() {
-
-                    const data = {{ chart.data|tojson }};
-
-                    const layout = Object.assign({
-
-                        autosize: true,
-
-                        margin: {
-                            l: 48,
-                            r: 18,
-                            t: 12,
-                            b: 55
-                        },
-
-                        paper_bgcolor: '#ffffff',
-
-                        plot_bgcolor: '#ffffff',
-
-                        font: {
-                            family: 'DM Sans, Arial',
-                            color: '#52617a',
-                            size: 11
-                        },
-
-                        showlegend: false
-
-                    }, {{ chart.layout|tojson }});
-
-                    Plotly.newPlot(
-                        'eda-chart-{{ loop.index0 }}',
-                        data,
-                        layout,
-                        {
-                            responsive: true,
-                            displaylogo: false,
-                            modeBarButtonsToRemove: ['lasso2d', 'select2d']
-                        }
-                    );
-
-                });
-
-            \</script>
-
-        \</section>
+        </section>
 
         {% endfor %}
 
-    \</div>
+    </div>
 
     {% else %}
 
-    \<p class="notice">No suitable chart could be generated. Upload a dataset with numeric or categorical columns.\</p>
+    <p class="notice">
+        No suitable chart could be generated. Upload a dataset with numeric or categorical columns.
+    </p>
 
     {% endif %}
 
-\</div>
+</div>
 
 {% if numeric %}
 
-\<div class="panel">
+<div class="panel">
 
-    \<h3>Build a custom comparison\</h3>
+    <h3>Build a custom comparison</h3>
 
-    \<p class="muted tiny">Choose a category and a numeric measure to create your own interactive chart.\</p>
+    <p class="muted tiny">
+        Choose a category and a numeric measure to create your own interactive chart.
+    </p>
 
-    \<form method="post" class="chart-form">
+    <form method="post" class="chart-form">
 
-        \<label>
-
+        <label>
             Category / X-axis
 
-            \<select name="x">
+            <select name="x">
 
                 {% for c in df.columns %}
 
-                \<option value="{{ c }}" {% if xcol=*=*&#x63; %}selected{% endif %}>{{ c }}\</option>
+                <option value="{{ c }}" {% if xcol == c %}selected{% endif %}>
+                    {{ c }}
+                </option>
 
                 {% endfor %}
 
-            \</select>
+            </select>
+        </label>
 
-        \</label>
-
-        \<label>
-
+        <label>
             Measure / Y-axis
 
-            \<select name="y">
+            <select name="y">
 
                 {% for c in numeric %}
 
-                \<option value="{{ c }}" {% if ycol=*=*&#x63; %}selected{% endif %}>{{ c }}\</option>
+                <option value="{{ c }}" {% if ycol == c %}selected{% endif %}>
+                    {{ c }}
+                </option>
 
                 {% endfor %}
 
-            \</select>
+            </select>
+        </label>
 
-        \</label>
+        <button class="btn">Generate comparison</button>
 
-        \<button class="btn">Generate comparison\</button>
+    </form>
 
-    \</form>
-
-\</div>
+</div>
 
 {% endif %}
 
 {% if correlation %}
 
-\<div class="panel">
+<div class="panel">
 
-    \<h3>Correlation matrix\</h3>
+    <h3>Correlation matrix</h3>
 
-    \<p class="muted tiny">Shows how numeric fields move in relation to one another.\</p>
+    <p class="muted tiny">
+        Shows how numeric fields move in relation to one another.
+    </p>
 
-    \<div class="table-wrap">{{ correlation|safe }}\</div>
+    <div class="table-wrap">
+        {{ correlation|safe }}
+    </div>
 
-\</div>
+</div>
 
 {% endif %}
 
-\<div class="panel">
+<div class="panel">
 
-    \<h3>Descriptive statistics\</h3>
+    <h3>Descriptive statistics</h3>
 
-    \<div class="table-wrap">{{ df.describe(include='all').to_html(classes='data-table')|safe }}\</div>
+    <div class="table-wrap">
+        {{ df.describe(include='all').to_html(classes='data-table')|safe }}
+    </div>
 
-\</div>
+</div>
 
 {% else %}
 
-\<div class="panel empty">
+<div class="panel empty">
 
-    \<h2>No dataset loaded\</h2>
+    <h2>No dataset loaded</h2>
 
-    \<p>Upload a CSV or Excel file to generate Power BI-style visual analytics.\</p>
+    <p>Upload a CSV or Excel file to generate Power BI-style visual analytics.</p>
 
-    \<a class="btn" href="{{ url_for('upload_page') }}">Upload dataset\</a>
+    <a class="btn" href="{{ url_for('upload_page') }}">
+        Upload dataset
+    </a>
 
-\</div>
+</div>
 
 {% endif %}
 
