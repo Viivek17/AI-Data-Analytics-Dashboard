@@ -537,10 +537,18 @@
                 </div>
 
 
-                <div class="quality-track">
+            <div class="quality-track">
 
                     <i
-                        style="width:{{ (col.missing / (df.shape[0] if df.shape[0] else 1) * 100)|round(1) }}%"
+                        
+                 class="quality-track">
+
+                    <i
+        style="--missing-width: {{ ((col.missing / (df.shape[0] if df.shape[0] else 1)) * 100)|round(1) }}%;"
+            ></i>
+
+                </div>
+
                     ></i>
 
                 </div>

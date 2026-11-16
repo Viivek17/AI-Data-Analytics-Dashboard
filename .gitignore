@@ -1,4 +1,11 @@
-venv/
 __pycache__/
-*.pyc
+*.py[cod]
+.venv/
+venv/
 .env
+uploads/*
+!uploads/.gitkeep
+reports/*
+!reports/.gitkeep
+.pytest_cache/
+.DS_Store

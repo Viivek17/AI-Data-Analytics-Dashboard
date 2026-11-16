@@ -9,3 +9,5 @@ python-dotenv
 openpyxl
 xlrd
 openai
+matplotlib
+

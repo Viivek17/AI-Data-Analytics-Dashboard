@@ -1395,4 +1395,8 @@ footer {
     .cleaning-submit .btn {
         width:100%
     }
+    .quality-track i {
+    display: block;
+    width: var(--missing-width, 0%);
+    }
 }

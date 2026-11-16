@@ -1,6 +1,10 @@
 
 {% extends 'base.html' %}
 
+{% block title %}
+    AI Data Insights | InsightForge AI
+{% endblock %}
+
 {% block content %}
 
 <div class="intro insights-intro">
@@ -9,7 +13,9 @@
         INTELLIGENCE OVERVIEW
     </span>
 
-    <h1>AI Data Insights</h1>
+    <h1>
+        AI Data Insights
+    </h1>
 
     <p>
         Turn your uploaded dataset into clear, evidence-based findings,
@@ -17,12 +23,20 @@
     </p>
 
     {% if profile %}
+
     <div class="insight-source">
+
         Analysing
-        <strong>{{ profile.name }}</strong>
+
+        <strong>
+            {{ profile.name }}
+        </strong>
+
         · {{ '{:,}'.format(profile.rows) }} records
         · {{ profile.columns }} fields
+
     </div>
+
     {% endif %}
 
 </div>
@@ -33,15 +47,23 @@
 <div class="grid four insight-metrics">
 
     {% for metric in metrics %}
+
     <div class="metric">
 
-        <small>{{ metric.label|upper }}</small>
+        <small>
+            {{ metric.label|upper }}
+        </small>
 
-        <strong>{{ metric.value }}</strong>
+        <strong>
+            {{ metric.value }}
+        </strong>
 
-        <span>{{ metric.note }}</span>
+        <span>
+            {{ metric.note }}
+        </span>
 
     </div>
+
     {% endfor %}
 
 </div>
@@ -55,7 +77,9 @@
             AUTOMATED FINDINGS
         </span>
 
-        <h2>What the data is telling us</h2>
+        <h2>
+            What the data is telling us
+        </h2>
 
         <p class="muted">
             Every finding below is calculated from the currently uploaded dataset.
@@ -81,11 +105,17 @@
         <div class="finding-mark">
 
             {% if item.type == 'positive' %}
+
                 ✓
+
             {% elif item.type == 'warning' %}
+
                 !
+
             {% else %}
+
                 ↗
+
             {% endif %}
 
         </div>
@@ -96,9 +126,13 @@
                 {{ item.tag }}
             </span>
 
-            <h3>{{ item.title }}</h3>
+            <h3>
+                {{ item.title }}
+            </h3>
 
-            <p>{{ item.text }}</p>
+            <p>
+                {{ item.text }}
+            </p>
 
         </div>
 
@@ -121,7 +155,9 @@
             VISUAL EXPLORATION
         </span>
 
-        <h2>Insights at a glance</h2>
+        <h2>
+            Insights at a glance
+        </h2>
 
         <p class="muted">
             Interactive charts generated from the uploaded data.
@@ -140,7 +176,9 @@
 
         <div class="chart-title">
 
-            <h3>{{ chart.title }}</h3>
+            <h3>
+                {{ chart.title }}
+            </h3>
 
             <p>
                 Calculated from the current dataset
@@ -151,29 +189,8 @@
         <div
             id="insight-chart-{{ loop.index0 }}"
             class="plot-area"
+            data-chart='{{ chart.json|forceescape }}'
         ></div>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-
-                const spec = {{ chart.json|safe }};
-
-                Plotly.newPlot(
-                    'insight-chart-{{ loop.index0 }}',
-                    spec.data,
-                    spec.layout,
-                    {
-                        responsive: true,
-                        displaylogo: false,
-                        modeBarButtonsToRemove: [
-                            'lasso2d',
-                            'select2d'
-                        ]
-                    }
-                );
-
-            });
-        </script>
 
     </section>
 
@@ -196,12 +213,18 @@
             NEXT BEST ACTIONS
         </span>
 
-        <h3>Recommended analysis steps</h3>
+        <h3>
+            Recommended analysis steps
+        </h3>
 
         <ul>
 
             {% for item in recommendations %}
-            <li>{{ item }}</li>
+
+            <li>
+                {{ item }}
+            </li>
+
             {% endfor %}
 
         </ul>
@@ -213,7 +236,9 @@
 
 <div class="notice insight-disclaimer">
 
-    <strong>Methodology note:</strong>
+    <strong>
+        Methodology note:
+    </strong>
 
     These are automated statistical observations, not verified business
     conclusions. Potential anomalies use a simple 3-standard-deviation
@@ -231,7 +256,9 @@
         ✦
     </div>
 
-    <h2>Start with your dataset</h2>
+    <h2>
+        Start with your dataset
+    </h2>
 
     <p>
         Upload a CSV or Excel file to generate a professional insight report
