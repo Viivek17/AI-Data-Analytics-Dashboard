@@ -1,38 +1,19 @@
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
 
-    const chartElements = document.querySelectorAll('.chart[data-chart]');
+    const input = document.getElementById('dataset');
+    const label = document.getElementById('file-name');
 
-    chartElements.forEach(function (element) {
+    if (input && label) {
 
-        try {
+        input.addEventListener('change', () => {
 
-            const figure = JSON.parse(element.dataset.chart);
+            label.textContent = input.files.length
+                ? input.files[0].name
+                : 'No file selected';
 
-            if (window.Plotly && figure) {
+        });
 
-                Plotly.newPlot(
-                    element,
-                    figure.data,
-                    figure.layout,
-                    {
-                        responsive: true,
-                        displaylogo: false
-                    }
-                );
-
-            }
-
-        } catch (error) {
-
-            console.error(
-                'Prediction chart rendering error:',
-                element.id,
-                error
-            );
-
-        }
-
-    });
+    }
 
 });
