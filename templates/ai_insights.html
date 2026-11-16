@@ -3,37 +3,248 @@
 
 {% block content %}
 
-    <div class="intro">
-        <h1>Dataset insights</h1>
-        <p>Statistical observations calculated from your uploaded data.</p>
+<div class="intro insights-intro">
+
+    <span class="eyebrow">
+        INTELLIGENCE OVERVIEW
+    </span>
+
+    <h1>AI Data Insights</h1>
+
+    <p>
+        Turn your uploaded dataset into clear, evidence-based findings,
+        quality signals and analysis recommendations.
+    </p>
+
+    {% if profile %}
+    <div class="insight-source">
+        Analysing
+        <strong>{{ profile.name }}</strong>
+        · {{ '{:,}'.format(profile.rows) }} records
+        · {{ profile.columns }} fields
+    </div>
+    {% endif %}
+
+</div>
+
+
+{% if df is not none %}
+
+<div class="grid four insight-metrics">
+
+    {% for metric in metrics %}
+    <div class="metric">
+
+        <small>{{ metric.label|upper }}</small>
+
+        <strong>{{ metric.value }}</strong>
+
+        <span>{{ metric.note }}</span>
+
+    </div>
+    {% endfor %}
+
+</div>
+
+
+<div class="insight-section-head">
+
+    <div>
+
+        <span class="eyebrow">
+            AUTOMATED FINDINGS
+        </span>
+
+        <h2>What the data is telling us</h2>
+
+        <p class="muted">
+            Every finding below is calculated from the currently uploaded dataset.
+        </p>
+
     </div>
 
-    {% if insights %}
+    <span class="chip">
+        {{ findings|length }} findings
+    </span>
 
-        <div class="grid two">
+</div>
 
-            {% for item in insights %}
 
-                <div class="insight">
-                    <b>✦</b>
-                    <p>{{ item }}</p>
-                </div>
+{% if findings %}
 
+<div class="professional-findings">
+
+    {% for item in findings %}
+
+    <article class="finding-card {{ item.type }}">
+
+        <div class="finding-mark">
+
+            {% if item.type == 'positive' %}
+                ✓
+            {% elif item.type == 'warning' %}
+                !
+            {% else %}
+                ↗
+            {% endif %}
+
+        </div>
+
+        <div class="finding-content">
+
+            <span class="finding-tag">
+                {{ item.tag }}
+            </span>
+
+            <h3>{{ item.title }}</h3>
+
+            <p>{{ item.text }}</p>
+
+        </div>
+
+    </article>
+
+    {% endfor %}
+
+</div>
+
+{% endif %}
+
+
+{% if charts %}
+
+<div class="insight-section-head chart-section-title">
+
+    <div>
+
+        <span class="eyebrow">
+            VISUAL EXPLORATION
+        </span>
+
+        <h2>Insights at a glance</h2>
+
+        <p class="muted">
+            Interactive charts generated from the uploaded data.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="powerbi-grid insight-chart-grid">
+
+    {% for chart in charts %}
+
+    <section class="chart-card">
+
+        <div class="chart-title">
+
+            <h3>{{ chart.title }}</h3>
+
+            <p>
+                Calculated from the current dataset
+            </p>
+
+        </div>
+
+        <div
+            id="insight-chart-{{ loop.index0 }}"
+            class="plot-area"
+        ></div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+
+                const spec = {{ chart.json|safe }};
+
+                Plotly.newPlot(
+                    'insight-chart-{{ loop.index0 }}',
+                    spec.data,
+                    spec.layout,
+                    {
+                        responsive: true,
+                        displaylogo: false,
+                        modeBarButtonsToRemove: [
+                            'lasso2d',
+                            'select2d'
+                        ]
+                    }
+                );
+
+            });
+        </script>
+
+    </section>
+
+    {% endfor %}
+
+</div>
+
+{% endif %}
+
+
+<div class="panel recommendations-panel">
+
+    <div class="recommendation-icon">
+        ✦
+    </div>
+
+    <div>
+
+        <span class="eyebrow">
+            NEXT BEST ACTIONS
+        </span>
+
+        <h3>Recommended analysis steps</h3>
+
+        <ul>
+
+            {% for item in recommendations %}
+            <li>{{ item }}</li>
             {% endfor %}
 
-        </div>
+        </ul>
 
-        <div class="notice">
-            This version generates transparent statistical observations; it does not call an external LLM or invent business advice.
-        </div>
+    </div>
 
-    {% else %}
+</div>
 
-        <div class="panel empty">
-            <h2>Upload a dataset to generate insights</h2>
-            <a class="btn" href="{{ url_for('upload_page') }}">Upload dataset</a>
-        </div>
 
-    {% endif %}
+<div class="notice insight-disclaimer">
+
+    <strong>Methodology note:</strong>
+
+    These are automated statistical observations, not verified business
+    conclusions. Potential anomalies use a simple 3-standard-deviation
+    screen; correlations show association, not causation. This page does
+    not claim an external LLM generated the findings.
+
+</div>
+
+
+{% else %}
+
+<div class="panel empty">
+
+    <div class="bigicon">
+        ✦
+    </div>
+
+    <h2>Start with your dataset</h2>
+
+    <p>
+        Upload a CSV or Excel file to generate a professional insight report
+        with data-quality findings, numeric summaries, category analysis
+        and interactive charts.
+    </p>
+
+    <a class="btn" href="{{ url_for('upload_page') }}">
+        Upload dataset
+    </a>
+
+</div>
+
+{% endif %}
 
 {% endblock %}
