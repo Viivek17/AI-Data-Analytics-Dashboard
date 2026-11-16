@@ -1,53 +1,82 @@
 
 {% extends 'base.html' %}
 
+{% block title %}
+    Data Preview · InsightForge AI
+{% endblock %}
+
 {% block content %}
 
 <div class="intro">
 
-    <h1>Data preview</h1>
+    <h1>
+        Data preview
+    </h1>
 
-    <p>{{ dataset_name }} · {{ stats.rows }} rows × {{ stats.columns }} columns</p>
+    <p>
+        {{ dataset_name }} · {{ stats.rows }} rows × {{ stats.columns }} columns
+    </p>
 
 </div>
 
+
 <div class="panel">
 
-    <h3>First 20 rows</h3>
+    <h3>
+        First 20 rows
+    </h3>
 
     <div class="table-wrap">
 
-        {{ df.head(20).to_html(classes='data-table',index=False)|safe }}
+        {{ df.head(20).to_html(
+            classes='data-table',
+            index=False
+        )|safe }}
 
     </div>
 
 </div>
 
+
 <div class="panel">
 
-    <h3>Column information</h3>
+    <h3>
+        Column information
+    </h3>
 
     <table class="data-table">
 
-        <tr>
-            <th>Column</th>
-            <th>Data type</th>
-            <th>Missing</th>
-        </tr>
+        <thead>
+            <tr>
+                <th>Column</th>
+                <th>Data type</th>
+                <th>Missing</th>
+            </tr>
+        </thead>
 
-        {% for c in columns %}
+        <tbody>
 
-        <tr>
+            {% for c in columns %}
 
-            <td>{{ c.name }}</td>
+            <tr>
 
-            <td>{{ c.dtype }}</td>
+                <td>
+                    {{ c.name }}
+                </td>
 
-            <td>{{ c.missing }}</td>
+                <td>
+                    {{ c.dtype }}
+                </td>
 
-        </tr>
+                <td>
+                    {{ c.missing }}
+                </td>
 
-        {% endfor %}
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
 
     </table>
 
