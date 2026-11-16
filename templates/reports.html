@@ -1,48 +1,361 @@
 
 {% extends 'base.html' %}
 
+{% block title %}
+    Professional Reports | InsightForge AI
+{% endblock %}
+
 {% block content %}
 
-<div class="intro">
+<section class="report-hero">
 
-    <h1>Reports</h1>
+    <div>
 
-    <p>Generate a downloadable PDF summary of the active dataset.</p>
+        <span class="eyebrow">
+            REPORT CENTER
+        </span>
+
+        <h1>
+            Professional data reports
+        </h1>
+
+        <p>
+            Turn your uploaded dataset into a structured PDF report with quality checks, statistics, category profiles and data-driven observations.
+        </p>
+
+    </div>
+
+    <div class="report-hero-icon">
+        ▤
+    </div>
+
+</section>
+
+
+{% if df is not none %}
+
+<div class="grid four report-kpis">
+
+    <div class="stat-card">
+
+        <span>
+            Dataset records
+        </span>
+
+        <strong>
+            {{ '{:,}'.format(df.shape[0]) }}
+        </strong>
+
+        <small>
+            Rows analysed
+        </small>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <span>
+            Data fields
+        </span>
+
+        <strong>
+            {{ df.shape[1] }}
+        </strong>
+
+        <small>
+            Columns detected
+        </small>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <span>
+            Missing values
+        </span>
+
+        <strong>
+            {{ '{:,}'.format(stats.missing) }}
+        </strong>
+
+        <small>
+            Empty cells
+        </small>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <span>
+            Quality indicator
+        </span>
+
+        <strong>
+            {{ stats.score }}%
+        </strong>
+
+        <small>
+            Heuristic assessment
+        </small>
+
+    </div>
 
 </div>
 
-<div class="panel">
 
-    <h3>Analysis report</h3>
+<div class="report-layout">
 
-    {% if df is not none %}
+    <section class="panel report-builder">
 
-    <p>Ready to report {{ dataset_name }} ({{ df.shape[0] }} rows, {{ df.shape[1] }} columns).</p>
+        <div class="report-panel-heading">
 
-    <form method="post">
+            <div>
 
-        <button class="btn">Generate PDF report</button>
+                <span class="eyebrow">
+                    PDF EXPORT
+                </span>
 
-    </form>
+                <h2>
+                    Build your analysis report
+                </h2>
 
-    {% if generated %}
+                <p>
+                    Report content is calculated from the currently active dataset.
+                </p>
+
+            </div>
+
+            <span class="report-file-icon">
+                PDF
+            </span>
+
+        </div>
+
+
+        <div class="report-contents">
+
+            <h3>
+                Included sections
+            </h3>
+
+            <div class="report-section-grid">
+
+                <div>
+                    <b>01</b>
+
+                    <span>
+                        <strong>
+                            Executive summary
+                        </strong>
+
+                        <small>
+                            Dataset overview and headline figures
+                        </small>
+                    </span>
+                </div>
+
+
+                <div>
+                    <b>02</b>
+
+                    <span>
+                        <strong>
+                            Data quality
+                        </strong>
+
+                        <small>
+                            Missing values, duplicates and quality indicator
+                        </small>
+                    </span>
+                </div>
+
+
+                <div>
+                    <b>03</b>
+
+                    <span>
+                        <strong>
+                            Descriptive statistics
+                        </strong>
+
+                        <small>
+                            Mean, median, standard deviation and ranges
+                        </small>
+                    </span>
+                </div>
+
+
+                <div>
+                    <b>04</b>
+
+                    <span>
+                        <strong>
+                            Category profile
+                        </strong>
+
+                        <small>
+                            Most frequent values in categorical fields
+                        </small>
+                    </span>
+                </div>
+
+
+                <div>
+                    <b>05</b>
+
+                    <span>
+                        <strong>
+                            Correlation analysis
+                        </strong>
+
+                        <small>
+                            Strongest numeric relationships
+                        </small>
+                    </span>
+                </div>
+
+
+                <div>
+                    <b>06</b>
+
+                    <span>
+                        <strong>
+                            Data dictionary
+                        </strong>
+
+                        <small>
+                            Column types, completeness and uniqueness
+                        </small>
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <form method="post" class="report-actions">
+
+            <button class="btn" type="submit">
+                Generate professional PDF
+            </button>
+
+            <span>
+                Usually takes a few seconds, depending on dataset size.
+            </span>
+
+        </form>
+
+
+        {% if generated %}
+
+        <div class="report-ready">
+
+            <div>
+
+                <strong>
+                    ✓ Your report is ready
+                </strong>
+
+                <small>
+                    {{ report_name }}
+                </small>
+
+            </div>
+
+            <a
+                class="btn secondary"
+                href="{{ url_for('download_report') }}"
+            >
+                Download PDF ↓
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <aside class="panel report-side">
+
+        <span class="eyebrow">
+            ACTIVE DATASET
+        </span>
+
+        <h3>
+            {{ dataset_name }}
+        </h3>
+
+        <p>
+            {{ '{:,}'.format(df.shape[0]) }} rows ·
+            {{ df.shape[1] }} columns ·
+            {{ numeric_count }} numeric fields
+        </p>
+
+
+        <div class="report-side-divider"></div>
+
+
+        <h4>
+            Report notes
+        </h4>
+
+        <ul>
+
+            <li>
+                Uses the uploaded source dataset.
+            </li>
+
+            <li>
+                Includes tables and charts where applicable.
+            </li>
+
+            <li>
+                Highlights analysis limitations.
+            </li>
+
+            <li>
+                Does not invent AI or ML results.
+            </li>
+
+        </ul>
+
+
+        <div class="notice">
+            The quality indicator is a simple heuristic, not a certified audit score.
+        </div>
+
+    </aside>
+
+</div>
+
+
+{% else %}
+
+<section class="panel empty-report">
+
+    <div class="report-empty-icon">
+        ↑
+    </div>
+
+    <h2>
+        Upload a dataset to get started
+    </h2>
 
     <p>
-
-        <a class="btn secondary" href="{{ url_for('download_report') }}">Download PDF</a>
-
+        Once a CSV or Excel file is active, you can generate a professional PDF report from its real data.
     </p>
 
-    {% endif %}
+    <a class="btn" href="{{ url_for('upload_page') }}">
+        Upload dataset
+    </a>
 
-    {% else %}
+</section>
 
-    <p>Upload a dataset before generating a report.</p>
-
-    <a class="btn" href="{{ url_for('upload_page') }}">Upload dataset</a>
-
-    {% endif %}
-
-</div>
+{% endif %}
 
 {% endblock %}
