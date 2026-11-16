@@ -4,51 +4,95 @@
 {% block content %}
 
 <div class="intro">
-    <span class="eyebrow">VISUAL ANALYTICS</span>
+
+    <span class="eyebrow">
+        VISUAL ANALYTICS
+    </span>
+
     <h1>EDA & Visualization</h1>
-    <p>Explore your uploaded data through interactive charts, just like a BI dashboard. Hover, zoom, compare and inspect the actual dataset.</p>
+
+    <p>
+        Explore your uploaded data through interactive charts, just like
+        a BI dashboard. Hover, zoom, compare and inspect the actual dataset.
+    </p>
+
 </div>
+
 
 {% if df is not none %}
 
 <div class="grid four">
 
     <div class="metric">
+
         <small>TOTAL RECORDS</small>
-        <strong>{{ '{:,}'.format(summary.rows) }}</strong>
+
+        <strong>
+            {{ '{:,}'.format(summary.rows) }}
+        </strong>
+
         <span>Rows in current dataset</span>
+
     </div>
 
+
     <div class="metric">
+
         <small>DATA FIELDS</small>
+
         <strong>{{ summary.columns }}</strong>
+
         <span>Columns available</span>
+
     </div>
 
+
     <div class="metric">
+
         <small>NUMERIC FIELDS</small>
+
         <strong>{{ summary.numeric }}</strong>
+
         <span>Suitable for measures</span>
+
     </div>
 
+
     <div class="metric">
+
         <small>MISSING CELLS</small>
-        <strong>{{ '{:,}'.format(summary.missing) }}</strong>
+
+        <strong>
+            {{ '{:,}'.format(summary.missing) }}
+        </strong>
+
         <span>Values requiring attention</span>
+
     </div>
 
 </div>
 
+
 <div class="panel">
 
     <div class="chart-heading">
+
         <div>
+
             <h3>Automatic visual analysis</h3>
-            <p class="muted tiny">Charts are generated dynamically from your uploaded dataset.</p>
+
+            <p class="muted tiny">
+                Charts are generated dynamically from your uploaded dataset.
+            </p>
+
         </div>
 
-        <span class="chip">{{ charts|length }} visuals</span>
+        <span class="chip">
+            {{ charts|length }} visuals
+        </span>
+
     </div>
+
 
     {% if charts %}
 
@@ -59,15 +103,18 @@
         <section class="chart-card">
 
             <div class="chart-title">
+
                 <h3>{{ chart.title }}</h3>
+
                 <p>{{ chart.subtitle }}</p>
+
             </div>
 
             <div
                 id="eda-chart-{{ loop.index0 }}"
                 class="plot-area"
-                data-chart='{{ {"data": chart.data, "layout": chart.layout}|tojson|forceescape }}'>
-            </div>
+                data-chart='{{ {"data": chart.data, "layout": chart.layout}|tojson|forceescape }}'
+            ></div>
 
         </section>
 
@@ -78,12 +125,14 @@
     {% else %}
 
     <p class="notice">
-        No suitable chart could be generated. Upload a dataset with numeric or categorical columns.
+        No suitable chart could be generated. Upload a dataset
+        with numeric or categorical columns.
     </p>
 
     {% endif %}
 
 </div>
+
 
 {% if numeric %}
 
@@ -92,50 +141,67 @@
     <h3>Build a custom comparison</h3>
 
     <p class="muted tiny">
-        Choose a category and a numeric measure to create your own interactive chart.
+        Choose a category and a numeric measure to create your
+        own interactive chart.
     </p>
+
 
     <form method="post" class="chart-form">
 
         <label>
+
             Category / X-axis
 
             <select name="x">
 
                 {% for c in df.columns %}
 
-                <option value="{{ c }}" {% if xcol == c %}selected{% endif %}>
+                <option
+                    value="{{ c }}"
+                    {% if xcol == c %}selected{% endif %}
+                >
                     {{ c }}
                 </option>
 
                 {% endfor %}
 
             </select>
+
         </label>
 
+
         <label>
+
             Measure / Y-axis
 
             <select name="y">
 
                 {% for c in numeric %}
 
-                <option value="{{ c }}" {% if ycol == c %}selected{% endif %}>
+                <option
+                    value="{{ c }}"
+                    {% if ycol == c %}selected{% endif %}
+                >
                     {{ c }}
                 </option>
 
                 {% endfor %}
 
             </select>
+
         </label>
 
-        <button class="btn">Generate comparison</button>
+
+        <button class="btn" type="submit">
+            Generate comparison
+        </button>
 
     </form>
 
 </div>
 
 {% endif %}
+
 
 {% if correlation %}
 
@@ -148,22 +214,30 @@
     </p>
 
     <div class="table-wrap">
+
         {{ correlation|safe }}
+
     </div>
 
 </div>
 
 {% endif %}
 
+
 <div class="panel">
 
     <h3>Descriptive statistics</h3>
 
     <div class="table-wrap">
-        {{ df.describe(include='all').to_html(classes='data-table')|safe }}
+
+        {{ df.describe(include='all').to_html(
+            classes='data-table'
+        )|safe }}
+
     </div>
 
 </div>
+
 
 {% else %}
 
@@ -171,7 +245,10 @@
 
     <h2>No dataset loaded</h2>
 
-    <p>Upload a CSV or Excel file to generate Power BI-style visual analytics.</p>
+    <p>
+        Upload a CSV or Excel file to generate Power BI-style
+        visual analytics.
+    </p>
 
     <a class="btn" href="{{ url_for('upload_page') }}">
         Upload dataset
