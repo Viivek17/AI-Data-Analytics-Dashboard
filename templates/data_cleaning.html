@@ -3,70 +3,700 @@
 
 {% block content %}
 
-<div class="intro">
+<div class="intro cleaning-intro">
 
-    <h1>Data cleaning</h1>
+    <div>
 
-    <p>Apply transparent cleaning operations. Your original upload remains unchanged.</p>
+        <span class="eyebrow">
+            DATA PREPARATION WORKSPACE
+        </span>
+
+        <h1>Data Cleaning Studio</h1>
+
+        <p>
+            Prepare a reliable dataset with transparent, reversible
+            cleaning operations. Your original upload is always preserved.
+        </p>
+
+    </div>
+
+    {% if df is not none %}
+
+    <div class="cleaning-source">
+
+        <span class="online-dot"></span>
+
+        <div>
+
+            <strong>
+                {{ dataset_name or 'Uploaded dataset' }}
+            </strong>
+
+            <small>
+                Source dataset · read-only
+            </small>
+
+        </div>
+
+    </div>
+
+    {% endif %}
 
 </div>
+
 
 {% if df is not none %}
 
-<div class="panel">
+<div class="grid four cleaning-kpis">
 
-    <h3>Cleaning options</h3>
+    <div class="stat-card">
 
-    <form method="post">
+        <span>Source rows</span>
 
-        <label>
-            Missing-value strategy
+        <strong>
+            {{ '{:,}'.format(df.shape[0]) }}
+        </strong>
 
-            <select name="missing_strategy">
+        <small>Original records</small>
 
-                <option value="keep">Keep missing values</option>
+    </div>
 
-                <option value="drop_rows">Drop rows containing missing values</option>
 
-                <option value="mean">Fill numeric values with mean</option>
+    <div class="stat-card">
 
-                <option value="median">Fill numeric values with median</option>
+        <span>Columns</span>
 
-                <option value="mode">Fill with mode</option>
+        <strong>
+            {{ df.shape[1] }}
+        </strong>
 
-                <option value="zero">Fill numeric values with zero</option>
+        <small>Available fields</small>
 
-            </select>
+    </div>
 
-        </label>
 
-        <label class="check">
+    <div class="stat-card">
 
-            <input type="checkbox" name="remove_duplicates" value="yes">
+        <span>Missing cells</span>
 
-            Remove duplicate rows
+        <strong>
+            {{ '{:,}'.format(df.isna().sum().sum()) }}
+        </strong>
 
-        </label>
+        <small>Across all columns</small>
 
-        <button class="btn">Apply cleaning</button>
+    </div>
 
-    </form>
+
+    <div class="stat-card">
+
+        <span>Duplicate rows</span>
+
+        <strong>
+            {{ '{:,}'.format(df.duplicated().sum()) }}
+        </strong>
+
+        <small>Exact row duplicates</small>
+
+    </div>
 
 </div>
 
-{% if cleaned_df is not none %}
 
-<div class="panel">
+<div class="cleaning-layout">
 
-    <h3>Cleaned dataset ready</h3>
+    <section class="panel cleaning-builder">
 
-    <p>{{ cleaned_df.shape[0] }} rows × {{ cleaned_df.shape[1] }} columns</p>
+        <div class="cleaning-heading">
 
-    <a class="btn" href="{{ url_for('download_cleaned_file',filename=session.get('cleaned_file')) }}">Download cleaned CSV</a>
+            <div>
+
+                <span class="eyebrow">
+                    CLEANING CONFIGURATION
+                </span>
+
+                <h2>Build your cleaning workflow</h2>
+
+                <p>
+                    Choose only the operations you need, then apply
+                    them to a separate cleaned copy.
+                </p>
+
+            </div>
+
+            <span class="cleaning-step">
+                01 / CONFIGURE
+            </span>
+
+        </div>
+
+
+        <form method="post" class="cleaning-form">
+
+            <div class="cleaning-form-section">
+
+                <h3>
+                    <span>1</span>
+                    Missing-value treatment
+                </h3>
+
+                <p>
+                    Select how missing cells should be handled.
+                    Incompatible strategies are safely skipped.
+                </p>
+
+
+                <label>
+                    Missing-value strategy
+
+                    <select name="missing_strategy">
+
+                        <option value="keep">
+                            Keep missing values
+                        </option>
+
+                        <option value="drop_rows">
+                            Remove rows containing missing values
+                        </option>
+
+                        <option value="mean">
+                            Fill numeric columns with mean
+                        </option>
+
+                        <option value="median">
+                            Fill numeric columns with median
+                        </option>
+
+                        <option value="mode">
+                            Fill columns with mode
+                        </option>
+
+                        <option value="zero">
+                            Fill numeric columns with zero
+                        </option>
+
+                        <option value="ffill">
+                            Forward fill
+                        </option>
+
+                        <option value="bfill">
+                            Backward fill
+                        </option>
+
+                        <option value="constant">
+                            Fill with a custom value
+                        </option>
+
+                    </select>
+
+                </label>
+
+
+                <label>
+                    Custom fill value
+
+                    <input
+                        type="text"
+                        name="constant_value"
+                        value="Unknown"
+                        placeholder="e.g. Unknown or 0"
+                    >
+
+                </label>
+
+            </div>
+
+
+            <div class="cleaning-form-section">
+
+                <h3>
+                    <span>2</span>
+                    Text and format cleanup
+                </h3>
+
+                <p>
+                    Standardize common text issues before analysis.
+                </p>
+
+
+                <div class="cleaning-check-grid">
+
+                    <label class="cleaning-check">
+
+                        <input
+                            type="checkbox"
+                            name="trim_text"
+                            value="yes"
+                            checked
+                        >
+
+                        <span>
+
+                            <strong>
+                                Trim extra spaces
+                            </strong>
+
+                            <small>
+                                Remove leading and trailing spaces in text columns.
+                            </small>
+
+                        </span>
+
+                    </label>
+
+
+                    <label class="cleaning-check">
+
+                        <input
+                            type="checkbox"
+                            name="standardize_missing"
+                            value="yes"
+                            checked
+                        >
+
+                        <span>
+
+                            <strong>
+                                Standardize missing markers
+                            </strong>
+
+                            <small>
+                                Convert NA, N/A, null, dash and blank strings
+                                to missing values.
+                            </small>
+
+                        </span>
+
+                    </label>
+
+
+                    <label class="cleaning-check">
+
+                        <input
+                            type="checkbox"
+                            name="remove_duplicates"
+                            value="yes"
+                        >
+
+                        <span>
+
+                            <strong>
+                                Remove duplicate rows
+                            </strong>
+
+                            <small>
+                                Keep the first occurrence of each identical row.
+                            </small>
+
+                        </span>
+
+                    </label>
+
+
+                    <label class="cleaning-check">
+
+                        <input
+                            type="checkbox"
+                            name="drop_empty_columns"
+                            value="yes"
+                        >
+
+                        <span>
+
+                            <strong>
+                                Remove fully empty columns
+                            </strong>
+
+                            <small>
+                                Drop columns that contain no usable values.
+                            </small>
+
+                        </span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <div class="cleaning-form-section">
+
+                <h3>
+                    <span>3</span>
+                    Data-type conversion
+                </h3>
+
+                <p>
+                    Choose columns that should be converted.
+                    Only successful conversions are applied.
+                </p>
+
+
+                <div class="cleaning-column-grid">
+
+                    <label>
+
+                        Convert to numeric
+
+                        <select
+                            name="convert_numeric"
+                            multiple
+                            size="5"
+                        >
+
+                            {% for col in column_profile %}
+
+                            <option value="{{ col.name }}">
+
+                                {{ col.name }}
+
+                                {% if col.numeric %}
+                                    · already numeric
+                                {% endif %}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                        <small>
+                            Hold Ctrl to select multiple columns.
+                        </small>
+
+                    </label>
+
+
+                    <label>
+
+                        Convert to date
+
+                        <select
+                            name="convert_date"
+                            multiple
+                            size="5"
+                        >
+
+                            {% for col in column_profile %}
+
+                            <option value="{{ col.name }}">
+                                {{ col.name }}
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                        <small>
+                            Invalid date values become missing.
+                        </small>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <div class="cleaning-form-section">
+
+                <h3>
+                    <span>4</span>
+                    Outlier treatment · IQR method
+                </h3>
+
+                <p>
+                    Detect unusually low or high numeric values
+                    using the 1.5 × IQR rule.
+                </p>
+
+
+                <label>
+
+                    Outlier action
+
+                    <select name="outlier_method">
+
+                        <option value="none">
+                            Do not change outliers
+                        </option>
+
+                        <option value="cap">
+                            Cap values at IQR boundaries
+                        </option>
+
+                        <option value="remove">
+                            Remove rows containing selected outliers
+                        </option>
+
+                    </select>
+
+                </label>
+
+
+                <label>
+
+                    Numeric columns for outlier treatment
+
+                    <select
+                        name="outlier_columns"
+                        multiple
+                        size="5"
+                    >
+
+                        {% for col in column_profile if col.numeric %}
+
+                        <option value="{{ col.name }}">
+                            {{ col.name }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                    <small>
+                        Hold Ctrl to select multiple columns.
+                        Leave empty to skip outlier treatment.
+                    </small>
+
+                </label>
+
+            </div>
+
+
+            <div class="cleaning-submit">
+
+                <div>
+
+                    <strong>
+                        Ready to clean?
+                    </strong>
+
+                    <small>
+                        A new CSV will be created.
+                        Your source file will remain unchanged.
+                    </small>
+
+                </div>
+
+                <button class="btn" type="submit">
+                    Apply cleaning workflow →
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <aside class="panel cleaning-side">
+
+        <span class="eyebrow">
+            COLUMN PROFILE
+        </span>
+
+        <h3>Data quality by column</h3>
+
+        <p>
+            Review missing values and data types before
+            choosing cleaning operations.
+        </p>
+
+
+        <div class="column-profile-list">
+
+            {% for col in column_profile %}
+
+            <div class="column-profile">
+
+                <div class="column-profile-top">
+
+                    <strong title="{{ col.name }}">
+                        {{ col.name }}
+                    </strong>
+
+                    <span>
+                        {{ col.dtype }}
+                    </span>
+
+                </div>
+
+
+                <div class="column-profile-meta">
+
+                    <span>
+                        {{ '{:,}'.format(col.missing) }} missing
+                    </span>
+
+                    <span>
+                        {{ '{:,}'.format(col.unique) }} unique
+                    </span>
+
+                </div>
+
+
+                <div class="quality-track">
+
+                    <i
+                        style="width:{{ (col.missing / (df.shape[0] if df.shape[0] else 1) * 100)|round(1) }}%"
+                    ></i>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </aside>
 
 </div>
+
+
+{% if cleaning_summary %}
+
+<section class="panel cleaning-results">
+
+    <div class="cleaning-heading">
+
+        <div>
+
+            <span class="eyebrow">
+                WORKFLOW RESULTS
+            </span>
+
+            <h2>Cleaning summary</h2>
+
+            <p>
+                Before-and-after comparison for the latest cleaning run.
+            </p>
+
+        </div>
+
+
+        <a
+            class="btn"
+            href="{{ url_for('download_cleaned_file', filename=cleaning_summary.output_name) }}"
+        >
+            Download cleaned CSV ↓
+        </a>
+
+    </div>
+
+
+    <div class="grid four cleaning-result-kpis">
+
+        <div>
+
+            <small>Rows</small>
+
+            <strong>
+                {{ '{:,}'.format(cleaning_summary.before_rows) }}
+                →
+                {{ '{:,}'.format(cleaning_summary.after_rows) }}
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <small>Columns</small>
+
+            <strong>
+                {{ cleaning_summary.before_cols }}
+                →
+                {{ cleaning_summary.after_cols }}
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <small>Missing cells</small>
+
+            <strong>
+                {{ '{:,}'.format(cleaning_summary.before_missing) }}
+                →
+                {{ '{:,}'.format(cleaning_summary.after_missing) }}
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <small>Duplicate rows</small>
+
+            <strong>
+                {{ '{:,}'.format(cleaning_summary.before_duplicates) }}
+                →
+                {{ '{:,}'.format(cleaning_summary.after_duplicates) }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <h3 class="operation-title">
+        Operations applied
+    </h3>
+
+
+    {% if cleaning_summary.operations %}
+
+    <ul class="operation-list">
+
+        {% for operation in cleaning_summary.operations %}
+
+        <li>
+
+            <span>✓</span>
+
+            {{ operation }}
+
+        </li>
+
+        {% endfor %}
+
+    </ul>
+
+    {% else %}
+
+    <p>
+        No transformations were required by the selected options.
+    </p>
+
+    {% endif %}
+
+
+    {% if cleaned_df is not none %}
+
+    <h3 class="operation-title">
+        Cleaned data preview
+    </h3>
+
+    <div class="table-wrap">
+
+        {{ cleaned_df.head(10).to_html(
+            classes='data-table',
+            index=False,
+            border=0
+        )|safe }}
+
+    </div>
+
+    {% endif %}
+
+</section>
 
 {% endif %}
+
 
 {% else %}
 
@@ -74,7 +704,14 @@
 
     <h2>Upload a dataset first</h2>
 
-    <a class="btn" href="{{ url_for('upload_page') }}">Upload dataset</a>
+    <p>
+        Once uploaded, you can profile columns, handle missing values
+        and duplicates, and prepare a clean copy.
+    </p>
+
+    <a class="btn" href="{{ url_for('upload_page') }}">
+        Upload dataset
+    </a>
 
 </div>
 

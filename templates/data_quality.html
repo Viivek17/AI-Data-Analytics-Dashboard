@@ -7,27 +7,40 @@
 
     <h1>Data quality</h1>
 
-    <p>Review missing values, duplicates and column types.</p>
+    <p>
+        Review missing values, duplicates and column types.
+    </p>
 
 </div>
+
 
 {% if stats %}
 
 <div class="grid four">
 
-    {% for label,value in [('QUALITY INDICATOR',stats.score|string+'%'),('MISSING CELLS',stats.missing),('DUPLICATE ROWS',stats.duplicates),('NUMERIC COLUMNS',stats.numeric)] %}
+    {% for label, value in [
+        ('QUALITY INDICATOR', stats.score|string+'%'),
+        ('MISSING CELLS', stats.missing),
+        ('DUPLICATE ROWS', stats.duplicates),
+        ('NUMERIC COLUMNS', stats.numeric)
+    ] %}
 
     <div class="metric">
 
-        <small>{{ label }}</small>
+        <small>
+            {{ label }}
+        </small>
 
-        <strong>{{ value }}</strong>
+        <strong>
+            {{ value }}
+        </strong>
 
     </div>
 
     {% endfor %}
 
 </div>
+
 
 <div class="panel">
 
@@ -36,20 +49,31 @@
     <table class="data-table">
 
         <tr>
+
             <th>Column</th>
+
             <th>Missing</th>
+
             <th>Present</th>
+
         </tr>
 
-        {% for col,count in missing.items() %}
+
+        {% for col, count in missing.items() %}
 
         <tr>
 
-            <td>{{ col }}</td>
+            <td>
+                {{ col }}
+            </td>
 
-            <td>{{ count }}</td>
+            <td>
+                {{ count }}
+            </td>
 
-            <td>{{ stats.rows-count }}</td>
+            <td>
+                {{ stats.rows-count }}
+            </td>
 
         </tr>
 
@@ -59,7 +83,12 @@
 
 </div>
 
-<p class="muted tiny">The quality indicator is heuristic; inspect individual checks before relying on the data.</p>
+
+<p class="muted tiny">
+    The quality indicator is heuristic; inspect individual checks
+    before relying on the data.
+</p>
+
 
 {% else %}
 
@@ -67,7 +96,9 @@
 
     <h2>No dataset loaded</h2>
 
-    <a class="btn" href="{{ url_for('upload_page') }}">Upload dataset</a>
+    <a class="btn" href="{{ url_for('upload_page') }}">
+        Upload dataset
+    </a>
 
 </div>
 
