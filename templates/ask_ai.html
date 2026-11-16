@@ -1,37 +1,59 @@
 
 {% extends 'base.html' %}
 
-{% block title %}Ask AI · InsightForge{% endblock %}
+{% block title %}
+    Ask AI · InsightForge
+{% endblock %}
 
 {% block content %}
 
 <div class="intro chat-intro">
 
     <div>
-        <span class="eyebrow">YOUR DATA ASSISTANT</span>
+
+        <span class="eyebrow">
+            YOUR DATA ASSISTANT
+        </span>
 
         <h1>Chat with your data</h1>
 
-        <p>Ask questions in natural language and explore your uploaded dataset through a conversational assistant.</p>
+        <p>
+            Ask questions in natural language and explore your uploaded
+            dataset through a conversational assistant.
+        </p>
+
     </div>
 
     <form id="clearChatForm">
-        <button type="submit" class="btn secondary">＋ New chat</button>
+
+        <button type="submit" class="btn secondary">
+            ＋ New chat
+        </button>
+
     </form>
 
 </div>
+
 
 {% if df is none %}
 
 <div class="panel empty">
 
-    <div class="bigicon">✦</div>
+    <div class="bigicon">
+        ✦
+    </div>
 
     <h2>Upload a dataset to get started</h2>
 
-    <p>Once your CSV or Excel file is uploaded, you can ask questions about its columns, statistics, categories, missing values and relationships.</p>
+    <p>
+        Once your CSV or Excel file is uploaded, you can ask questions
+        about its columns, statistics, categories, missing values
+        and relationships.
+    </p>
 
-    <a class="btn" href="{{ url_for('upload_page') }}">Upload dataset →</a>
+    <a class="btn" href="{{ url_for('upload_page') }}">
+        Upload dataset →
+    </a>
 
 </div>
 
@@ -43,45 +65,67 @@
 
         <div class="chat-top">
 
-            <div class="assistant-avatar">IF</div>
+            <div class="assistant-avatar">
+                IF
+            </div>
 
             <div>
+
                 <strong>InsightForge Assistant</strong>
 
                 <small>
-                    <span class="online-dot"></span> Connected to {{ dataset_name }}
+                    <span class="online-dot"></span>
+                    Connected to {{ dataset_name }}
                 </small>
+
             </div>
 
-            <span class="chat-mode">{{ 'AI POWERED' if ai_enabled else 'DATA MODE' }}</span>
+            <span class="chat-mode">
+                {{ 'AI POWERED' if ai_enabled else 'DATA MODE' }}
+            </span>
 
         </div>
 
-        <div id="chatMessages" class="chat-messages" aria-live="polite">
+
+        <div
+            id="chatMessages"
+            class="chat-messages"
+            aria-live="polite"
+        >
 
             <div class="chat-message assistant">
 
-                <div class="message-avatar">IF</div>
+                <div class="message-avatar">
+                    IF
+                </div>
 
                 <div class="message-bubble">
 
                     <b>Hello! I'm your data assistant.</b>
 
-                    <p>I've got your dataset context. Ask me about trends, averages, categories, data quality or correlations.</p>
+                    <p>
+                        I've got your dataset context. Ask me about trends,
+                        averages, categories, data quality or correlations.
+                    </p>
 
-                    <small>InsightForge Assistant</small>
+                    <small>
+                        InsightForge Assistant
+                    </small>
 
                 </div>
 
             </div>
 
+
             {% for item in chat_history %}
 
-            <div class="chat-message {{ 'user' if item.role=='user' else 'assistant' }}">
+            <div class="chat-message {{ 'user' if item.role == 'user' else 'assistant' }}">
 
-                {% if item.role=='assistant' %}
+                {% if item.role == 'assistant' %}
 
-                <div class="message-avatar">IF</div>
+                <div class="message-avatar">
+                    IF
+                </div>
 
                 {% endif %}
 
@@ -91,7 +135,9 @@
 
                     {% if item.source %}
 
-                    <small>{{ item.source }}</small>
+                    <small>
+                        {{ item.source }}
+                    </small>
 
                     {% endif %}
 
@@ -103,7 +149,12 @@
 
         </div>
 
-        <div class="typing-indicator" id="typingIndicator" hidden>
+
+        <div
+            class="typing-indicator"
+            id="typingIndicator"
+            hidden
+        >
 
             <span></span>
             <span></span>
@@ -113,17 +164,34 @@
 
         </div>
 
+
         <form id="chatForm" class="chat-composer">
 
-            <textarea id="chatInput" rows="1" maxlength="2000" placeholder="Ask anything about your dataset…" required></textarea>
+            <textarea
+                id="chatInput"
+                rows="1"
+                maxlength="2000"
+                placeholder="Ask anything about your dataset…"
+                required
+            ></textarea>
 
-            <button id="sendButton" class="send-button" type="submit" aria-label="Send message">➤</button>
+            <button
+                id="sendButton"
+                class="send-button"
+                type="submit"
+                aria-label="Send message"
+            >
+                ➤
+            </button>
 
-            <div class="composer-hint">Enter to send · Shift + Enter for a new line</div>
+            <div class="composer-hint">
+                Enter to send · Shift + Enter for a new line
+            </div>
 
         </form>
 
     </section>
+
 
     <aside class="chat-side">
 
@@ -131,35 +199,54 @@
 
             <h3>Suggested questions</h3>
 
-            <p class="muted tiny">Click a question to start exploring.</p>
+            <p class="muted tiny">
+                Click a question to start exploring.
+            </p>
 
             <div class="suggestion-list">
 
-                <button class="suggestion">Give me an overview of this dataset</button>
+                <button class="suggestion">
+                    Give me an overview of this dataset
+                </button>
 
-                <button class="suggestion">Which columns have missing values?</button>
+                <button class="suggestion">
+                    Which columns have missing values?
+                </button>
 
-                <button class="suggestion">Show the strongest correlations</button>
+                <button class="suggestion">
+                    Show the strongest correlations
+                </button>
 
-                <button class="suggestion">Which category has the most records?</button>
+                <button class="suggestion">
+                    Which category has the most records?
+                </button>
 
-                <button class="suggestion">What is the average of each numeric column?</button>
+                <button class="suggestion">
+                    What is the average of each numeric column?
+                </button>
 
-                <button class="suggestion">Are there any duplicate rows?</button>
+                <button class="suggestion">
+                    Are there any duplicate rows?
+                </button>
 
             </div>
 
         </div>
 
+
         <div class="notice">
 
             {% if ai_enabled %}
 
-            AI responses are grounded in a compact summary and calculated results from your dataset. The full dataset is not sent to the AI provider.
+                AI responses are grounded in a compact summary and
+                calculated results from your dataset. The full dataset
+                is not sent to the AI provider.
 
             {% else %}
 
-            Data calculations are available now. Add an OpenAI API key in your local .env file to enable full conversational AI responses.
+                Data calculations are available now. Add an OpenAI API
+                key in your local .env file to enable full conversational
+                AI responses.
 
             {% endif %}
 
@@ -171,6 +258,7 @@
 
 {% endif %}
 
+
 <script>
 
 (() => {
@@ -179,16 +267,18 @@
 
     if (!form) return;
 
-    const input = document.getElementById('chatInput'),
-        messages = document.getElementById('chatMessages'),
-        typing = document.getElementById('typingIndicator'),
-        send = document.getElementById('sendButton');
+    const input = document.getElementById('chatInput');
+    const messages = document.getElementById('chatMessages');
+    const typing = document.getElementById('typingIndicator');
+    const send = document.getElementById('sendButton');
+
 
     const scroll = () => {
-        messages.scrollTop = messages.scrollHeight
+        messages.scrollTop = messages.scrollHeight;
     };
 
     scroll();
+
 
     function addMessage(role, text, source = '') {
 
@@ -196,21 +286,23 @@
 
         row.className = 'chat-message ' + role;
 
+
         if (role === 'assistant') {
 
             const avatar = document.createElement('div');
 
             avatar.className = 'message-avatar';
-
             avatar.textContent = 'IF';
 
-            row.appendChild(avatar)
+            row.appendChild(avatar);
 
         }
+
 
         const bubble = document.createElement('div');
 
         bubble.className = 'message-bubble';
+
 
         const body = document.createElement('div');
 
@@ -218,15 +310,17 @@
 
         bubble.appendChild(body);
 
+
         if (source) {
 
             const meta = document.createElement('small');
 
             meta.textContent = source;
 
-            bubble.appendChild(meta)
+            bubble.appendChild(meta);
 
         }
+
 
         row.appendChild(bubble);
 
@@ -235,6 +329,7 @@
         scroll();
 
     }
+
 
     async function sendMessage(text) {
 
@@ -250,31 +345,51 @@
 
         scroll();
 
+
         try {
 
-            const response = await fetch('{{ url_for("ask_ai_chat") }}', {
+            const response = await fetch(
+                '{{ url_for("ask_ai_chat") }}',
+                {
+                    method: 'POST',
 
-                method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
 
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                    body: JSON.stringify({
+                        message: text
+                    })
+                }
+            );
 
-                body: JSON.stringify({
-                    message: text
-                })
-
-            });
 
             const data = await response.json();
 
-            if (!response.ok) throw new Error(data.error || 'Something went wrong.');
 
-            addMessage('assistant', data.answer, data.source)
+            if (!response.ok) {
+
+                throw new Error(
+                    data.error || 'Something went wrong.'
+                );
+
+            }
+
+
+            addMessage(
+                'assistant',
+                data.answer,
+                data.source
+            );
+
 
         } catch (err) {
 
-            addMessage('assistant', err.message, 'Connection error')
+            addMessage(
+                'assistant',
+                err.message,
+                'Connection error'
+            );
 
         } finally {
 
@@ -282,51 +397,69 @@
 
             send.disabled = false;
 
-            input.focus()
+            input.focus();
 
         }
 
     }
 
-    form.addEventListener('submit', e => {
+
+    form.addEventListener('submit', (e) => {
 
         e.preventDefault();
 
-        sendMessage(input.value)
+        sendMessage(input.value);
 
     });
 
-    input.addEventListener('keydown', e => {
+
+    input.addEventListener('keydown', (e) => {
 
         if (e.key === 'Enter' && !e.shiftKey) {
 
             e.preventDefault();
 
-            form.requestSubmit()
+            form.requestSubmit();
 
         }
 
     });
 
-    document.querySelectorAll('.suggestion').forEach(btn =>
 
-        btn.addEventListener('click', () => sendMessage(btn.textContent))
+    document.querySelectorAll('.suggestion').forEach((btn) => {
 
-    );
+        btn.addEventListener('click', () => {
 
-    document.getElementById('clearChatForm').addEventListener('submit', async e => {
+            sendMessage(btn.textContent);
 
-        e.preventDefault();
-
-        await fetch('{{ url_for("clear_chat") }}', {
-            method: 'POST'
         });
 
-        messages.innerHTML = '';
-
-        addMessage('assistant', 'New chat started. What would you like to discover in your dataset?', 'InsightForge Assistant')
-
     });
+
+
+    document.getElementById('clearChatForm').addEventListener(
+        'submit',
+        async (e) => {
+
+            e.preventDefault();
+
+            await fetch(
+                '{{ url_for("clear_chat") }}',
+                {
+                    method: 'POST'
+                }
+            );
+
+            messages.innerHTML = '';
+
+            addMessage(
+                'assistant',
+                'New chat started. What would you like to discover in your dataset?',
+                'InsightForge Assistant'
+            );
+
+        }
+    );
 
 })();
 
