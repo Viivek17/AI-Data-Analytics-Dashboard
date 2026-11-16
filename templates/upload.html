@@ -1,35 +1,68 @@
 
 {% extends 'base.html' %}
 
+{% block title %}
+    Upload Dataset | InsightForge AI
+{% endblock %}
+
 {% block content %}
 
 <div class="intro">
 
-    <small class="eyebrow">DATA INGESTION</small>
+    <small class="eyebrow">
+        DATA INGESTION
+    </small>
 
-    <h1>Upload your dataset</h1>
+    <h1>
+        Upload your dataset
+    </h1>
 
-    <p>Bring a CSV or Excel file into your analysis workspace.</p>
+    <p>
+        Bring a CSV or Excel file into your analysis workspace.
+    </p>
 
 </div>
 
-<form class="panel upload" action="{{ url_for('upload_dataset') }}" method="post" enctype="multipart/form-data">
+
+<form
+    class="panel upload"
+    action="{{ url_for('upload_dataset') }}"
+    method="post"
+    enctype="multipart/form-data"
+>
 
     <div class="drop">
 
-        <div class="bigicon">↑</div>
+        <div class="bigicon">
+            ↑
+        </div>
 
-        <h2>Choose a file to analyse</h2>
+        <h2>
+            Choose a file to analyse
+        </h2>
 
-        <p>CSV, XLSX or XLS · Maximum 25 MB</p>
+        <p>
+            CSV, XLSX or XLS · Maximum 25 MB
+        </p>
 
-        <input type="file" name="dataset" id="dataset" accept=".csv,.xlsx,.xls" required>
+        <input
+            type="file"
+            name="dataset"
+            id="dataset"
+            accept=".csv,.xlsx,.xls"
+            required
+        >
 
-        <div id="file-name" class="muted">No file selected</div>
+        <div id="file-name" class="muted">
+            No file selected
+        </div>
 
     </div>
 
-    <button class="btn">Upload and analyse →</button>
+
+    <button class="btn" type="submit">
+        Upload and analyse →
+    </button>
 
 </form>
 

@@ -1,35 +1,58 @@
 
 {% extends 'base.html' %}
 
+{% block title %}
+    Settings | InsightForge AI
+{% endblock %}
+
 {% block content %}
 
 <div class="intro">
 
-    <h1>Settings</h1>
+    <h1>
+        Settings
+    </h1>
 
-    <p>Manage your current analysis session.</p>
+    <p>
+        Manage your current analysis session.
+    </p>
 
 </div>
 
+
 <div class="panel">
 
-    <h3>Workspace data</h3>
+    <h3>
+        Workspace data
+    </h3>
 
-    <p>Clear the active dataset from this browser session. Uploaded files remain in the local uploads folder.</p>
+    <p>
+        Clear the active dataset from this browser session. Uploaded files remain in the local uploads folder.
+    </p>
 
-    <form method="post" onsubmit="return confirm('Clear active dataset session?')">
+    <form
+        method="post"
+        onsubmit="return confirm('Clear active dataset session?')"
+    >
 
-        <button class="btn danger">Clear current session</button>
+        <button class="btn danger" type="submit">
+            Clear current session
+        </button>
 
     </form>
 
 </div>
 
+
 <div class="panel">
 
-    <h3>Security</h3>
+    <h3>
+        Security
+    </h3>
 
-    <p>Uploads are limited to 25 MB. Do not expose the development server publicly or upload confidential data.</p>
+    <p>
+        Uploads are limited to 25 MB. Do not expose the development server publicly or upload confidential data.
+    </p>
 
 </div>
 
