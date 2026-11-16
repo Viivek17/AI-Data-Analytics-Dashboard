@@ -1,164 +1,170 @@
 
 {% extends 'base.html' %}
 
-{% block title %}ML Prediction · InsightForge AI{% endblock %}
+{% block title %}
+    ML Prediction · InsightForge AI
+{% endblock %}
 
 {% block content %}
 
 <style>
-.ml-intro {
-    margin: 8px 0 22px;
-}
-
-.ml-intro p,
-.hint {
-    color: #718096;
-    font-size: 13px;
-}
-
-.ml-panel {
-    background: #fff;
-    border: 1px solid #e8edf5;
-    border-radius: 16px;
-    padding: 22px;
-    margin-bottom: 20px;
-    box-shadow: 0 5px 18px rgba(20, 40, 80, .04);
-}
-
-.ml-form {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(170px, 1fr));
-    gap: 16px;
-    align-items: end;
-}
-
-.ml-form label {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #344054;
-}
-
-.ml-form select {
-    width: 100%;
-    padding: 11px 12px;
-    border: 1px solid #dce3ee;
-    border-radius: 9px;
-    background: #fff;
-    color: #263348;
-}
-
-.ml-form .btn {
-    border: 0;
-    cursor: pointer;
-    min-height: 42px;
-}
-
-.metric-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
-    gap: 13px;
-    margin: 16px 0;
-}
-
-.metric-card {
-    padding: 17px;
-    border-radius: 12px;
-    background: #f5f8ff;
-    border: 1px solid #e6edff;
-}
-
-.metric-card small {
-    display: block;
-    color: #64748b;
-    margin-bottom: 8px;
-}
-
-.metric-card strong {
-    font-size: 23px;
-    color: #172b4d;
-}
-
-.chart-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-}
-
-.chart-box {
-    min-width: 0;
-    border: 1px solid #e8edf5;
-    border-radius: 13px;
-    padding: 12px;
-    background: #fff;
-}
-
-.chart-box h3 {
-    font-size: 14px;
-    margin: 3px 8px;
-}
-
-.chart {
-    width: 100%;
-    min-height: 330px;
-}
-
-.result-note {
-    padding: 13px 15px;
-    background: #f2f7ff;
-    border-left: 3px solid #4f7cff;
-    border-radius: 8px;
-    color: #52627a;
-    font-size: 13px;
-    line-height: 1.6;
-}
-
-.error-box {
-    padding: 13px;
-    background: #fff2f0;
-    color: #b42318;
-    border-radius: 9px;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 35px;
-}
-
-.empty-state p {
-    color: #718096;
-}
-
-@media (max-width: 800px) {
-    .ml-form,
-    .chart-grid {
-        grid-template-columns: 1fr;
+    .ml-intro {
+        margin: 8px 0 22px;
     }
-}
+
+    .ml-intro p,
+    .hint {
+        color: #718096;
+        font-size: 13px;
+    }
+
+    .ml-panel {
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 16px;
+        padding: 22px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 18px rgba(20, 40, 80, .04);
+    }
+
+    .ml-form {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(170px, 1fr));
+        gap: 16px;
+        align-items: end;
+    }
+
+    .ml-form label {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #344054;
+    }
+
+    .ml-form select {
+        width: 100%;
+        padding: 11px 12px;
+        border: 1px solid #dce3ee;
+        border-radius: 9px;
+        background: #fff;
+        color: #263348;
+    }
+
+    .ml-form .btn {
+        border: 0;
+        cursor: pointer;
+        min-height: 42px;
+    }
+
+    .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+        gap: 13px;
+        margin: 16px 0;
+    }
+
+    .metric-card {
+        padding: 17px;
+        border-radius: 12px;
+        background: #f5f8ff;
+        border: 1px solid #e6edff;
+    }
+
+    .metric-card small {
+        display: block;
+        color: #64748b;
+        margin-bottom: 8px;
+    }
+
+    .metric-card strong {
+        font-size: 23px;
+        color: #172b4d;
+    }
+
+    .chart-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .chart-box {
+        min-width: 0;
+        border: 1px solid #e8edf5;
+        border-radius: 13px;
+        padding: 12px;
+        background: #fff;
+    }
+
+    .chart-box h3 {
+        font-size: 14px;
+        margin: 3px 8px;
+    }
+
+    .chart {
+        width: 100%;
+        min-height: 330px;
+    }
+
+    .result-note {
+        padding: 13px 15px;
+        background: #f2f7ff;
+        border-left: 3px solid #4f7cff;
+        border-radius: 8px;
+        color: #52627a;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .error-box {
+        padding: 13px;
+        background: #fff2f0;
+        color: #b42318;
+        border-radius: 9px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 35px;
+    }
+
+    .empty-state p {
+        color: #718096;
+    }
+
+    @media (max-width: 800px) {
+        .ml-form,
+        .chart-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
+
 
 <div class="intro ml-intro">
 
-    <h1>Machine Learning Prediction</h1>
+    <h1>
+        Machine Learning Prediction
+    </h1>
 
     <p>
-        Train a model on your uploaded dataset, evaluate it on unseen rows,
-        and explore the predictions with interactive charts.
+        Train a model on your uploaded dataset, evaluate it on unseen rows, and explore the predictions with interactive charts.
     </p>
 
 </div>
+
 
 {% if columns %}
 
 <div class="ml-panel">
 
-    <h3 style="margin: 0 0 6px;">Configure your model</h3>
+    <h3 style="margin: 0 0 6px;">
+        Configure your model
+    </h3>
 
     <p class="hint" style="margin: 0 0 18px;">
-        Choose the column you want to predict.
-        All other usable columns are considered as model features.
+        Choose the column you want to predict. All other usable columns are considered as model features.
     </p>
 
     <form method="post" class="ml-form">
@@ -170,8 +176,10 @@
 
                 {% for c in columns %}
 
-                <option value="{{ c }}"
-                    {% if result and result.target == c %}selected{% endif %}>
+                <option
+                    value="{{ c }}"
+                    {% if result and result.target == c %}selected{% endif %}
+                >
                     {{ c }}
                 </option>
 
@@ -180,36 +188,54 @@
             </select>
         </label>
 
+
         <label>
             Prediction type
 
             <select name="task" id="taskSelect">
 
-                <option value="regression"
-                    {% if not result or result.task == 'regression' %}selected{% endif %}>
+                <option
+                    value="regression"
+                    {% if not result or result.task == 'regression' %}selected{% endif %}
+                >
                     Regression — predict a number
                 </option>
 
-                <option value="classification"
-                    {% if result and result.task == 'classification' %}selected{% endif %}>
+                <option
+                    value="classification"
+                    {% if result and result.task == 'classification' %}selected{% endif %}
+                >
                     Classification — predict a category
                 </option>
 
             </select>
         </label>
 
+
         <label>
             Algorithm
 
             <select name="algorithm">
 
-                <option value="random_forest">Random Forest</option>
-                <option value="extra_trees">Extra Trees</option>
-                <option value="decision_tree">Decision Tree</option>
-                <option value="linear">Linear / Logistic Regression</option>
+                <option value="random_forest">
+                    Random Forest
+                </option>
+
+                <option value="extra_trees">
+                    Extra Trees
+                </option>
+
+                <option value="decision_tree">
+                    Decision Tree
+                </option>
+
+                <option value="linear">
+                    Linear / Logistic Regression
+                </option>
 
             </select>
         </label>
+
 
         <button class="btn" type="submit">
             Train &amp; evaluate model
@@ -218,8 +244,7 @@
     </form>
 
     <p class="hint" style="margin: 14px 0 0;">
-        Tip: use Regression for continuous numeric targets (such as sales or profit),
-        and Classification for labels (such as customer type or outcome).
+        Tip: use Regression for continuous numeric targets (such as sales or profit), and Classification for labels (such as customer type or outcome).
     </p>
 
 </div>
@@ -228,7 +253,9 @@
 
 <div class="ml-panel empty-state">
 
-    <h2>Upload a dataset first</h2>
+    <h2>
+        Upload a dataset first
+    </h2>
 
     <p>
         Machine learning needs a dataset with enough usable rows and a target column.
@@ -242,6 +269,7 @@
 
 {% endif %}
 
+
 {% if result %}
 
 <div class="ml-panel">
@@ -249,9 +277,15 @@
     {% if result.error %}
 
     <div class="error-box">
-        <strong>Model could not be trained</strong>
+
+        <strong>
+            Model could not be trained
+        </strong>
+
         <br>
+
         {{ result.error }}
+
     </div>
 
     {% else %}
@@ -259,6 +293,7 @@
     <div style="display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap;">
 
         <div>
+
             <h2 style="margin: 0 0 5px; font-size: 19px;">
                 Model evaluation
             </h2>
@@ -266,24 +301,36 @@
             <p class="hint" style="margin: 0;">
                 {{ result.algorithm }} · Target: {{ result.target }}
             </p>
+
         </div>
 
-        <span class="chip">{{ result.task|capitalize }}</span>
+        <span class="chip">
+            {{ result.task|capitalize }}
+        </span>
 
     </div>
+
 
     <div class="metric-grid">
 
         {% for k, v in result.metrics.items() %}
 
         <div class="metric-card">
-            <small>{{ k }}</small>
-            <strong>{{ v }}</strong>
+
+            <small>
+                {{ k }}
+            </small>
+
+            <strong>
+                {{ v }}
+            </strong>
+
         </div>
 
         {% endfor %}
 
     </div>
+
 
     <div class="result-note">
         {{ result.note }}
@@ -292,6 +339,7 @@
     {% endif %}
 
 </div>
+
 
 {% if not result.error and result.charts %}
 
@@ -307,12 +355,15 @@
 
         <section class="chart-box">
 
-            <h3>{{ chart.title }}</h3>
+            <h3>
+                {{ chart.title }}
+            </h3>
 
             <div
                 id="prediction-chart-{{ loop.index0 }}"
                 class="chart"
-                data-chart='{{ chart.json|forceescape }}'>
+                data-chart='{{ chart.json|forceescape }}'
+            >
             </div>
 
         </section>

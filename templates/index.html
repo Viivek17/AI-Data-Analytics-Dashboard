@@ -1,7 +1,9 @@
 
 {% extends 'base.html' %}
 
-{% block title %}Dashboard | InsightForge{% endblock %}
+{% block title %}
+    Dashboard | InsightForge
+{% endblock %}
 
 {% block content %}
 
@@ -9,36 +11,56 @@
 
     <div>
 
-        <small class="eyebrow">YOUR DATA WORKSPACE</small>
+        <small class="eyebrow">
+            YOUR DATA WORKSPACE
+        </small>
 
         <h1>
             Turn raw data into<br>
             <em>clear decisions.</em>
         </h1>
 
-        <p>Upload a dataset, inspect quality, explore patterns and train a baseline machine-learning model.</p>
+        <p>
+            Upload a dataset, inspect quality, explore patterns and train a baseline machine-learning model.
+        </p>
 
-        <a class="btn" href="{{ url_for('upload_page') }}">＋ Upload dataset</a>
+        <a class="btn" href="{{ url_for('upload_page') }}">
+            ＋ Upload dataset
+        </a>
 
     </div>
 
-    <div class="hero-mark">IF</div>
+    <div class="hero-mark">
+        IF
+    </div>
 
 </section>
+
 
 {% if stats %}
 
 <div class="grid four">
 
-    {% for label,value in [('ROWS',stats.rows),('COLUMNS',stats.columns),('MISSING CELLS',stats.missing),('QUALITY INDICATOR',stats.score|string+'%')] %}
+    {% for label, value in [
+        ('ROWS', stats.rows),
+        ('COLUMNS', stats.columns),
+        ('MISSING CELLS', stats.missing),
+        ('QUALITY INDICATOR', stats.score|string+'%')
+    ] %}
 
     <div class="metric">
 
-        <small>{{ label }}</small>
+        <small>
+            {{ label }}
+        </small>
 
-        <strong>{{ value }}</strong>
+        <strong>
+            {{ value }}
+        </strong>
 
-        <span>Current dataset</span>
+        <span>
+            Current dataset
+        </span>
 
     </div>
 
@@ -46,34 +68,51 @@
 
 </div>
 
+
 <div class="panel">
 
-    <h3>Dataset preview</h3>
+    <h3>
+        Dataset preview
+    </h3>
 
     {{ preview|safe }}
 
     <p>
-        <a href="{{ url_for('preview_page') }}">Open full preview →</a>
+        <a href="{{ url_for('preview_page') }}">
+            Open full preview →
+        </a>
     </p>
 
 </div>
+
 
 {% else %}
 
 <div class="panel empty">
 
-    <div class="bigicon">↥</div>
+    <div class="bigicon">
+        ↥
+    </div>
 
-    <h2>Start with a dataset</h2>
+    <h2>
+        Start with a dataset
+    </h2>
 
-    <p>Upload CSV or Excel to unlock preview, quality checks, EDA, insights and machine learning.</p>
+    <p>
+        Upload CSV or Excel to unlock preview, quality checks, EDA, insights and machine learning.
+    </p>
 
-    <a class="btn" href="{{ url_for('upload_page') }}">Upload your first dataset</a>
+    <a class="btn" href="{{ url_for('upload_page') }}">
+        Upload your first dataset
+    </a>
 
 </div>
 
 {% endif %}
 
-<p class="muted tiny">Quality indicator is a simple heuristic, not a formal certification.</p>
+
+<p class="muted tiny">
+    Quality indicator is a simple heuristic, not a formal certification.
+</p>
 
 {% endblock %}
