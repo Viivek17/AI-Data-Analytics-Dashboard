@@ -1,4 +1,4 @@
-
+=
 {% extends 'base.html' %}
 
 {% block content %}
@@ -6,7 +6,6 @@
 <div class="intro cleaning-intro">
 
     <div>
-
         <span class="eyebrow">
             DATA PREPARATION WORKSPACE
         </span>
@@ -17,17 +16,13 @@
             Prepare a reliable dataset with transparent, reversible
             cleaning operations. Your original upload is always preserved.
         </p>
-
     </div>
 
     {% if df is not none %}
-
     <div class="cleaning-source">
-
         <span class="online-dot"></span>
 
         <div>
-
             <strong>
                 {{ dataset_name or 'Uploaded dataset' }}
             </strong>
@@ -35,11 +30,8 @@
             <small>
                 Source dataset · read-only
             </small>
-
         </div>
-
     </div>
-
     {% endif %}
 
 </div>
@@ -50,54 +42,27 @@
 <div class="grid four cleaning-kpis">
 
     <div class="stat-card">
-
         <span>Source rows</span>
-
-        <strong>
-            {{ '{:,}'.format(df.shape[0]) }}
-        </strong>
-
+        <strong>{{ '{:,}'.format(df.shape[0]) }}</strong>
         <small>Original records</small>
-
     </div>
 
-
     <div class="stat-card">
-
         <span>Columns</span>
-
-        <strong>
-            {{ df.shape[1] }}
-        </strong>
-
+        <strong>{{ df.shape[1] }}</strong>
         <small>Available fields</small>
-
     </div>
 
-
     <div class="stat-card">
-
         <span>Missing cells</span>
-
-        <strong>
-            {{ '{:,}'.format(df.isna().sum().sum()) }}
-        </strong>
-
+        <strong>{{ '{:,}'.format(df.isna().sum().sum()) }}</strong>
         <small>Across all columns</small>
-
     </div>
 
-
     <div class="stat-card">
-
         <span>Duplicate rows</span>
-
-        <strong>
-            {{ '{:,}'.format(df.duplicated().sum()) }}
-        </strong>
-
+        <strong>{{ '{:,}'.format(df.duplicated().sum()) }}</strong>
         <small>Exact row duplicates</small>
-
     </div>
 
 </div>
@@ -105,12 +70,13 @@
 
 <div class="cleaning-layout">
 
+    <!-- Cleaning configuration -->
+
     <section class="panel cleaning-builder">
 
         <div class="cleaning-heading">
 
             <div>
-
                 <span class="eyebrow">
                     CLEANING CONFIGURATION
                 </span>
@@ -121,7 +87,6 @@
                     Choose only the operations you need, then apply
                     them to a separate cleaned copy.
                 </p>
-
             </div>
 
             <span class="cleaning-step">
@@ -132,6 +97,8 @@
 
 
         <form method="post" class="cleaning-form">
+
+            <!-- Missing-value treatment -->
 
             <div class="cleaning-form-section">
 
@@ -144,7 +111,6 @@
                     Select how missing cells should be handled.
                     Incompatible strategies are safely skipped.
                 </p>
-
 
                 <label>
                     Missing-value strategy
@@ -188,7 +154,6 @@
                         </option>
 
                     </select>
-
                 </label>
 
 
@@ -201,11 +166,12 @@
                         value="Unknown"
                         placeholder="e.g. Unknown or 0"
                     >
-
                 </label>
 
             </div>
 
+
+            <!-- Text and format cleanup -->
 
             <div class="cleaning-form-section">
 
@@ -217,7 +183,6 @@
                 <p>
                     Standardize common text issues before analysis.
                 </p>
-
 
                 <div class="cleaning-check-grid">
 
@@ -231,15 +196,11 @@
                         >
 
                         <span>
-
-                            <strong>
-                                Trim extra spaces
-                            </strong>
+                            <strong>Trim extra spaces</strong>
 
                             <small>
                                 Remove leading and trailing spaces in text columns.
                             </small>
-
                         </span>
 
                     </label>
@@ -255,16 +216,12 @@
                         >
 
                         <span>
-
-                            <strong>
-                                Standardize missing markers
-                            </strong>
+                            <strong>Standardize missing markers</strong>
 
                             <small>
                                 Convert NA, N/A, null, dash and blank strings
                                 to missing values.
                             </small>
-
                         </span>
 
                     </label>
@@ -279,15 +236,11 @@
                         >
 
                         <span>
-
-                            <strong>
-                                Remove duplicate rows
-                            </strong>
+                            <strong>Remove duplicate rows</strong>
 
                             <small>
                                 Keep the first occurrence of each identical row.
                             </small>
-
                         </span>
 
                     </label>
@@ -302,15 +255,11 @@
                         >
 
                         <span>
-
-                            <strong>
-                                Remove fully empty columns
-                            </strong>
+                            <strong>Remove fully empty columns</strong>
 
                             <small>
                                 Drop columns that contain no usable values.
                             </small>
-
                         </span>
 
                     </label>
@@ -319,6 +268,8 @@
 
             </div>
 
+
+            <!-- Data-type conversion -->
 
             <div class="cleaning-form-section">
 
@@ -332,11 +283,9 @@
                     Only successful conversions are applied.
                 </p>
 
-
                 <div class="cleaning-column-grid">
 
                     <label>
-
                         Convert to numeric
 
                         <select
@@ -348,13 +297,11 @@
                             {% for col in column_profile %}
 
                             <option value="{{ col.name }}">
-
                                 {{ col.name }}
 
                                 {% if col.numeric %}
                                     · already numeric
                                 {% endif %}
-
                             </option>
 
                             {% endfor %}
@@ -364,12 +311,10 @@
                         <small>
                             Hold Ctrl to select multiple columns.
                         </small>
-
                     </label>
 
 
                     <label>
-
                         Convert to date
 
                         <select
@@ -391,13 +336,14 @@
                         <small>
                             Invalid date values become missing.
                         </small>
-
                     </label>
 
                 </div>
 
             </div>
 
+
+            <!-- Outlier treatment -->
 
             <div class="cleaning-form-section">
 
@@ -411,9 +357,7 @@
                     using the 1.5 × IQR rule.
                 </p>
 
-
                 <label>
-
                     Outlier action
 
                     <select name="outlier_method">
@@ -431,12 +375,10 @@
                         </option>
 
                     </select>
-
                 </label>
 
 
                 <label>
-
                     Numeric columns for outlier treatment
 
                     <select
@@ -459,25 +401,22 @@
                         Hold Ctrl to select multiple columns.
                         Leave empty to skip outlier treatment.
                     </small>
-
                 </label>
 
             </div>
 
 
+            <!-- Submit -->
+
             <div class="cleaning-submit">
 
                 <div>
-
-                    <strong>
-                        Ready to clean?
-                    </strong>
+                    <strong>Ready to clean?</strong>
 
                     <small>
                         A new CSV will be created.
                         Your source file will remain unchanged.
                     </small>
-
                 </div>
 
                 <button class="btn" type="submit">
@@ -490,6 +429,8 @@
 
     </section>
 
+
+    <!-- Column profile -->
 
     <aside class="panel cleaning-side">
 
@@ -537,18 +478,10 @@
                 </div>
 
 
-            <div class="quality-track">
+                <div class="quality-track">
 
                     <i
-                        
-                 class="quality-track">
-
-                    <i
-        style="--missing-width: {{ ((col.missing / (df.shape[0] if df.shape[0] else 1)) * 100)|round(1) }}%;"
-            ></i>
-
-                </div>
-
+                        style="--missing-width: {{ ((col.missing / (df.shape[0] if df.shape[0] else 1)) * 100)|round(1) }}%;"
                     ></i>
 
                 </div>
@@ -564,6 +497,8 @@
 </div>
 
 
+<!-- Cleaning results -->
+
 {% if cleaning_summary %}
 
 <section class="panel cleaning-results">
@@ -571,7 +506,6 @@
     <div class="cleaning-heading">
 
         <div>
-
             <span class="eyebrow">
                 WORKFLOW RESULTS
             </span>
@@ -581,7 +515,6 @@
             <p>
                 Before-and-after comparison for the latest cleaning run.
             </p>
-
         </div>
 
 
@@ -598,7 +531,6 @@
     <div class="grid four cleaning-result-kpis">
 
         <div>
-
             <small>Rows</small>
 
             <strong>
@@ -606,12 +538,10 @@
                 →
                 {{ '{:,}'.format(cleaning_summary.after_rows) }}
             </strong>
-
         </div>
 
 
         <div>
-
             <small>Columns</small>
 
             <strong>
@@ -619,12 +549,10 @@
                 →
                 {{ cleaning_summary.after_cols }}
             </strong>
-
         </div>
 
 
         <div>
-
             <small>Missing cells</small>
 
             <strong>
@@ -632,12 +560,10 @@
                 →
                 {{ '{:,}'.format(cleaning_summary.after_missing) }}
             </strong>
-
         </div>
 
 
         <div>
-
             <small>Duplicate rows</small>
 
             <strong>
@@ -645,7 +571,6 @@
                 →
                 {{ '{:,}'.format(cleaning_summary.after_duplicates) }}
             </strong>
-
         </div>
 
     </div>
@@ -663,11 +588,8 @@
         {% for operation in cleaning_summary.operations %}
 
         <li>
-
             <span>✓</span>
-
             {{ operation }}
-
         </li>
 
         {% endfor %}
@@ -707,6 +629,8 @@
 
 
 {% else %}
+
+<!-- No dataset uploaded -->
 
 <div class="panel empty">
 
