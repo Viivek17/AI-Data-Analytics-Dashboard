@@ -24,30 +24,33 @@ The goal of this project is to make data analysis easier, faster, and more acces
 
 ---
 
-## 🖥️ Project Screenshots
+## 📸 Project Screenshots
 
-### Dashboard
+Explore the different modules of InsightForge AI.
+
+### 1. Dashboard
 ![Dashboard](screenshots/dashboard.png)
 
-### Dataset Upload
+### 2. Dataset Upload
 ![Dataset Upload](screenshots/upload.png)
 
-### Exploratory Data Analysis
-![EDA](screenshots/eda.png)
+### 3. Exploratory Data Analysis
+![EDA](screenshots/eda_visualisation.png)
 
-### Data Cleaning
+### 4. Data Cleaning
 ![Data Cleaning](screenshots/data-cleaning.png)
 
-### Ask AI
-![Ask AI](screenshots/ask-ai.png)
+### 5. AI Insights
+![AI Insights](screenshots/AI_insights.png)
 
-### AI Insights
-![AI Insights](screenshots/ai-insights.png)
+### 6. Ask AI
+![Ask AI](screenshots/AskAI.png)
 
-### Reports
-![Reports](screenshots/reports.png)
+### 7. Machine Learning Prediction
+![ML Prediction](screenshots/MLprediction.png)
 
----
+### 8. Reports
+![Reports](screenshots/Reports.png)
 
 ## 🛠️ Tech Stack
 
