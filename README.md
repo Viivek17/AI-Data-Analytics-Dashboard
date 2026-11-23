@@ -90,7 +90,7 @@ Explore all 8 modules of InsightForge AI.
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
+git clone https://github.com/Viivek17/AI-Data-Analytics-Dashboard.git
 ```
 
 ### 2. Navigate to the Project Folder
@@ -213,7 +213,7 @@ While developing InsightForge AI, I gained practical experience in:
 
 **Vivek Dhandare**
 
-Data Science Student | Python Developer | Aspiring Data Analyst
+Data Science Student | Aspiring Data Analyst
 
 This project was developed as a practical learning experience to explore the combination of data science, web development, and AI-powered analytics.
 
