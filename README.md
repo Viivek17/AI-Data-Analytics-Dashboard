@@ -211,7 +211,7 @@ While developing InsightForge AI, I gained practical experience in:
 
 ## 👨‍💻 Author
 
-**Vivek**
+**Vivek Dhandare**
 
 Data Science Student | Python Developer | Aspiring Data Analyst
 
