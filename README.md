@@ -24,6 +24,7 @@ The goal of this project is to make data analysis easier, faster, and more acces
 
 ---
 
+
 ## 📸 Project Screenshots
 
 Explore the different modules of InsightForge AI.
@@ -32,25 +33,26 @@ Explore the different modules of InsightForge AI.
 ![Dashboard](screenshots/dashboard.png)
 
 ### 2. Dataset Upload
-![Dataset Upload](screenshots/upload.png)
+![Dataset Upload](screenshots/dataset_upload.png)
 
 ### 3. Exploratory Data Analysis
-![EDA](screenshots/eda_visualisation.png)
+![EDA](screenshots/eda.png)
 
 ### 4. Data Cleaning
-![Data Cleaning](screenshots/data-cleaning.png)
+![Data Cleaning](screenshots/data_cleaning.png)
 
 ### 5. AI Insights
-![AI Insights](screenshots/AI_insights.png)
+![AI Insights](screenshots/ai_insights.png)
 
 ### 6. Ask AI
-![Ask AI](screenshots/AskAI.png)
+![Ask AI](screenshots/ask_ai.png)
 
 ### 7. Machine Learning Prediction
-![ML Prediction](screenshots/MLprediction.png)
+![ML Prediction](screenshots/ml_prediction.png)
 
 ### 8. Reports
-![Reports](screenshots/Reports.png)
+![Reports](screenshots/reports.png)
+
 
 ## 🛠️ Tech Stack
 
