@@ -29,7 +29,7 @@ The goal of this project is to make data analysis easier, faster, and more acces
 
 Explore all 8 modules of InsightForge AI.
 
-![InsightForge AI Project Overview](screenshots/project_overview.png)
+![InsightForge AI](screenshots/project_overview.png)
 
 
 ## 🛠️ Tech Stack
